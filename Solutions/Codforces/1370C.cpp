@@ -55,7 +55,6 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #endif
 
 //---------------------------------------------------------------------------------------------------------//
-#define isPowOfTwo(x) return (x && (!(x&(x-1))));
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
@@ -70,20 +69,71 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 
 const int maxN = 1e7;
 
+bool is_prime(int n)
+{
+	for (int i = 2; i * i <= n; i++)
+	{
+		if (n % i == 0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool isPowOfTwo(int x)
+{
+	return (x && (!(x & (x - 1))));
+}
 void solve()
 {
+	int n; cin >> n;
 
+	if (n == 1 or n == 4)
+	{
+		cout << "FastestFinger" << endl;
+		return;
+	}
+	else if (n == 2 or n == 3)
+	{
+		cout << "Ashishgup" << endl;
+		return;
+	}
 
-
-
-
-
-
-
-
-
-
-
+	if ((n & 1) == 1)
+	{
+		cout << "Ashishgup" << endl;
+		return;
+	}
+	else
+	{
+		if (isPowOfTwo(n))
+		{
+			cout << "FastestFinger" << endl;
+			return;
+		}
+		else
+		{
+			if (n % 4 == 0)
+			{
+				cout << "Ashishgup" << endl;
+				return;
+			}
+			else
+			{
+				int oddFactor = n / 2;
+				if (is_prime(oddFactor))
+				{
+					cout << "FastestFinger" << endl;
+					return;
+				}
+				else
+				{
+					cout << "Ashishgup" << endl;
+					return;
+				}
+			}
+		}
+	}
 }
 void setUpLocal()
 {
@@ -96,7 +146,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
