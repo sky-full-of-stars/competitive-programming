@@ -69,39 +69,49 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 
 
 const int maxN = 1e7;
-
+//https://www.youtube.com/watch?v=t4IdFTbrGnY
+//solve this again using DP at a later point. added to problems.txt
 void solve()
 {
-	int n, q;
-	cin >> n >> q;
+	int a, b;
+	cin >> a >> b;
 
-	vi v(n);
-	ipArr(v, n);
+	string s; cin >> s;
 
-	int mx = 0, mn = 0;
-	int ans = 0;
-	while (mx < n and mn < n)
+	int n = sz(s);
+	int first = -1, last = -1;
+	for (int i = 0; i < n; i++)
 	{
-		//find peak
-		while (mx + 1 < n and v[mx + 1] > v[mx])
+		if (s[i] == '1')
 		{
-			mx++;
+			first = i;
+			break;
 		}
-		ans += v[mx];
+	}
+	for (int i = n - 1; i >= 0; i--)
+	{
+		if (s[i] == '1')
+		{
+			last = i;
+			break;
+		}
+	}
+	if (first == -1 and last == -1)
+	{
+		cout << 0 << endl;
+		return;
+	}
 
-		//find valley for prev peak
-		mn = mx;
-		while (mn + 1 < n and v[mn + 1] < v[mn])
+	int ans = a;
+	for (int i = first; i <= last; i++)
+	{
+		int zerosCount = 0;
+		while (s[i] == '0')
 		{
-			mn++;
+			zerosCount++;
+			i++;
 		}
-		if (mn != n - 1) // sub valley only if you can find next peak. else no point in choosing this.
-		{
-			ans -= v[mn];
-		}
-
-		//keep finding next peaks and valleys
-		mx = mn = mn + 1;
+		ans += min(a, b * zerosCount);
 	}
 
 	cout << ans << endl;
