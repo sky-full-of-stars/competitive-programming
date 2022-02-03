@@ -1,0 +1,37 @@
+NSO Product Investigation
+
+Products
+	Akamai MFA: M-LC-168523
+		filtering criteria
+			UOM = users -> gives 1 listItem 
+			select first 4 tiers
+		add-on filtering
+			M-LC-168496 is coming in add-ons. we should remove this, it has 3 listItems even those will be removed.
+		integration PLI's
+			n/a
+
+	Cloudlets:
+		Input Validation - M-LC-159937 : 2 tiers 
+		API Prioritization - M-LC-159826 : 2 tiers
+		Edge Redirector - M-LC-127057 : 2 tiers
+		Forward Rewrite - M-LC-154661 : 2 tiers
+		Request Control - M-LC-154455 : 2 tiers
+		Visitor Prioritization - M-LC-127263 : 1 tier
+		Phased Release - M-LC-156927		: 2 tiers
+		Application Load Balancer - M-LC-160433 : 1 tier
+
+			filtering criteria
+				UOM = GB --> gives 1 listItem for all. 
+				tier selection -> based on productId
+					select 1 tier for M-LC-127263,M-LC-160433
+					select 2 tiers for M-LC-159937,M-LC-159826,M-LC-127057,M-LC-154455,M-LC-156927
+			add-on filtering
+				n/a
+			integration PLI's
+				EdgeIntegration-SelfService-OneTimeFee is missing for M-LC-159937,M-LC-154455,M-LC-127263,M-LC-156927
+			General:
+				Everycloudlet should be QBC(?)(coz, Price is for the range and not per value selection)
+
+
+
+
