@@ -71,51 +71,78 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int sum(int x)
+set<int> possibles;
+
+void permute(string a, int l, int r)
 {
-	int ans = 0;
-	string s = to_string(x);
-	for (char i : s)
+	// Base case
+	if (l == r)
 	{
-		ans += (i - '0');
+		//cerr << a << endl;
+		possibles.insert(stol(a));
 	}
-	return ans;
+	else
+	{
+		// Permutations made
+		for (int i = l; i <= r; i++)
+		{
+
+			// Swapping done
+			swap(a[l], a[i]);
+
+			// Recursion called
+			permute(a, l + 1, r);
+
+			//backtrack
+			swap(a[l], a[i]);
+		}
+	}
 }
 
-bool f(int x, int n)
+string getMinString(int len)
 {
-	return ((x * x) + (x * sum(x)) == n);
+	string base(len, '-');
+	for (int i = 0; i < len / 2; i++)
+		base[i] = '4';
+	for (int i = len / 2; i < len; i++)
+		base[i] = '7';
+	return base;
 }
 
-bool ok(int i, int n)
+string getMaxString(int len)
 {
-	return ((i * i) - n >= -i);
+	string base(len, '-');
+	for (int i = 0; i < len / 2; i++)
+		base[i] = '7';
+	for (int i = len / 2; i < len; i++)
+		base[i] = '4';
+	return base;
 }
 void solve()
 {
-	int n; cin >> n;
-
-	int maxVal = ceil(sqrt(n) + 1);
-
-	int ans = maxVal;
-	bool match = false;
-	for (int i = maxVal; i > maxVal - 1000; i--)
+	string n; cin >> n;
+	int len = sz(n);
+	if (len & 1)
 	{
-		if (i <= 0)
+		len++;
+	}
+	else
+	{
+		if (stol(n) > stol(getMaxString(len)))
+			len += 2;
+	}
+
+	string base = getMinString(len);
+	permute(base, 0, len - 1);
+
+	for (auto i : possibles)
+	{
+		if (i >= (stol(n)))
 		{
-			break;
-		}
-		if (f(i, n))
-		{
-			//debug(i);
-			match = true;
-			ans = min(ans, i);
+			cout << i << endl;
+			return;
 		}
 	}
-	if (match)
-		cout << ans << endl;
-	else
-		cout << -1 << endl;
 
 }
 void setUpLocal()

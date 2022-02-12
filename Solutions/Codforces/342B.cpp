@@ -71,51 +71,95 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int sum(int x)
-{
-	int ans = 0;
-	string s = to_string(x);
-	for (char i : s)
-	{
-		ans += (i - '0');
-	}
-	return ans;
-}
-
-bool f(int x, int n)
-{
-	return ((x * x) + (x * sum(x)) == n);
-}
-
-bool ok(int i, int n)
-{
-	return ((i * i) - n >= -i);
-}
 void solve()
 {
-	int n; cin >> n;
+	int n, m; cin >> n >> m;
+	int from, to; cin >> from >> to;
 
-	int maxVal = ceil(sqrt(n) + 1);
-
-	int ans = maxVal;
-	bool match = false;
-	for (int i = maxVal; i > maxVal - 1000; i--)
+	bool moveRight = true;
+	if (from > to)
 	{
-		if (i <= 0)
-		{
-			break;
-		}
-		if (f(i, n))
-		{
-			//debug(i);
-			match = true;
-			ans = min(ans, i);
-		}
+		moveRight = false;
 	}
-	if (match)
+
+	int cur = from;
+
+	map<int, pi> mp;
+	while (m--)
+	{
+		int t, l, r;
+		cin >> t >> l >> r;
+		mp[t] = {l, r};
+	}
+
+	int prevTime = 0;
+	for (auto i : mp)
+	{
+		int t = i.ff;
+		int l = i.ss.ff;
+		int r = i.ss.ss;
+
+		int togo = (moveRight) ? (cur + 1) : (cur - 1);
+
+		int noWatchDuration = t - prevTime - 1;
+
+		if (noWatchDuration)
+		{
+			while (noWatchDuration--)
+			{
+				if (moveRight)
+				{
+					cout << "R";
+					cur++;
+				}
+				else
+				{
+					cout << "L";
+					cur--;
+				}
+				if (cur == to)
+				{
+					return;
+				}
+			}
+		}
+
+		togo = (moveRight) ? (cur + 1) : (cur - 1);
+
+		if ((togo >= l and togo <= r) or (cur >= l and cur <= r))
+		{
+			cout << "X";
+		}
+		else
+		{
+			if (moveRight)
+			{
+				cout << "R";
+				cur++;
+			}
+			else
+			{
+				cout << "L";
+				cur--;
+			}
+			if (cur == to)
+			{
+				return;
+			}
+
+		}
+
+		//debug(cur);
+		prevTime = t;
+	}
+	//debug(cur, to);
+	int movesNeeded = abs(to - cur);
+
+	if (movesNeeded)
+	{
+		string ans = moveRight ? string(movesNeeded, 'R') : string(movesNeeded, 'L');
 		cout << ans << endl;
-	else
-		cout << -1 << endl;
+	}
 
 }
 void setUpLocal()
