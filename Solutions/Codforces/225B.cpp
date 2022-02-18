@@ -66,114 +66,57 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
+int max(int a, int b) {return (a >= b) ? a : b; }
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
-mi days;
-void prepareMonthsDates()
-{
-	for (int i = 1; i <= 7; i++)
-	{
-		if (i & 1)
-			days[i] = 31;
-		else
-			days[i] = 30;
-	}
-	days[2] = 28;
-	for (int i = 8; i < 13; i++)
-	{
-		if (!(i & 1))
-			days[i] = 31;
-		else
-			days[i] = 30;
-	}
-}
-bool validDate(int d, int m)
-{
-	//debug(d, m, days[m]);
-	return (d > 0 and d <= days[m]);
-}
-bool validMonth(int m)
-{
-	return (m > 0 and m < 13);
-}
-bool validYear(int y)
-{
-	return (y >= 2013 and y <= 2015);
-}
-bool validDay(string s)
-{
-	int d = stoi(s.substr(0, 2));
-	int m = stoi(s.substr(3, 2));
-	int y = stoi(s.substr(6, 4));
+const int maxN = 1e5;
 
-	if (validDate(d, m) and validMonth(m) and validYear(y))
-		return true;
-	else
-		return false;
-}
-
-bool validFormat(string s)
-{
-	int n = sz(s);
-	if (n == 10)
-	{
-		if (s[2] != '-' or s[5] != '-')
-		{
-			return false;
-		}
-		if (s[0] == '-' or s[1] == '-' or s[3] == '-' or s[4] == '-' or s[6] == '-' or s[7] == '-' or s[8] == '-' or s[9] == '-')
-		{
-			return false;
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void process(string s, map<string, int> &count)
-{
-	if (validFormat(s))
-	{
-		//debug(s);
-		if (validDay(s))
-		{
-			//debug(s);
-			count[s]++;
-		}
-	}
-}
 void solve()
 {
-	string s; cin >> s;
-	int n = sz(s);
-	prepareMonthsDates();
+	int s, k;
+	cin >> s >> k;
 
-	map<string, int> count;
-
-	for (int i = 0; i <= n - 10; i++)
+	vi f(maxN);
+	f[0] = 1;
+	int i = 0;
+	while (true)
 	{
-		string sub = s.substr(i, 10);
-		process(sub, count);
-	}
-
-	int mx = -1;
-	string ans = "";
-	for (auto i : count)
-	{
-		//debug(i);
-		if (i.ss > mx)
+		if (f[i] >= s)
 		{
-			ans = i.ff;
-			mx = i.ss;
+			break;
+		}
+		else
+		{
+			i++;
+			f[i] = 0;
+			for (int j = max(0, i - k); j < i; j++)
+			{
+				f[i] += f[j];
+			}
+			//debug(i, f[i]);
 		}
 	}
 
-	cout << ans << endl;
+
+	vi ans; ans.pb(0);
+	for (int j = i; j >= 0; j--)
+	{
+		if (s == 0)
+		{
+			break;
+		}
+		if (f[j] <= s)
+		{
+			ans.pb(f[j]);
+			s -= f[j];
+		}
+	}
+
+	cout << sz(ans) << endl;
+	for (int i : ans)
+		cout << i << " ";
+	cout << endl;
 
 }
 void setUpLocal()

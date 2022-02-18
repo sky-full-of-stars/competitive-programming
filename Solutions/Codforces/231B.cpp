@@ -70,110 +70,70 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-mi days;
-void prepareMonthsDates()
-{
-	for (int i = 1; i <= 7; i++)
-	{
-		if (i & 1)
-			days[i] = 31;
-		else
-			days[i] = 30;
-	}
-	days[2] = 28;
-	for (int i = 8; i < 13; i++)
-	{
-		if (!(i & 1))
-			days[i] = 31;
-		else
-			days[i] = 30;
-	}
-}
-bool validDate(int d, int m)
-{
-	//debug(d, m, days[m]);
-	return (d > 0 and d <= days[m]);
-}
-bool validMonth(int m)
-{
-	return (m > 0 and m < 13);
-}
-bool validYear(int y)
-{
-	return (y >= 2013 and y <= 2015);
-}
-bool validDay(string s)
-{
-	int d = stoi(s.substr(0, 2));
-	int m = stoi(s.substr(3, 2));
-	int y = stoi(s.substr(6, 4));
 
-	if (validDate(d, m) and validMonth(m) and validYear(y))
-		return true;
-	else
-		return false;
-}
-
-bool validFormat(string s)
-{
-	int n = sz(s);
-	if (n == 10)
-	{
-		if (s[2] != '-' or s[5] != '-')
-		{
-			return false;
-		}
-		if (s[0] == '-' or s[1] == '-' or s[3] == '-' or s[4] == '-' or s[6] == '-' or s[7] == '-' or s[8] == '-' or s[9] == '-')
-		{
-			return false;
-		}
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void process(string s, map<string, int> &count)
-{
-	if (validFormat(s))
-	{
-		//debug(s);
-		if (validDay(s))
-		{
-			//debug(s);
-			count[s]++;
-		}
-	}
-}
+//thanks to @Sumit Gaurav for explaining soln to this 'pyara problem'
 void solve()
 {
-	string s; cin >> s;
-	int n = sz(s);
-	prepareMonthsDates();
+	int n, d, l;
+	cin >> n >> d >> l;
 
-	map<string, int> count;
-
-	for (int i = 0; i <= n - 10; i++)
+	vi v(n + 7);
+	for (int i = 0; i < n + 7; i++)
 	{
-		string sub = s.substr(i, 10);
-		process(sub, count);
+		v[i] = (i & 1) ? 1 : l;
 	}
 
-	int mx = -1;
-	string ans = "";
-	for (auto i : count)
+	//create : l 1 l 1 l 1
+	// max answer : l-1+l-1+l-1
+	// now try to get d
+	// (subtract more, instead of -1) OR (add less, instead of l)
+	int mx = 0;
+	for (int i = 0; i < n; i++)
 	{
-		//debug(i);
-		if (i.ss > mx)
+		mx += (i & 1) ? -v[i] : v[i];
+	}
+
+	if (d > mx)
+	{
+		cout << -1 << endl;
+		return;
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		if (mx > d)
 		{
-			ans = i.ff;
-			mx = i.ss;
+			if (i & 1) //-1 -> subtract more
+			{
+				int extra = mx - d;
+				int toAdd = min(extra, l - 1);
+				//debug(extra, toAdd);
+
+				v[i] += toAdd;
+				mx = mx + 1 - v[i];
+			}
+			else //+l -> add less
+			{
+				int extra = mx - d;
+				int toSub = min(extra, l - 1);
+				//debug(extra, toSub);
+
+				v[i] -= toSub;
+				mx = mx - l + v[i];
+			}
 		}
 	}
 
-	cout << ans << endl;
+	if (mx > d)
+	{
+		cout << -1 << endl;
+		return;
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << v[i] << " ";
+	}
 
 }
 void setUpLocal()
