@@ -71,46 +71,44 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
+//https://algoshots.herokuapp.com/problems/minimum-ternary-string-1009b/
 void solve()
 {
-	string s; cin >> s;
-	int n = sz(s);
-	int z = 0, o = 0;
-	for (auto i : s)
+	string s;
+	cin >> s;
+
+	int zb2 = 0; //zero before first 2
+	int o = 0; //total ones
+	int first2Pos = -1;
+	for (int i = 0; i < sz(s); i++)
 	{
-		if (i == '0')
-			z++;
-		else
+		if (s[i] == '2')
+		{
+			first2Pos = i;
+			break;
+		}
+		else if (s[i] == '0')
+		{
+			zb2++;
+		}
+	}
+	for (int i = 0; i < sz(s); i++)
+	{
+		if (s[i] == '1')
 			o++;
 	}
-	if (o == n or z == n)
+
+	for (int i = 0; i < zb2; i++)
+		cout << 0;
+	for (int i = 0; i < o; i++)
+		cout << 1;
+	if (first2Pos != -1)
 	{
-		cout << 0 << endl;
-		return;
+		for (int i = first2Pos; i < sz(s); i++)
+			if (s[i] != '1')
+				cout << s[i];
 	}
-	//debug(o, z);
-	int ans1 = min(o, z); // convert all to 0 or all to 1
-
-	int ans2 = INF;
-	int zsf = 0; //zeroSoFar
-	int osf = 0; //oneSoFar
-
-	for (int i = 0; i < n; i++)
-	{
-		//create 100000
-		int cost1 = zsf + (o - osf);
-
-		//create 011111
-		int cost2 = osf + (z - zsf);
-
-		//least num of moves reqd.
-		ans2 = min(ans2, min(cost1, cost2));
-
-		if (s[i] == '0') zsf++;
-		else osf++;
-	}
-	//debug(ans2);
-	cout << min(ans1, ans2) << endl;
+	cout << endl;
 
 }
 void setUpLocal()
@@ -124,7 +122,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

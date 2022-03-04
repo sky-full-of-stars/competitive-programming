@@ -71,46 +71,43 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
+int k, r, a, b;
+bool ok(int n)
+{
+	if (n * a + (r - n)*b < k)
+	{
+		return true;
+	}
+	return false;
+}
 void solve()
 {
-	string s; cin >> s;
-	int n = sz(s);
-	int z = 0, o = 0;
-	for (auto i : s)
+	cin >> k >> r >> a >> b;
+
+	if (b * r >= k)
 	{
-		if (i == '0')
-			z++;
-		else
-			o++;
-	}
-	if (o == n or z == n)
-	{
-		cout << 0 << endl;
+		cout << -1 << endl;
 		return;
 	}
-	//debug(o, z);
-	int ans1 = min(o, z); // convert all to 0 or all to 1
 
-	int ans2 = INF;
-	int zsf = 0; //zeroSoFar
-	int osf = 0; //oneSoFar
-
-	for (int i = 0; i < n; i++)
+	int lo = 0, hi = r;
+	int result;
+	while (lo <= hi)
 	{
-		//create 100000
-		int cost1 = zsf + (o - osf);
-
-		//create 011111
-		int cost2 = osf + (z - zsf);
-
-		//least num of moves reqd.
-		ans2 = min(ans2, min(cost1, cost2));
-
-		if (s[i] == '0') zsf++;
-		else osf++;
+		int mid = (lo + hi) / 2;
+		//debug(lo, mid, hi);
+		if (ok(mid))
+		{
+			result = mid;
+			lo = mid + 1;
+		}
+		else
+		{
+			hi = mid - 1;
+		}
 	}
-	//debug(ans2);
-	cout << min(ans1, ans2) << endl;
+
+	cout << result << endl;
 
 }
 void setUpLocal()

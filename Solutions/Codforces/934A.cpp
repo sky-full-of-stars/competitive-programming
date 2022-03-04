@@ -73,45 +73,92 @@ const int maxN = 1e7;
 
 void solve()
 {
-	string s; cin >> s;
-	int n = sz(s);
-	int z = 0, o = 0;
-	for (auto i : s)
-	{
-		if (i == '0')
-			z++;
-		else
-			o++;
-	}
-	if (o == n or z == n)
-	{
-		cout << 0 << endl;
-		return;
-	}
-	//debug(o, z);
-	int ans1 = min(o, z); // convert all to 0 or all to 1
+	int n, m; cin >> n >> m;
+	vi v1(n), v2(m);
+	ipArr(v1, n);
+	ipArr(v2, m);
 
-	int ans2 = INF;
-	int zsf = 0; //zeroSoFar
-	int osf = 0; //oneSoFar
-
+	map<int, set<int>> possibleProds;
 	for (int i = 0; i < n; i++)
 	{
-		//create 100000
-		int cost1 = zsf + (o - osf);
-
-		//create 011111
-		int cost2 = osf + (z - zsf);
-
-		//least num of moves reqd.
-		ans2 = min(ans2, min(cost1, cost2));
-
-		if (s[i] == '0') zsf++;
-		else osf++;
+		for (int j = 0; j < m; j++)
+		{
+			possibleProds[i].insert(v1[i]*v2[j]);
+		}
 	}
-	//debug(ans2);
-	cout << min(ans1, ans2) << endl;
 
+	int mx = -INF;
+	int mxEle = -INF;
+	for (int i = 0; i < n; i++)
+	{
+		int mxProdPossibleWithIthEle = *possibleProds[i].rbegin();
+		if (mxProdPossibleWithIthEle > mx)
+		{
+			mxEle = i;
+			mx = *possibleProds[i].rbegin();
+		}
+	}
+	debug(mx, mxEle);
+
+	mx = -INF;
+	for (int i = 0; i < n; i++)
+	{
+		if (i == mxEle) //ignore all sums contributed by this.
+		{
+			continue;
+		}
+		int mxProdPossibleWithIthEle = *possibleProds[i].rbegin();
+		if (mxProdPossibleWithIthEle > mx)
+		{
+			mx = *possibleProds[i].rbegin();
+		}
+	}
+
+	cout << mx << endl;
+	/*
+	sortv(v1);
+	sortv(v2);
+
+	if (v1[0] < 0 and v2[0] < 0) // can choose 2 max values (-*- or +*+)
+	{
+		int mxNegProd = v1[0] * v2[0];
+		int mxPosProd = v1[n - 1] * v2[m - 1];
+
+		if (mxNegProd == mxPosProd) //remove either of one, you can still make best prod
+		{
+			cout << mxNegProd << endl;
+			return;
+		}
+
+		if (mxNegProd > mxPosProd) // avoid negProd
+		{
+			cout << max(mxPosProd, v1[1]*v2[0]) << endl;
+		}
+		else
+		{
+			cout << max(mxNegProd, v1[n - 2]*v2[m - 1]) << endl;
+		}
+	}
+	else if (v1[0]<0 and v2[0] >= 0)
+	{
+		if (v1[n - 2] >= 0)
+		{
+			cout << v1[n - 2]*v2[m - 1] << endl;
+			return;
+		}
+		else
+		{
+			cout << v1[n - 2]*v2[0] << endl;
+			return;
+		}
+	}
+	else
+	{
+		cout << v1[n - 2]*v2[m - 1] << endl;
+	}
+
+
+	*/
 }
 void setUpLocal()
 {
@@ -124,7 +171,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
