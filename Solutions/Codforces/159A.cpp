@@ -1,3 +1,6 @@
+// Take me somewhere nice
+// https://www.youtube.com/watch?v=CK1zCi0z_Hk
+
 #include "bits/stdc++.h"
 
 #ifndef ONLINE_JUDGE
@@ -73,107 +76,18 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int t;
-	cin >> t;
 
-	vector<pair<int, pair<int, int>>> sums;
-	for (int i = 0; i < t; i++)
-	{
-		int n; cin >> n;
-		vi v(n);
-		int sum = 0;
-		for (int pos = 0; pos < n; pos++)
-		{
-			cin >> v[pos];
-			sum +=  v[pos];
-		}
-		for (int pos = 0; pos < n; pos++)
-		{
-			sums.push_back({sum - v[pos], {i + 1, pos + 1}});
-		}
-	}
-	sort(all(sums));
 
-	//dbg(sums);
 
-	for (int i = 0; i < sz(sums) - 1; i++)
-	{
-		if (sums[i].ff == sums[i + 1].ff)
-		{
-			if (sums[i].ss.ff != sums[i + 1].ss.ff)
-			{
-				cout << "YES" << endl;
-				cout << sums[i].ss.ff << " " << sums[i].ss.ss << endl;
-				cout << sums[i + 1].ss.ff << " " << sums[i + 1].ss.ss << endl;
-				return;
-			}
-		}
-	}
 
-	cout << "NO" << endl;
-	/*
-	int t;
-	cin >> t;
 
-	vector<vector<int>> v;
-	unordered_map<int, int> sumMap;
-	unordered_map<int, map<int, int>> eleMap;
-	for (int cnt = 0; cnt < t; cnt++)
-	{
-		int n; cin >> n;
-		int sum = 0;
-		vi internalV(n);
-		map<int, int> mp;
-		for (int i = 0; i < n; i++)
-		{
-			cin >> internalV[i];
-			sum += internalV[i];
-			mp[internalV[i]] = i + 1;
-		}
-		eleMap[cnt] = mp;
-		sortv(internalV);
-		sumMap[cnt] = sum;
-		v.pb(internalV);
-	}
 
-	int n = sz(v);
-	for (int i = 0; i < n; i++)
-	{
-		vi thisV = v[i];
-		int thisSum = sumMap[i];
-		for (int pos = 0; pos < sz(thisV); pos++)
-		{
-			int ele = thisV[pos];
-			int sumToSearch = thisSum - ele;
-			//debug(thisSum, sumToSearch);
-			for (int j = i + 1; j < n; j++)
-			{
-				vi thatV = v[j];
-				int thatSum = sumMap[j];
-				if (sumToSearch >= thatSum)
-				{
-					continue;
-				}
-				else
-				{
-					int eleToRemoveInThatV = thatSum - sumToSearch;
-					//debug(eleToRemoveInThatV);
-					if (binary_search(all(thatV), eleToRemoveInThatV))
-					{
-						cout << "YES" << endl;
-						//debug(ele, eleToRemoveInThatV);
-						cout << i + 1 << " " << eleMap[i][ele] << endl;
-						cout << j + 1 << " " << eleMap[j][eleToRemoveInThatV] << endl;
-						return;
-					}
 
-				}
-			}
-		}
-	}
 
-	cout << "NO" << endl;
-	*/
+
+
+
+
 }
 void setUpLocal()
 {
