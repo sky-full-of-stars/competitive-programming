@@ -1,6 +1,4 @@
-// Take me somewhere nice
-// https://www.youtube.com/watch?v=CK1zCi0z_Hk
-
+//thank you lane8 for exsiting
 #include "bits/stdc++.h"
 
 #ifndef ONLINE_JUDGE
@@ -73,54 +71,60 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-
+int ele;
 void solve()
 {
-	int n, d; cin >> n >> d;
-	map<pair<string, string>, vi> m;
+	int n, k; cin >> n >> k;
+	map<int, vi> m;
 	for (int i = 0; i < n; i++)
 	{
-		string from, to;
-		int time;
-		cin >> from >> to >> time;
-		m[ {from, to}].pb(time);
+		cin >> ele;
+		m[ele].pb(i);
 	}
 
-	set<pair<string, string>> ans;
+	if (n < k)
+	{
+		cout << "NO" << endl;
+		return;
+	}
 	for (auto i : m)
 	{
-		pair<string, string> fromTo = i.ff;
-		pair<string, string> toFrom = {fromTo.ss, fromTo.ff};
-		if (present(ans, fromTo) or present(ans, toFrom))
+		if (sz(i.ss) > k)
 		{
-			continue;
-		}
-		bool done = false;
-		for (int firstMsg : m[fromTo])
-		{
-			if (done)
-			{
-				break;
-			}
-			for (int reply : m[toFrom])
-			{
-				if (reply > firstMsg and reply <= firstMsg + d)
-				{
-					debug(firstMsg, reply);
-					ans.insert(fromTo);
-					done = true;
-				}
-			}
+			cout << "NO" << endl;
+			return;
 		}
 	}
 
-	cout << sz(ans) << endl;
+	cout << "YES" << endl;
+	vi ans(n);
+	int start = 1;
+	for (auto i : m)
+	{
+		int seq = start;
+		for (int idx : i.ss)
+		{
+			ans[idx] = seq;
+			//debug(idx, seq);
+			seq++;
+			if (seq > k)
+				seq = 1;
+		}
+		if (seq > start)
+			start = seq;
+		else
+			start++;
+		if (start > k)
+		{
+			start = 1;
+		}
+	}
+
 	for (auto i : ans)
 	{
-		cout << i.ff << " " << i.ss << endl;
+		cout << i << " ";
 	}
-
-
+	return;
 }
 void setUpLocal()
 {

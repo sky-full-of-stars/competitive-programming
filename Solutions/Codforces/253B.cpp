@@ -1,6 +1,3 @@
-// Take me somewhere nice
-// https://www.youtube.com/watch?v=CK1zCi0z_Hk
-
 #include "bits/stdc++.h"
 
 #ifndef ONLINE_JUDGE
@@ -76,50 +73,35 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int n, d; cin >> n >> d;
-	map<pair<string, string>, vi> m;
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	int n; cin >> n;
+	vi v(n);
 	for (int i = 0; i < n; i++)
 	{
-		string from, to;
-		int time;
-		cin >> from >> to >> time;
-		m[ {from, to}].pb(time);
+		cin >> v[i];
 	}
-
-	set<pair<string, string>> ans;
-	for (auto i : m)
+	sortv(v);
+	//dbg(v);
+	int start = 0;
+	int rm = n + 1;
+	while (start < n)
 	{
-		pair<string, string> fromTo = i.ff;
-		pair<string, string> toFrom = {fromTo.ss, fromTo.ff};
-		if (present(ans, fromTo) or present(ans, toFrom))
+		int l = start;
+		int r = start;
+		while (r + 1 < n)
 		{
-			continue;
-		}
-		bool done = false;
-		for (int firstMsg : m[fromTo])
-		{
-			if (done)
-			{
+			if (v[r + 1] <= v[l] * 2)
+				r++;
+			else
 				break;
-			}
-			for (int reply : m[toFrom])
-			{
-				if (reply > firstMsg and reply <= firstMsg + d)
-				{
-					debug(firstMsg, reply);
-					ans.insert(fromTo);
-					done = true;
-				}
-			}
 		}
+		rm = min(rm , l - 0 + n - 1 - r);
+		//debug(start, l, r);
+		while (start < n and v[start] == v[l])
+			start++;
 	}
-
-	cout << sz(ans) << endl;
-	for (auto i : ans)
-	{
-		cout << i.ff << " " << i.ss << endl;
-	}
-
+	cout << rm << endl;
 
 }
 void setUpLocal()
@@ -132,7 +114,7 @@ void setUpLocal()
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
-	setUpLocal();
+	//setUpLocal();
 	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;

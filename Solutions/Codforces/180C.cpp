@@ -1,6 +1,3 @@
-// Take me somewhere nice
-// https://www.youtube.com/watch?v=CK1zCi0z_Hk
-
 #include "bits/stdc++.h"
 
 #ifndef ONLINE_JUDGE
@@ -76,50 +73,52 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int n, d; cin >> n >> d;
-	map<pair<string, string>, vi> m;
+	string s; cin >> s;
+	int n = sz(s);
+
+	int c = 0;
+	vi lowersSoFar(n);
 	for (int i = 0; i < n; i++)
 	{
-		string from, to;
-		int time;
-		cin >> from >> to >> time;
-		m[ {from, to}].pb(time);
-	}
-
-	set<pair<string, string>> ans;
-	for (auto i : m)
-	{
-		pair<string, string> fromTo = i.ff;
-		pair<string, string> toFrom = {fromTo.ss, fromTo.ff};
-		if (present(ans, fromTo) or present(ans, toFrom))
+		if (islower(s[i]))
 		{
-			continue;
+			c++;
 		}
-		bool done = false;
-		for (int firstMsg : m[fromTo])
-		{
-			if (done)
-			{
-				break;
-			}
-			for (int reply : m[toFrom])
-			{
-				if (reply > firstMsg and reply <= firstMsg + d)
-				{
-					debug(firstMsg, reply);
-					ans.insert(fromTo);
-					done = true;
-				}
-			}
-		}
+		lowersSoFar[i] = c;
 	}
 
-	cout << sz(ans) << endl;
-	for (auto i : ans)
+	c = 0;
+	vi uppersAhead(n);
+	for (int i = n - 1; i >= 0; i--)
 	{
-		cout << i.ff << " " << i.ss << endl;
+		if (isupper(s[i]))
+		{
+			c++;
+		}
+		uppersAhead[i] = c;
 	}
 
+	// dbg(lowersSoFar);
+	// dbg(uppersAhead);
+
+	int allLowerFix = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (isupper(s[i]))
+			allLowerFix++;
+	}
+
+	int ans = n + 1;
+	for (int i = 0; i < n; i++)
+	{
+		//s[0]...s[i] -> upper
+		//s[i+1]....s[n-1] ->lower
+		int fix = lowersSoFar[i] + uppersAhead[i];
+		if (isupper(s[i]))
+			fix--;
+		ans = min(ans, fix);
+	}
+	cout << min(ans, allLowerFix) << endl;
 
 }
 void setUpLocal()
