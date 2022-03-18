@@ -82,52 +82,98 @@ const int maxN = 1e3 + 3;
 int n, m;
 
 
-int par[maxN]; // keep track of parent
-int siz[maxN]; // keep track of size
+int par1[maxN]; // keep track of parent
+int siz1[maxN]; // keep track of size
+
+int par2[maxN]; // keep track of parent
+int siz2[maxN]; // keep track of size
 
 
-void init()// init with size arr and par arr
+void init1()// init with size arr and par arr
 {
 	for (int i = 1; i <= n; i++)
 	{
-		par[i] = i;
-		siz[i] = 1;
+		par1[i] = i;
+		siz1[i] = 1;
+	}
+}
+void init2()// init with size arr and par arr
+{
+	for (int i = 1; i <= n; i++)
+	{
+		par2[i] = i;
+		siz2[i] = 1;
 	}
 }
 
-int root(int u) // path compression
+int root1(int u) // path compression
 {
 	int rootU = u;
-	while (par[rootU] != rootU)
+	while (par1[rootU] != rootU)
 	{
-		rootU = par[par[rootU]]; //halving len of path
+		rootU = par1[par1[rootU]]; //halving len of path
 	}
 
 	return rootU;
 }
-int c = 0;
-void weightedUnion(int u, int v) // weighted union or rank compression
+int root2(int u) // path compression
 {
-	int rootU = root(u);
-	int rootV = root(v);
+	int rootU = u;
+	while (par2[rootU] != rootU)
+	{
+		rootU = par2[par2[rootU]]; //halving len of path
+	}
+
+	return rootU;
+}
+
+
+int c = 0;
+void weightedUnion1(int u, int v) // weighted union
+{
+	int rootU = root1(u);
+	int rootV = root1(v);
 
 	//cerr << rootU << " " << rootV << " " << siz[rootU] << " " << siz[rootV] << " ";
 
-	if (siz[rootU] <= siz[rootV])
+	if (siz1[rootU] <= siz1[rootV])
 	{
-		par[rootU] = rootV;
-		siz[rootV] += siz[rootU];
+		par1[rootU] = rootV;
+		siz1[rootV] += siz1[rootU];
 	}
 	else
 	{
-		par[rootV] = rootU;
-		siz[rootU] += siz[rootV];
+		par1[rootV] = rootU;
+		siz1[rootU] += siz1[rootV];
 	}
 }
 
-bool find(int u, int v)
+void weightedUnion2(int u, int v) // weighted union
 {
-	return (root(u) == root(v));
+	int rootU = root2(u);
+	int rootV = root2(v);
+
+	//cerr << rootU << " " << rootV << " " << siz[rootU] << " " << siz[rootV] << " ";
+
+	if (siz2[rootU] <= siz2[rootV])
+	{
+		par2[rootU] = rootV;
+		siz2[rootV] += siz2[rootU];
+	}
+	else
+	{
+		par2[rootV] = rootU;
+		siz2[rootU] += siz2[rootV];
+	}
+}
+
+bool find1(int u, int v)
+{
+	return (root1(u) == root1(v));
+}
+bool find2(int u, int v)
+{
+	return (root2(u) == root2(v));
 }
 
 void display()
@@ -137,10 +183,10 @@ void display()
 
 	for (int i = 1; i <= n; i++)
 	{
-		int rootI = root(i);
+		int rootI = root1(i);
 		if (!visRoots[rootI])
 		{
-			v.pb(siz[rootI]);
+			v.pb(siz1[rootI]);
 			visRoots[rootI] = 1;
 		}
 	}
@@ -149,24 +195,53 @@ void display()
 	for (int i : v)
 		cout << i << " ";
 }
+
+set<pair<int, int>> ans;
+void addValidEdges()
+{
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = i + 1; j <= n; j++)
+		{
+			if (!find1(i, j) and !find2(i, j))
+			{
+				//cerr << i << " " << j << " " << root1(i) << " " << root1(j) << " " << root2(i) << " " << root2(j) << endl;
+				weightedUnion1(i, j);
+				weightedUnion2(i, j);
+				ans.insert({i, j});
+			}
+		}
+	}
+}
 void solve()
 {
-	cin >> n >> m;
+	cin >> n;
 
-	init();
+	init1();
+	init2();
 
-	while (m--)
+	int m1, m2; cin >> m1 >> m2;
+	while (m1--)
 	{
 		int u, v;
 		cin >> u >> v;
-		weightedUnion(u, v);
-		display();
-		cout << endl;
-		// for (int i = 1; i <= n; i++)
-		// 	cerr << siz[i] << " ";
-		// cerr << endl;
+		weightedUnion1(u, v);
 	}
 
+	while (m2--)
+	{
+		int u, v;
+		cin >> u >> v;
+		weightedUnion2(u, v);
+	}
+
+	addValidEdges();
+
+	cout << sz(ans) << endl;
+	for (auto i : ans)
+	{
+		cout << i.ff << " " << i.ss << endl;
+	}
 }
 
 int32_t main()
