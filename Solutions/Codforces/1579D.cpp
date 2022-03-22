@@ -74,72 +74,49 @@ const int maxN = 1e7;
 void solve()
 {
 	int n; cin >> n;
+	int ele;
 
-	vpi v(n + 1);
+	priority_queue<pair<int, int>> pq;
 	for (int i = 1; i <= n; i++)
 	{
-		cin >> v[i].ff;
-		v[i].ss = i;
+		cin >> ele;
+		if (ele)
+		{
+			pq.push({ele, i});
+		}
 	}
 
-	sortv(v);
-	debug(v);
-
-	int l = n - 1; int r = n;
-	map<pi, int> ans;
-	int tot = 0;
-	while (l >= 1 and r >= 1)
+	vpi ans;
+	while (sz(pq) > 1)
 	{
-		if (r == l) //1 3 5 7 ->1 3 0 2 -> l=r=1
-		{
-			l--;
-			continue; // if l>=1 only then proceed. else quit.
-		}
-		if (!v[r].ff)
-		{
-			r--;
-			continue;
-		}
-		if (!v[l].ff)
-		{
-			l--;
-			continue;
-		}
+		int ele1 = pq.top().ff;
+		int idx1 = pq.top().ss;
+		pq.pop();
 
-		int available = v[l].ff;
-		int need = v[r].ff;
+		int ele2 = pq.top().ff;
+		int idx2 = pq.top().ss;
+		pq.pop();
 
-		if (available > need)
-			swap(available, need);
+		ans.push_back({idx1, idx2});
 
-		ans[ {v[r].ss, v[l].ss}] += available;
-		tot += available;
-
-		v[l].ff -= available;
-		if (!v[l].ff)
+		ele1--;
+		if (ele1)
 		{
-			l--;
+			pq.push({ele1, idx1});
 		}
 
-		v[r].ff -= available;
-		if (!v[r].ff)
+		ele2--;
+		if (ele2)
 		{
-			r--;
+			pq.push({ele2, idx2});
 		}
-
 	}
 
-	cout << tot << endl;
-
+	cout << sz(ans) << endl;
 	for (auto i : ans)
 	{
-		pi p = i.ff;
-		int c = i.ss;
-		while (c--)
-			cout << p.ff << " " << p.ss << endl;
+		cout << i.ff << " " << i.ss << endl;
 	}
-
-	//cout << endl;
 
 }
 void setUpLocal()
