@@ -69,31 +69,69 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
+const int maxN = 1e6 + 7;
+
+int prime[maxN + 1];
+
+void sieve()
+{
+	for (int i = 1; i <= maxN; i++)
+		prime[i] = 1;
+
+	prime[1] = 0; //problem statement
+
+	for (int i = 2; i * i <= maxN; i++)
+	{
+		if (prime[i])
+		{
+			for (int j = i * i; j <= maxN; j += i)
+			{
+				prime[j] = 0;
+			}
+		}
+	}
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, e;
+	cin >> n >> e;
 
-	vi a(n);
-	int mx = -1, sum = 0;
-	for (int i = 0; i < n; i++)
+	vi v(n + 1);
+	vi primePos;
+	for (int i = 1; i <= n; i++)
 	{
-		cin >> a[i];
-		mx = max(a[i], mx);
-		sum += a[i];
+		cin >> v[i];
+		if (prime[v[i]])
+		{
+			primePos.pb(i);
+		}
 	}
 
-
-	int minReqdInEachBlock = ceil((sum * 1.0 ) / (n - 1));
-	int totalSumAfterBlockAddition = minReqdInEachBlock * (n - 1);
-
-	if (mx > minReqdInEachBlock) {
-		minReqdInEachBlock = mx;
-		totalSumAfterBlockAddition = minReqdInEachBlock * (n - 1);
+	int ans = 0;
+	for (auto i : primePos)
+	{
+		int l = 0, r = 0;
+		for (int j = i - e; j > 0; j -= e)
+		{
+			if (v[j] == 1)
+				l++;
+			else
+				break;
+		}
+		for (int j = i + e; j <= n; j += e)
+		{
+			if (v[j] == 1)
+				r++;
+			else
+				break;
+		}
+		ans += (l + r + l * r);
+		debug(i, l, r, ans);
 	}
 
-	cout << totalSumAfterBlockAddition - sum << endl;
+	cout << ans << endl;
+
 }
 void setUpLocal()
 {
@@ -106,6 +144,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
+	sieve();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
