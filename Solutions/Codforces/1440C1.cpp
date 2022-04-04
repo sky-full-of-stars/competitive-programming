@@ -58,7 +58,6 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
@@ -72,36 +71,108 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 const int maxN = 1e2 + 7;
 int a[maxN][maxN];
 
-void print(int i, int j)
+void opArr(vi v, int n)
 {
-	vi rows;
-	vi cols;
+	for (int i = 0; i < (n / 2); i++)
+	{
+		cout << v[i] << " " << v[i + 3] << " ";
+	}
+	cout << endl;
+}
 
+void process(int i, int j)
+{
+	vi f = {i, i, i + 1, j, j + 1, j};
+	vi s = {i, i, i + 1, j, j + 1, j + 1};
+	vi t = {i, i + 1, i + 1, j, j, j + 1};
+	opArr(f, 6);
+	opArr(s, 6);
+	opArr(t, 6);
+}
 
+void processLastRow(int i, int j)
+{
+	vi f = {i, i - 1, i - 1, j, j, j + 1};
+	vi s = {i, i - 1, i, j, j, j + 1};
+	vi t = {i, i - 1, i, j, j + 1, j + 1};
+	opArr(f, 6);
+	opArr(s, 6);
+	opArr(t, 6);
+}
+
+void processLastCol(int i, int j)
+{
+	pi a, b, c, d;
+	a = {i, j};
+	b = {i, j - 1};
+	c = {i + 1, j - 1};
+	d = {i + 1, j};
+	vi f = {a.ff, b.ff, c.ff, a.ss, b.ss, c.ss};
+	vi s = {a.ff, b.ff, d.ff, a.ss, b.ss, d.ss};
+	vi t = {a.ff, c.ff, d.ff, a.ss, c.ss, d.ss};
+	opArr(f, 6);
+	opArr(s, 6);
+	opArr(t, 6);
+}
+
+void processLastEle(int i, int j)
+{
+	pi a, b, c, d;
+	a = {i, j};
+	b = {i, j - 1};
+	c = {i - 1, j };
+	d = {i - 1, j - 1};
+	vi f = {a.ff, b.ff, c.ff, a.ss, b.ss, c.ss};
+	vi s = {a.ff, b.ff, d.ff, a.ss, b.ss, d.ss};
+	vi t = {a.ff, c.ff, d.ff, a.ss, c.ss, d.ss};
+	opArr(f, 6);
+	opArr(s, 6);
+	opArr(t, 6);
 }
 void solve()
 {
 	int n, m; cin >> n >> m;
-
+	int ans = 0;
 	for (int i = 1; i <= n; i++)
 	{
 		for (int j = 1; j <= m; j++)
 		{
 			char c; cin >> c;
+			if (c == '1')
+				ans++;
 			a[i][j] = c - '0';
 		}
 	}
 
-	vector<vi> ans;
+	cout << ans * 3 << endl;
 
 	for (int i = 1; i < n; i++)
 	{
 		for (int j = 1; j < m ; j++)
 		{
-			print(i, j);
+			if (a[i][j])
+				process(i, j);
 		}
 	}
 
+	//last row
+	for (int j = 1; j < m; j++)
+	{
+		if (a[n][j])
+			processLastRow(n, j);
+	}
+
+	//last col
+	for (int j = 1; j < n ; j++)
+	{
+		if (a[j][m])
+			processLastCol(j, m);
+	}
+
+	if (a[n][m])
+	{
+		processLastEle(n, m);
+	}
 }
 void setUpLocal()
 {
