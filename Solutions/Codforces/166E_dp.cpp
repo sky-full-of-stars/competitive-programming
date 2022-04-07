@@ -71,34 +71,32 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-long long binpow(long long a, long long b, long long m) {
-	a %= m;
-	long long res = 1;
-	while (b > 0) {
-		if (b & 1)
-			res = res * a % m;
-		a = a * a % m;
-		b >>= 1;
+int numOfWays(char cur, int steps)
+{
+	if (cur == 'U')
+	{
+		if (!steps)
+			return 1;
+		else
+			return ((3 * numOfWays('L', steps - 1)) % mod);
 	}
-	return res;
+	else
+	{
+		if (!steps)
+			return 0;
+		else
+			return ((2 * numOfWays('L', steps - 1)) % mod + (numOfWays('U', steps - 1)) % mod) % mod;
+	}
 }
-
-//https://codeforces.com/blog/entry/4173?#comment-212195
+//https://www.youtube.com/watch?v=qQwQbD8ju2s
 void solve()
 {
-	int n; cin >> n;
-	vi v(n + 1);
-	v[0] = 0;
-	v[1] = 0;
-	int powOf3 = 3; //binpow(3, i - 1, mod)
-	for (int i = 2; i <= n; i++)
-	{
-		v[i] = (powOf3 - v[i - 1] + mod) % mod;
-		powOf3 = (powOf3 * 3) % mod;
-	}
-	cout << v[n] << endl;
-}
+	int steps; cin >> steps;
+	char cur = 'U';
 
+	cout << numOfWays(cur, steps);
+
+}
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
