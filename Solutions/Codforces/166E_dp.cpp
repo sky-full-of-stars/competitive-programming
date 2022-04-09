@@ -69,30 +69,47 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
+const int maxN = 1e7 + 2;
 
-int numOfWays(char cur, int steps)
+int memo[2][maxN];
+void init()
 {
-	if (cur == 'U')
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < maxN; j++)
+			memo[i][j] = -1;
+	}
+}
+
+//u->1
+//l->0
+int numOfWays(int cur, int steps)
+{
+	if (memo[cur][steps] != -1)
+		return memo[cur][steps];
+
+	if (cur == 1)
 	{
 		if (!steps)
-			return 1;
+			return memo[cur][steps] = 1;
 		else
-			return ((3 * numOfWays('L', steps - 1)) % mod);
+			return memo[cur][steps] = ((3 * numOfWays(0, steps - 1)) % mod);
 	}
 	else
 	{
 		if (!steps)
-			return 0;
+			return memo[cur][steps] = 0;
 		else
-			return ((2 * numOfWays('L', steps - 1)) % mod + (numOfWays('U', steps - 1)) % mod) % mod;
+			return memo[cur][steps] = ((2 * numOfWays(0, steps - 1)) % mod + (numOfWays(1, steps - 1)) % mod) % mod;
 	}
 }
+
 //https://www.youtube.com/watch?v=qQwQbD8ju2s
 void solve()
 {
 	int steps; cin >> steps;
-	char cur = 'U';
+	char cur = 1;
+	init();
 
 	cout << numOfWays(cur, steps);
 
