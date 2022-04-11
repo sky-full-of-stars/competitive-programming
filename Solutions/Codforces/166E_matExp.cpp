@@ -28,7 +28,8 @@ typedef unordered_map<int, int> umi;
 //---------------------------------------------------------------------------------------------------------//
 #define EPS 1e-9
 #define INF LLONG_MAX
-const int mod = 1000 * 1000 * 1000 + 7; //1e9+7
+const int mod = 1e9 + 7;
+const long long mod2 = static_cast<long long>(mod) * mod;
 const double PI = 3.14159265358979323846264;
 const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
 //const int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1}, dy[8] = {0, 1, 0, -1, -1, 1, -1, 1};
@@ -68,66 +69,93 @@ int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
-
-const int maxN = 1e7 + 2;
-
-//int memo[2][maxN];
-// void init()
-// {
-// 	for (int i = 0; i < 2; i++)
-// 	{
-// 		for (int j = 0; j < maxN; j++)
-// 			memo[i][j] = -1;
-// 	}
-// }
-
-// no clue why memoization fails for 1e7, anyway submitting for reference
-
-// int numOfWaysMemo(int cur, int steps)
-// {
-// 	if (memo[cur][steps] != -1)
-// 		return memo[cur][steps];
-
-// 	if (cur == 1)
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 1;
-// 		else
-// 			return memo[cur][steps] = ((3 * numOfWaysMemo(0, steps - 1)) % mod);
-// 	}
-// 	else
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 0;
-// 		else
-// 			return memo[cur][steps] = ((2 * numOfWaysMemo(0, steps - 1)) % mod + (numOfWaysMemo(1, steps - 1)) % mod) % mod;
-// 	}
-// }
-
-//https://www.youtube.com/watch?v=qQwQbD8ju2s
-void solve()
+struct Matrix
 {
-	int steps; cin >> steps;
-	//u->1
-	//l->0
-	//int cur = 1;
-	//init();
-	//cout << numOfWaysMemo(cur, steps);
+	vector< vector<int> > mat;
+	int n_rows, n_cols;
 
-	int dp[2][steps + 1];
-	dp[0][0] = 0;
-	dp[1][0] = 1;
+	Matrix() {}
 
-	for (int i = 1; i <= steps; i++)
+	Matrix(vector< vector<int> > values): mat(values), n_rows(values.size()),
+		n_cols(values[0].size()) {}
+
+	static Matrix identity_matrix(int n)
 	{
-		dp[1][i] = (3 * dp[0][i - 1]) % mod;
-
-		int goSideChoice = (2 * dp[0][i - 1]) % mod;
-		int goUpChoice = dp[1][i - 1];
-		dp[0][i] = (goUpChoice + goSideChoice) % mod;
+		vector< vector<int> > values(n, vector<int>(n, 0));
+		for (int i = 0; i < n; i++)
+			values[i][i] = 1;
+		return values;
 	}
 
-	cout << dp[1][steps] << endl;
+	void showMatrix()
+	{
+		for (int i = 0; i < n_rows; i++)
+		{
+			for (int j = 0; j < n_cols; j++)
+			{
+				cerr << mat[i][j] << " ";
+			}
+			cerr << endl;
+		}
+	}
+
+	Matrix operator*(const Matrix &other) const
+	{
+		int n = n_rows, m = other.n_cols;
+		vector< vector<int> > result(n_rows, vector<int>(n_cols, 0));
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++) {
+				long long tmp = 0;
+				for (int k = 0; k < n_cols; k++) {
+					tmp += mat[i][k] * 1ll * other.mat[k][j];
+					while (tmp >= mod2)
+						tmp -= mod2;
+				}
+				result[i][j] = tmp % mod;
+			}
+
+		return move(Matrix(move(result)));
+	}
+
+	inline bool is_square() const
+	{
+		return n_rows == n_cols;
+	}
+};
+
+Matrix pw(Matrix a, int p) {
+	Matrix result = Matrix::identity_matrix(a.n_cols);
+	while (p > 0) {
+		if (p & 1)
+			result = a * result;
+		a = a * a;
+		p >>= 1;
+	}
+	return result;
+}
+
+const int maxN = 1e7;
+
+void solve()
+{
+	int n; cin >> n;
+
+	vector<vector<int>> v( 2 , vector<int> (2));
+	v[0][0] = 2;
+	v[0][1] = 1;
+	v[1][0] = 3;
+	v[1][1] = 0;
+	Matrix m(v);
+
+	Matrix sec({{0}, {1}});
+
+	m.showMatrix();
+	sec.showMatrix();
+
+	Matrix res = (pw(m, n)) * sec;
+	res.showMatrix();
+	cout << res.mat[1][0] << endl;
+
 }
 void setUpLocal()
 {

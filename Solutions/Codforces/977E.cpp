@@ -69,65 +69,69 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7 + 2;
+const int maxN = 2 * (1e5) + 7;
 
-//int memo[2][maxN];
-// void init()
-// {
-// 	for (int i = 0; i < 2; i++)
-// 	{
-// 		for (int j = 0; j < maxN; j++)
-// 			memo[i][j] = -1;
-// 	}
-// }
+vi gp[maxN];
+int vis[maxN];
 
-// no clue why memoization fails for 1e7, anyway submitting for reference
-
-// int numOfWaysMemo(int cur, int steps)
-// {
-// 	if (memo[cur][steps] != -1)
-// 		return memo[cur][steps];
-
-// 	if (cur == 1)
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 1;
-// 		else
-// 			return memo[cur][steps] = ((3 * numOfWaysMemo(0, steps - 1)) % mod);
-// 	}
-// 	else
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 0;
-// 		else
-// 			return memo[cur][steps] = ((2 * numOfWaysMemo(0, steps - 1)) % mod + (numOfWaysMemo(1, steps - 1)) % mod) % mod;
-// 	}
-// }
-
-//https://www.youtube.com/watch?v=qQwQbD8ju2s
-void solve()
+bool circle = false;
+bool deg3present = false;
+bool dfs(int node, int count)
 {
-	int steps; cin >> steps;
-	//u->1
-	//l->0
-	//int cur = 1;
-	//init();
-	//cout << numOfWaysMemo(cur, steps);
-
-	int dp[2][steps + 1];
-	dp[0][0] = 0;
-	dp[1][0] = 1;
-
-	for (int i = 1; i <= steps; i++)
+	vis[node] = 1;
+	if (sz(gp[node]) != 2)
 	{
-		dp[1][i] = (3 * dp[0][i - 1]) % mod;
-
-		int goSideChoice = (2 * dp[0][i - 1]) % mod;
-		int goUpChoice = dp[1][i - 1];
-		dp[0][i] = (goUpChoice + goSideChoice) % mod;
+		deg3present = true;
 	}
 
-	cout << dp[1][steps] << endl;
+	for (int child : gp[node])
+	{
+		//debug(node, child);
+		if (child != node)
+		{
+			if (!vis[child])
+			{
+				if (dfs(child, count + 1))
+					return true;
+			}
+			else
+			{
+				if (sz(gp[child]) == 2)
+				{
+					circle = true;
+					continue;
+				}
+			}
+		}
+	}
+	return (circle and !deg3present and count > 2);
+
+}
+void solve()
+{
+	int n, m;
+	cin >> n >> m;
+	for (int i = 0; i < m; i++)
+	{
+		int u, v;
+		cin >> u >> v;
+		gp[u].pb(v);
+		gp[v].pb(u);
+	}
+	int ans = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		if (!vis[i])
+		{
+			//debug(i, gp[i]);
+			circle = false;
+			deg3present = false;
+			if (dfs(i, 1))
+				ans++;
+		}
+	}
+
+	cout << ans << endl;
 }
 void setUpLocal()
 {

@@ -69,65 +69,109 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7 + 2;
+const int maxN = 1e7;
+int n, k;
 
-//int memo[2][maxN];
-// void init()
-// {
-// 	for (int i = 0; i < 2; i++)
-// 	{
-// 		for (int j = 0; j < maxN; j++)
-// 			memo[i][j] = -1;
-// 	}
-// }
+bool check(int z, int o, int q)
+{
+	if (z > k / 2 or o > k / 2)
+	{
+		return false;
+	}
+	return true;
+}
 
-// no clue why memoization fails for 1e7, anyway submitting for reference
-
-// int numOfWaysMemo(int cur, int steps)
-// {
-// 	if (memo[cur][steps] != -1)
-// 		return memo[cur][steps];
-
-// 	if (cur == 1)
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 1;
-// 		else
-// 			return memo[cur][steps] = ((3 * numOfWaysMemo(0, steps - 1)) % mod);
-// 	}
-// 	else
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 0;
-// 		else
-// 			return memo[cur][steps] = ((2 * numOfWaysMemo(0, steps - 1)) % mod + (numOfWaysMemo(1, steps - 1)) % mod) % mod;
-// 	}
-// }
-
-//https://www.youtube.com/watch?v=qQwQbD8ju2s
 void solve()
 {
-	int steps; cin >> steps;
-	//u->1
-	//l->0
-	//int cur = 1;
-	//init();
-	//cout << numOfWaysMemo(cur, steps);
+	cin >> n >> k;
+	string s; cin >> s;
 
-	int dp[2][steps + 1];
-	dp[0][0] = 0;
-	dp[1][0] = 1;
-
-	for (int i = 1; i <= steps; i++)
+	int z = 0, o = 0, q = 0;
+	for (int j = 0; j < k; j++)
 	{
-		dp[1][i] = (3 * dp[0][i - 1]) % mod;
-
-		int goSideChoice = (2 * dp[0][i - 1]) % mod;
-		int goUpChoice = dp[1][i - 1];
-		dp[0][i] = (goUpChoice + goSideChoice) % mod;
+		if (s[j] == '0')
+			z++;
+		else if (s[j] == '1')
+			o++;
+		else
+			q++;
 	}
 
-	cout << dp[1][steps] << endl;
+	bool ok  = check(z, o, q);
+	if (!ok)
+	{
+		cout << "NO" << endl;
+		return;
+	}
+
+	for (int i = 1; i < n - k + 1; i++)
+	{
+		char del = s[i - 1];
+		char add = s[i + k - 1];
+		//debug(del, add);
+
+		if (del == add)
+		{
+			continue;
+		}
+		if ((del == '1' and add == '0') or (del == '0' and add == '1'))
+		{
+			cout << "NO" << endl;
+			return;
+		}
+		else // has one '?' and 0/1
+		{
+			if (del == '?')
+			{
+				if (add == '1')
+					o++, q--;
+				else
+					z++, q--;
+
+				bool ok  = check(z, o, q); //really possible to substitute?
+				if (!ok)
+				{
+					cout << "NO" << endl;
+					return;
+				}
+			}
+			else if (add == '?')
+			{
+				if (del == '1')
+				{
+					if (s[i + k - 1] == '?') // necessary or safeplay?
+					{
+						s[i + k - 1] = '1';
+					}
+					else
+					{
+						cout << "NO" << endl;
+						return;
+					}
+				}
+				else
+				{
+					if (s[i + k - 1] == '?')
+					{
+						s[i + k - 1] = '0';
+					}
+					else
+					{
+						cout << "NO" << endl;
+						return;
+					}
+				}
+			}
+		}
+
+	}
+
+	cout << "YES" << endl;
+	return;
+
+
+
+
 }
 void setUpLocal()
 {
@@ -140,7 +184,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

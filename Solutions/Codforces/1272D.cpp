@@ -69,65 +69,64 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7 + 2;
+const int maxN = 1e7;
 
-//int memo[2][maxN];
-// void init()
-// {
-// 	for (int i = 0; i < 2; i++)
-// 	{
-// 		for (int j = 0; j < maxN; j++)
-// 			memo[i][j] = -1;
-// 	}
-// }
-
-// no clue why memoization fails for 1e7, anyway submitting for reference
-
-// int numOfWaysMemo(int cur, int steps)
-// {
-// 	if (memo[cur][steps] != -1)
-// 		return memo[cur][steps];
-
-// 	if (cur == 1)
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 1;
-// 		else
-// 			return memo[cur][steps] = ((3 * numOfWaysMemo(0, steps - 1)) % mod);
-// 	}
-// 	else
-// 	{
-// 		if (!steps)
-// 			return memo[cur][steps] = 0;
-// 		else
-// 			return memo[cur][steps] = ((2 * numOfWaysMemo(0, steps - 1)) % mod + (numOfWaysMemo(1, steps - 1)) % mod) % mod;
-// 	}
-// }
-
-//https://www.youtube.com/watch?v=qQwQbD8ju2s
 void solve()
 {
-	int steps; cin >> steps;
-	//u->1
-	//l->0
-	//int cur = 1;
-	//init();
-	//cout << numOfWaysMemo(cur, steps);
 
-	int dp[2][steps + 1];
-	dp[0][0] = 0;
-	dp[1][0] = 1;
+	int n; cin >> n;
+	vi v(n + 1), dp(n + 1);
 
-	for (int i = 1; i <= steps; i++)
+	dp[0] = 1;
+	for (int i = 1; i <= n; i++)
 	{
-		dp[1][i] = (3 * dp[0][i - 1]) % mod;
-
-		int goSideChoice = (2 * dp[0][i - 1]) % mod;
-		int goUpChoice = dp[1][i - 1];
-		dp[0][i] = (goUpChoice + goSideChoice) % mod;
+		cin >> v[i];
+		dp[i] = 1;
 	}
 
-	cout << dp[1][steps] << endl;
+	if (v[2] > v[1])
+	{
+		dp[2] = 2;
+	}
+
+	bool excluded = false;
+	for (int i = 3; i <= n; i++)
+	{
+		int exclude = 1 , include = 1;
+
+		//exclude i-1
+		if (v[i] > v[i - 2] and !excluded)
+		{
+			exclude = dp[i - 2] + 1;
+		}
+
+		//include i-1
+		if (v[i] > v[i - 1])
+			include = dp[i - 1] + 1;
+
+		if (exclude > include)
+		{
+			excluded = true;
+		}
+
+		dp[i] = max(exclude, include);
+
+		if (dp[i] == 1)
+		{
+			excluded = false;
+		}
+
+		cerr << dp[i] << " ";
+	}
+
+	int ans = 1;
+	for (int i : dp)
+	{
+		if (i > ans)
+			ans = i;
+	}
+	cout << ans << endl;
+
 }
 void setUpLocal()
 {
