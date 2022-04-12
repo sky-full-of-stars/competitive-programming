@@ -75,49 +75,69 @@ void solve()
 {
 
 	int n; cin >> n;
-	vi v(n + 1), dp(n + 1);
+	vi v(n + 1), dpi(n + 1);
 
-	dp[0] = 1;
+	dpi[0] = 0;
 	for (int i = 1; i <= n; i++)
 	{
 		cin >> v[i];
-		dp[i] = 1;
+		dpi[i] = 1;
 	}
 
 	if (v[2] > v[1])
 	{
-		dp[2] = 2;
+		dpi[2] = 2;
 	}
 
-	bool excluded = false;
 	for (int i = 3; i <= n; i++)
 	{
-		int exclude = 1 , include = 1;
+		//int exclude = 1;
+		int include = 1;
 
 		//exclude i-1
-		if (v[i] > v[i - 2] and !excluded)
-		{
-			exclude = dp[i - 2] + 1;
-		}
+		// if (v[i] > v[i - 2])
+		// {
+		// 	exclude = dp[i - 2] + 1;
+		// }
 
 		//include i-1
 		if (v[i] > v[i - 1])
-			include = dp[i - 1] + 1;
+			include = dpi[i - 1] + 1;
 
-		if (exclude > include)
-		{
-			excluded = true;
-		}
-
-		dp[i] = max(exclude, include);
-
-		if (dp[i] == 1)
-		{
-			excluded = false;
-		}
-
-		cerr << dp[i] << " ";
+		dpi[i] = include;
 	}
+
+	vi dpe(n + 1);
+	dpe[0] = 0;
+	dpe[1] = 1;
+	for (int i = 2; i <= n; i++)
+	{
+		int exclude = 1;
+		//exclude i-1 th ele.
+		if (v[i] > v[i - 2])
+		{
+			exclude = dpi[i - 2] + 1; // if exclusing i-1, then everything till then MUST be included
+		}
+
+		dpe[i] = exclude;
+	}
+
+	vi dp(n + 1);
+	dp[0] = 1;
+	dp[1] = 1;
+	for (int i = 2; i <= n; i++)
+	{
+		//exclude i-1 or include everything
+		int includeAll = dpi[i];
+
+		int excludeOne = dpe[i] + dp[i - 2];
+		if (v[i] > v[i - 2])
+			excludeOne++;
+
+		dp[i] = max(includeAll, excludeOne);
+	}
+
+	debug(dpi, dpe, dp);
 
 	int ans = 1;
 	for (int i : dp)
