@@ -79,6 +79,13 @@ void solve()
 	{
 		cin >> v[i];
 	}
+
+	for (int i = 1; i <= n; i++)
+	{
+		cout << *(v.begin() + i) << " ";
+	}
+
+	return;
 	int last = -1;
 	int cnt = 0;
 	vi dp(n + 1);
