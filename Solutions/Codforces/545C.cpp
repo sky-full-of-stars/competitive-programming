@@ -30,10 +30,9 @@ typedef unordered_map<int, int> umi;
 #define INF LLONG_MAX
 const int mod = 1000 * 1000 * 1000 + 7; //1e9+7
 const double PI = 3.14159265358979323846264;
-//const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
+const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
 //const int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1}, dy[8] = {0, 1, 0, -1, -1, 1, -1, 1};
 
-const pi steps[] = {{1, 2}, {2, 1}, { -1, 2}, { -1, -2}, { -2, 1}, { -2, -1}, {1, -2}, {2, -1}};
 //---------------------------------------------------------------------------------------------------------//
 template<typename... T>
 void read(T&... args) {
@@ -69,43 +68,50 @@ int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
-#define ff first
-#define ss second
-typedef vector<int> vi;
-typedef set<int> si;
-typedef pair<int, int> pi;
+
 const int maxN = 1e7;
-
-const pi steps[] = {{1, 2}, {2, 1}, { -1, 2}, { -1, -2}, { -2, 1}, { -2, -1}, {1, -2}, {2, -1}};
-
-int isValid(int x, int y, int n)
-{
-	return (x >= 0 and x<n and y >= 0 and y < n);
-}
 
 void solve()
 {
 	int n; cin >> n;
-	int x, y; cin >> x >> y;
-	int k; cin >> k;
-
-
-	queue<pi> q;
-	q.push({x, y});
-
-	while (!q.empty())
+	vpi v(n);
+	for (auto &i : v)
 	{
-		pi curpos = q.top();
-		q.pop();
-		int x = curpos.x;
-		int y = curpos.y;
-		for (pi step : steps)
+		cin >> i.ff >> i.ss;
+	}
+	if (n <= 2)
+	{
+		cout << n << endl;
+		return;
+	}
+
+	int ans = 2;
+	int leftMax = v[0].ff;
+
+	for (int i = 1; i < n - 1 ; i++)
+	{
+		int loc = v[i].ff;
+		int hei = v[i].ss;
+
+		//select left fall so that next tree is not affected
+		if (loc - hei > leftMax)
 		{
-			pi newPos = {x + step.ff, y + step.ss};
-			if (isValid(newPos))
-				q.push(newPos);
+			ans++;
+			leftMax = loc;
+		}
+		// if right fall is possible, do right fall
+		else if ( loc + hei < v[i + 1].ff)
+		{
+			ans++;
+			leftMax = loc + hei;
+		}
+		// default
+		else
+		{
+			leftMax = loc;
 		}
 	}
+	cout << ans << endl;
 
 }
 void setUpLocal()
@@ -119,7 +125,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
