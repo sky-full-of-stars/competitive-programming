@@ -71,114 +71,138 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
+bool pal(string s)
+{
+	int l = 0;
+	int r = sz(s) - 1;
+	while (l <= r)
+	{
+		if (s[l] == s[r])
+		{
+			l++; r--;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
 void solve()
 {
-	int n; cin >> n;
-	vi v(n); ipArr(v, n);
+	string s; cin >> s;
+	int n = sz(s);
 
-	int m = -1, c = -1;
-	bool findM = false;
-
-	for (int i = 1; i < n; i++)
+	if (n == 1)
 	{
-		if (v[i] >= v[i - 1])
+		cout << s << endl;
+		return;
+	}
+
+	int l = 0; int r = n - 1;
+	string middle = "";
+
+	while (l <= r)
+	{
+		if (s[l] == s[r])
 		{
-			int diff = v[i] - v[i - 1];
-			if (c == -1)
+			if (l == r)
 			{
-				c = diff;
+				middle = s[l];
+			}
+			l++;
+			r--;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (middle != "")
+	{
+		l--;
+	}
+
+	string common = s.substr(0, l);
+	//debug(common, middle);
+
+	if (l > r)
+	{
+		string reverse = string(common.rbegin(), common.rend());
+		cout << common + middle + reverse << endl;
+		return;
+	}
+
+	//debug(l, r);
+	string rem = s.substr(l, n - 2 * l);
+	//debug(rem);
+
+	int lp = l;
+	int rp = r;
+
+	string palPre;
+	bool found = false;
+	while (lp <= rp)
+	{
+		char cur = s[lp];
+		while (rp >= lp)
+		{
+			if (s[rp] == cur)
+			{
+				int len = rp - lp + 1;
+
+				string pre = s.substr(lp, len);
+				if (pal(pre))
+				{
+					palPre = pre;
+					found = true;
+					break;
+				}
+				else
+				{
+					rp--;
+				}
 			}
 			else
 			{
-				if (c != diff)
-				{
-					cout << -1 << endl;
-					return;
-				}
+				rp--;
+			}
+		}
+		break;
+	}
+
+	string palSuf;
+	found = false;
+	int ls = l, rs = r;
+
+	char cur = s[rs];
+	for (int i = ls; i <= rs; )
+	{
+		if (s[i] == cur)
+		{
+			int len = rs - i + 1;
+			string suf = s.substr(i, len);
+			if (pal(suf))
+			{
+				palSuf = suf;
+				found = true;
+				break;
+			}
+			else
+			{
+				i++;
 			}
 		}
 		else
 		{
-			if (m == -1)
-			{
-				if (c == -1)
-				{
-					findM = true;
-				}
-				else
-				{
-					int expected = v[i - 1] + c;
-					m = expected - v[i];
-				}
-			}
-			else
-			{
-				int expected = v[i - 1] + c;
-				if (m != expected - v[i])
-				{
-					cout << -1 << endl;
-					return;
-				}
-			}
+			i++;
 		}
 	}
 
-	if (findM)
-	{
-		for (int i = 1; i < n; i++)
-		{
-			if (v[i] < v[i - 1])
-			{
-				if (m == -1)
-				{
-					int expected = v[i - 1] + c;
-					m = expected - v[i];
-				}
-				else
-				{
-					int expected = v[i - 1] + c;
-					if (m != expected - v[i])
-					{
-						cout << -1 << endl;
-						return;
-					}
-				}
-			}
-		}
-	}
-	if (m == -1 or c == -1)
-	{
-		cout << 0 << endl;
-		return;
-	}
-
-	if (c >= m)
-	{
-		cout << -1 << endl;
-		return;
-	}
-
-	//debug(m, c);
-
-	if (v[0] > m)
-	{
-		cout << -1 << endl;
-		return;
-	}
-
-	v[0] = v[0] % m;
-	//debug(v);
-	for (int i = 1; i < n; i++)
-	{
-		if (v[i] != (v[i - 1] + c) % m)
-		{
-			cout << -1 << endl;
-			return;
-		}
-	}
-
-	cout << m << " " << c << endl;
-	return;
+	string between = (sz(palPre) >= sz(palSuf)) ? palPre : palSuf;
+	string reverse = string(common.rbegin(), common.rend());
+	cout << (common + between + reverse) << endl;
 
 }
 void setUpLocal()
