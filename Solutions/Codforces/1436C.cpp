@@ -71,91 +71,24 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-struct Node {
-	int data;
-	Node* left;
-	Node* right;
-};
-
-vector<int> zigZag(Node* root)
+int modFact(int n, int p)
 {
-	vector<int> ans;
+	if (n >= p)
+		return 0;
 
-	if (!root)
-	{
-		cout << "root is null" << endl;
-		return ans;
-	}
+	int result = 1;
+	for (int i = 1; i <= n; i++)
+		result = (result * i) % p;
 
-	int level = 1;
-
-	queue<Node* > q;
-	q.push(root);
-	q.push(NULL);
-
-	vector<int> thisLevel;
-	while (!q.empty())
-	{
-		Node* front = q.front();
-		if (front != NULL)
-		{
-			thisLevel.push_back(front->data);
-		}
-
-		q.pop();
-
-		if (front == NULL)
-		{
-			if (level & 1)
-			{
-				for (int i : thisLevel)
-				{
-					ans.pb(i);
-				}
-			}
-			else
-			{
-				for (auto i = thisLevel.rbegin(); i != thisLevel.rend(); i++)
-				{
-					ans.pb(*i);
-				}
-			}
-			level++;
-		}
-
-		if (front->left != NULL)
-		{
-			q.push(front->left);
-		}
-
-		if (front->right != NULL)
-		{
-			q.push(front->right);
-		}
-
-	}
-	return ans;
+	return result;
 }
+
 
 void solve()
 {
 
-	Node leftN;
-	leftN.data = 2;
 
-	Node rightN;
-	rightN.data = 3;
 
-	Node root;
-	root.data = 1;
-	root.left = *leftN;
-	root.right = *rightN;
-
-	vector<int> ans = zigZag(*root);
-	for (int &i : ans)
-	{
-		cout << i << " ";
-	}
 }
 void setUpLocal()
 {
