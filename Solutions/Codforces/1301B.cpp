@@ -71,64 +71,45 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int fact(int n)
-{
-	int ans = 1;
-
-	for (int i = 1; i <= n ; i++)
-	{
-		ans = (ans * i) % mod;
-	}
-
-	return ans;
-}
-
-
 void solve()
 {
-	int n, x, pos; cin >> n >> x >> pos;
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
 
-	int l = 0, r = n;
-
-	int greater = n - x;
-	int lesser = x - 1;
-	int available = n - 1;
-
-	int ans = 1;
-	while (l < r)
+	int mn = INF, mx = -INF;
+	for (int i = 0; i < n; i++)
 	{
-		int mid = (l + r) / 2;
-
-		if (mid == pos)
+		if (v[i] == -1)
 		{
-			l = mid + 1;
+			if (i - 1 >= 0 and v[i - 1] != -1)
+			{
+				mn = min(mn, v[i - 1]);
+				mx = max(mx, v[i - 1]);
+			}
+			if (i + 1 < n and v[i + 1] != -1)
+			{
+				mn = min(mn, v[i + 1]);
+				mx = max(mx, v[i + 1]);
+			}
 		}
-		else if (mid < pos)
-		{
-			l = mid + 1;
-			ans = (ans * lesser) % mod;
-			lesser--;
-			available--;
-		}
-		else if ( mid > pos)
-		{
-			r = mid;
-			ans = (ans * greater) % mod;
-			greater--;
-			available--;
-		}
-		//debug(ans);
 	}
 
-	if (l > 0 and l - 1 == pos)
+	int ans = (mn + mx) / 2;
+	int diff = 0;
+
+	for (int i = 0; i < n; i++)
 	{
-		ans = (ans * fact(available)) % mod;
-		cout << ans << endl;
+		if (v[i] == -1)
+		{
+			v[i] = ans;
+		}
+		if (i)
+		{
+			diff = max(diff, abs(v[i] - v[i - 1]));
+		}
 	}
-	else
-	{
-		cout << 0 << endl;
-	}
+
+	cout << diff << " " << ans << endl;
 
 }
 void setUpLocal()
@@ -142,7 +123,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

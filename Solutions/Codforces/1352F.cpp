@@ -71,65 +71,73 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int fact(int n)
-{
-	int ans = 1;
-
-	for (int i = 1; i <= n ; i++)
-	{
-		ans = (ans * i) % mod;
-	}
-
-	return ans;
-}
-
-
 void solve()
 {
-	int n, x, pos; cin >> n >> x >> pos;
+	int z, o, t;
+	cin >> z >> o >> t;
 
-	int l = 0, r = n;
-
-	int greater = n - x;
-	int lesser = x - 1;
-	int available = n - 1;
-
-	int ans = 1;
-	while (l < r)
+	bool zo = false; // zeros and ones
+	if (t)
 	{
-		int mid = (l + r) / 2;
-
-		if (mid == pos)
-		{
-			l = mid + 1;
-		}
-		else if (mid < pos)
-		{
-			l = mid + 1;
-			ans = (ans * lesser) % mod;
-			lesser--;
-			available--;
-		}
-		else if ( mid > pos)
-		{
-			r = mid;
-			ans = (ans * greater) % mod;
-			greater--;
-			available--;
-		}
-		//debug(ans);
+		zo = true;
 	}
 
-	if (l > 0 and l - 1 == pos)
+	// len = o -> o-1 pairs covered
+	for (int i = 0; i < o; i++)
 	{
-		ans = (ans * fact(available)) % mod;
-		cout << ans << endl;
+		if (zo)
+		{
+			if (i % 2 == 0)
+			{
+				cout << 0;
+			}
+			else
+			{
+				cout << 1;
+			}
+		}
+		else
+		{
+			if (i % 2 == 0)
+			{
+				cout << 1;
+			}
+			else
+			{
+				cout << 0;
+			}
+		}
+	}
+	cout << endl;
+
+	// len = t+1 -> t pairs covered
+	for (int i = 0; i <= t ; i++)
+	{
+		cout << 1;
+	}
+
+	bool flg = false;
+	if (o)
+	{
+		cout << 0;
+		flg = true;
+	}
+
+	if (flg)
+	{
+		for (int i = 0; i < z; i++)
+		{
+			cout << 0;
+		}
 	}
 	else
 	{
-		cout << 0 << endl;
+		for (int i = 0; i < z - 1; i++)
+		{
+			cout << 0;
+		}
 	}
-
+	cout << endl;
 }
 void setUpLocal()
 {
@@ -142,7 +150,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
