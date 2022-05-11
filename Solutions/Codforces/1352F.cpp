@@ -76,68 +76,43 @@ void solve()
 	int z, o, t;
 	cin >> z >> o >> t;
 
-	bool zo = false; // zeros and ones
-	if (t)
+	if (o == 0)
 	{
-		zo = true;
-	}
-
-	// len = o -> o-1 pairs covered
-	for (int i = 0; i < o; i++)
-	{
-		if (zo)
+		if (z)
 		{
-			if (i % 2 == 0)
+			for (int i = 0; i <= z; i++)
 			{
 				cout << 0;
 			}
-			else
+			cout << endl;
+			return;
+		}
+		if (t)
+		{
+			for (int i = 0; i <= t; i++)
 			{
 				cout << 1;
 			}
+			cout << endl;
+			return;
 		}
-		else
-		{
-			if (i % 2 == 0)
-			{
-				cout << 1;
-			}
-			else
-			{
-				cout << 0;
-			}
-		}
-	}
-	cout << endl;
-
-	// len = t+1 -> t pairs covered
-	for (int i = 0; i <= t ; i++)
-	{
-		cout << 1;
 	}
 
-	bool flg = false;
-	if (o)
+
+
+	//01(000)01
+	//0(111)101
+
+	string ans;
+	for (int i = 0; i <= o; i++)
 	{
-		cout << 0;
-		flg = true;
+		ans += ((i & 1) ? "0" : "1");
 	}
 
-	if (flg)
-	{
-		for (int i = 0; i < z; i++)
-		{
-			cout << 0;
-		}
-	}
-	else
-	{
-		for (int i = 0; i < z - 1; i++)
-		{
-			cout << 0;
-		}
-	}
-	cout << endl;
+	ans.insert(1, string(z, '0'));
+	ans.insert(0, string(t, '1'));
+	cout << ans << endl;
+
 }
 void setUpLocal()
 {
