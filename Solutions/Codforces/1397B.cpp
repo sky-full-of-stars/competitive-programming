@@ -27,7 +27,7 @@ typedef unordered_map<int, int> umi;
 
 //---------------------------------------------------------------------------------------------------------//
 #define EPS 1e-9
-#define INF LLONG_MAX
+#define INF 1e15
 const int mod = 1000 * 1000 * 1000 + 7; //1e9+7
 const double PI = 3.14159265358979323846264;
 const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
@@ -78,23 +78,35 @@ void solve()
 	vi v(n);
 	ipArr(v, n);
 
-	int cost = abs(v[0] - 1);
+	sortv(v);
 
-	for (int i = 2; i < n; i++)
+	int ans = INF;
+	int base = 1;
+	bool exit = false;
+	while (true)
 	{
-		int ele = v[i];
-
-		int diff = INF;
-		for (int j = 1; j < maxN; j++)
+		int dif = 0;
+		int ele = 1;
+		for (int i = 0; i < n; i++, ele *= base)
 		{
-			int cur = pow(j, i);
-			diff = min(diff, abs(cur - ele));
+			if (ele >= INF)
+			{
+				exit = true;
+				break;
+			}
+			dif += abs(ele - v[i]);
 		}
-		debug(diff);
-		cost += diff;
-	}
 
-	cout << cost << endl;
+		if (exit)
+		{
+			break;
+		}
+
+		ans = min(ans, dif);
+		base++;
+	}
+	cout << ans << endl;
+	return;
 }
 void setUpLocal()
 {
