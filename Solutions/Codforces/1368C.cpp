@@ -13,7 +13,7 @@ using namespace std;
 #define cont continue;
 #define ff first
 #define ss second
-#define pb emplace_back
+#define pb push_back
 #define mp make_pair
 #define endl '\n'
 
@@ -74,55 +74,33 @@ const int maxN = 1e7;
 void solve()
 {
 	int n; cin >> n;
-	vi v(n), leftLIS(n), rightLIS(n);
-	for (int i = 0; i < n; i++)
+	vector<pair<int, int>> ans;
+
+	ans.pb({0, 0});
+	ans.pb({0, 1});
+	ans.pb({1, 0});
+	ans.pb({1, 1});
+	ans.pb({1, 2});
+	ans.pb({2, 1});
+	ans.pb({2, 2});
+
+	n--;
+
+	int x = 3, y = 3;
+	while (n--)
 	{
-		cin >> v[i];
-		leftLIS[i] = 1;
-		rightLIS[i] = 1;
+		ans.pb({x - 1, y});
+		ans.pb({x , y});
+		ans.pb({x , y - 1});
+		x++; y++;
 	}
 
-
-	int mx = 1;
-	for (int i = 1; i < n; i++)
+	cout << sz(ans) << endl;
+	for (int i = 0; i < sz(ans); i++)
 	{
-		if (v[i] > v[i - 1])
-		{
-			leftLIS[i] = leftLIS[i - 1] + 1;
-			if (leftLIS[i] > mx)
-			{
-				mx = leftLIS[i];
-			}
-		}
+		cout << ans[i].ff << " " << ans[i].ss << endl;
 	}
-	for (int i = n - 2; i >= 0; i--)
-	{
-		if (v[i] < v[i + 1])
-		{
-			rightLIS[i] = rightLIS[i + 1] + 1;
-		}
-	}
-
-	/*
-	v: 1 2 5 3 4
-
-	l: 1 2 1 1 2
-	r: 2 1 1 2 1
-	*/
-
-	//exluding ith element
-	for (int i = 1; i < n - 1; i++)
-	{
-		if (v[i - 1] < v[i + 1])
-		{
-			int len = leftLIS[i - 1] + rightLIS[i + 1];
-			mx = max(mx, len);
-		}
-	}
-
-	cout << mx << endl;
 }
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -130,7 +108,6 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
-
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
