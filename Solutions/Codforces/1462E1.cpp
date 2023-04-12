@@ -100,7 +100,6 @@ void solve()
 		int l = i + 1;
 		int h = upper_bound(v.begin(), v.end(), v[i] + k) - v.begin();
 		int possibleWays = permutation(h - l, m - 1);
-		//cerr << h - l << " " << m - 1 << " " << possibleWays << endl;
 		ans = (ans + possibleWays);
 	}
 
