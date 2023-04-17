@@ -58,7 +58,7 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
@@ -71,55 +71,47 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
+int getSum(int num)
+{
+	string s = to_string(num);
+	int ans = 0;
+	for (char c : s)
+	{
+		ans += (c - '0');
+	}
+	return ans;
+}
+
+int reduceLastPossibleNum(int num, int lastIdx)
+{
+	string s = to_string(num);
+	int n = s[lastIdx] - '0';
+	const int numOfZs = (s.size() - 1 - lastIdx);
+	int base = pow(10, numOfZs);
+	int toAdd = (10 - n) * base;
+	//cerr << numOfZs << " " << base << " " << toAdd << " " << endl;
+	return toAdd;
+}
+
 void solve()
 {
-	int len; cin >> len;
-	string s; cin >> s;
+	int n; int s;
+	cin >> n >> s;
 
-	vi subSequencesEndingWithZero;
-	vi subSequencesEndingWithOne;
+	int ans = 0;
 
-	int sequenceNum = 0;
-	vi ans(len);
-	for (int i = 0; i < len; i++)
+	string st = to_string(n);
+	int lastIdx = st.size() - 1;
+
+	while (lastIdx >= 0 and getSum(n) > s)
 	{
-		if (s[i] == '0')
-		{
-			if (subSequencesEndingWithOne.size() != 0)
-			{
-				int seq = subSequencesEndingWithOne.back();
-				subSequencesEndingWithOne.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithZero.push_back(seq);
-			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithZero.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
-		}
-		else
-		{
-			if (subSequencesEndingWithZero.size() != 0)
-			{
-				int seq = subSequencesEndingWithZero.back();
-				subSequencesEndingWithZero.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithOne.push_back(seq);
-			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithOne.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
-		}
+		int numToAdd = reduceLastPossibleNum(n, lastIdx);
+		lastIdx--;
+		n += numToAdd;
+		ans += numToAdd;
 	}
 
-	cout << sequenceNum << endl;
-	opArr(ans, len);
-	cout << endl;
+	cout << ans << endl;
 }
 void setUpLocal()
 {

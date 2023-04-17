@@ -69,57 +69,58 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
-
+const int maxN = 2e5 + 2;
+int mns[maxN];
 void solve()
 {
-	int len; cin >> len;
-	string s; cin >> s;
+	int n; cin >> n;
+	vi v(n);
+	ipArr(v, n);
 
-	vi subSequencesEndingWithZero;
-	vi subSequencesEndingWithOne;
+	memset(mns, 0, sizeof(mns));
+	vi mx, mn;
 
-	int sequenceNum = 0;
-	vi ans(len);
-	for (int i = 0; i < len; i++)
+	int mxSoFar = 0;
+	priority_queue<int, vector<int>> q;
+
+	int mxSeen = 0;
+	int useMn = 1;
+
+	for (int i = 0; i < n; i++)
 	{
-		if (s[i] == '0')
+		if (v[i] > mxSoFar)
 		{
-			if (subSequencesEndingWithOne.size() != 0)
+			mx.pb(v[i]);
+			mn.pb(v[i]);
+			mns[v[i]] = 1;
+			mxSoFar = v[i];
+
+			for (int j = mxSeen + 1; j < v[i]; j++)
 			{
-				int seq = subSequencesEndingWithOne.back();
-				subSequencesEndingWithOne.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithZero.push_back(seq);
+				q.push(j);
 			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithZero.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
+			mxSeen = v[i];
 		}
 		else
 		{
-			if (subSequencesEndingWithZero.size() != 0)
+			while (mns[useMn] == 1)
 			{
-				int seq = subSequencesEndingWithZero.back();
-				subSequencesEndingWithZero.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithOne.push_back(seq);
+				useMn++;
 			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithOne.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
+			mn.pb(useMn);
+			mns[useMn] = 1;
+
+			int top = q.top();
+			mx.pb(top);
+			q.pop();
 		}
 	}
 
-	cout << sequenceNum << endl;
-	opArr(ans, len);
+	opArr(mn, n);
 	cout << endl;
+	opArr(mx, n);
+	cout << endl;
+
 }
 void setUpLocal()
 {

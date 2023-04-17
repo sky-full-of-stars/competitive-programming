@@ -58,7 +58,7 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
@@ -73,53 +73,54 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int len; cin >> len;
-	string s; cin >> s;
-
-	vi subSequencesEndingWithZero;
-	vi subSequencesEndingWithOne;
-
-	int sequenceNum = 0;
-	vi ans(len);
-	for (int i = 0; i < len; i++)
+	int n; cin >> n;
+	vi v(n);
+	int i = 1;
+	multimap<int, int> mp;
+	for (int &ele : v)
 	{
-		if (s[i] == '0')
+		cin >> ele;
+		mp.insert({ele, i++});
+	}
+
+	int tot = 2 * n;
+	int remPos = mp.begin()->second;
+	int ans = 0;
+	int ro = n, co = n;
+	for (auto &[val, idx] : mp)
+	{
+		// mx # of steps you can take if you're taking idx'th step
+		// considering you did 1 move in previous indices
+		int mxAssignable = n - ((idx + 1) / 2) + 1;
+
+		// mx #of steps possible to take at idx
+		// considering you'll make 1 move in all remaining positions
+		int mxPossible =  tot - (remPos - 1);
+
+		//steps taken
+		int assign;
+
+		if (idx & 1)
 		{
-			if (subSequencesEndingWithOne.size() != 0)
-			{
-				int seq = subSequencesEndingWithOne.back();
-				subSequencesEndingWithOne.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithZero.push_back(seq);
-			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithZero.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
+			//not possible to move out of grid
+			//since we only have to move alternatively
+			assign = min(mxPossible, min(mxAssignable, ro));
+			ro = ro - assign;
 		}
 		else
 		{
-			if (subSequencesEndingWithZero.size() != 0)
-			{
-				int seq = subSequencesEndingWithZero.back();
-				subSequencesEndingWithZero.pop_back();
-				ans[i] = seq;
-				subSequencesEndingWithOne.push_back(seq);
-			}
-			else
-			{
-				sequenceNum++;
-				subSequencesEndingWithOne.push_back(sequenceNum);
-				ans[i] = sequenceNum;
-			}
+			assign = min(mxPossible, min(mxAssignable, co));
+			co = co - assign;
 		}
-	}
+		//cout << val << " " << idx << " " << mxAssignable << " " << mxPossible << " " << assign << endl;
 
-	cout << sequenceNum << endl;
-	opArr(ans, len);
-	cout << endl;
+		//cost of making such move at index idx with cost 'val'
+		ans += assign * val;
+		tot -= assign;
+		remPos--;
+	}
+	cout << ans << endl;
+
 }
 void setUpLocal()
 {
