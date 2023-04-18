@@ -75,49 +75,36 @@ void solve()
 {
 	int n; cin >> n;
 	vi v(n);
-	int i = 1;
-	multimap<int, int> mp;
-	for (int &ele : v)
+	ipArr(v, n);
+
+	int evenSum = v[0];
+	int evenMin = v[0];
+
+	int oddSum = v[1];
+	int oddMin = v[1];
+
+	int ans = evenSum * n + oddSum * n;
+
+	for (int i = 2; i < n; i++)
 	{
-		cin >> ele;
-		mp.insert({ele, i++});
-	}
-
-	int tot = 2 * n;
-	int remPos = mp.begin()->second;
-	int ans = 0;
-	int ro = n, co = n;
-	for (auto &[val, idx] : mp)
-	{
-		// mx # of steps you can take if you're taking idx'th step
-		// considering you did 1 move in previous indices
-		int mxAssignable = n - ((idx + 1) / 2) + 1;
-
-		// mx #of steps possible to take at idx
-		// considering you'll make 1 move in all remaining positions
-		int mxPossible =  tot - (remPos - 1);
-
-		//steps taken
-		int assign;
-
-		if (idx & 1)
+		if (i & 1)
 		{
-			//not possible to move out of grid
-			//since we only have to move alternatively
-			assign = min(mxPossible, min(mxAssignable, ro));
-			ro = ro - assign;
+			oddSum += v[i];
+			oddMin = min(oddMin, v[i]);
 		}
 		else
 		{
-			assign = min(mxPossible, min(mxAssignable, co));
-			co = co - assign;
+			evenSum += v[i];
+			evenMin = min(evenMin, v[i]);
 		}
-		//cout << val << " " << idx << " " << mxAssignable << " " << mxPossible << " " << assign << endl;
 
-		//cost of making such move at index idx with cost 'val'
-		ans += assign * val;
-		tot -= assign;
-		remPos--;
+		int evenNumbersSoFar = i / 2 + 1;
+		int oddNumbersSoFar = (i + 1) / 2;
+
+		int ansIfConsiderLengthI = evenSum + evenMin * (n - evenNumbersSoFar) +
+		                           oddSum + oddMin * (n - oddNumbersSoFar);
+
+		ans = min(ans, ansIfConsiderLengthI);
 	}
 	cout << ans << endl;
 
