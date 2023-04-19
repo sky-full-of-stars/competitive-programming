@@ -58,12 +58,13 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
+#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" ";
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
 #define all(i) i.begin(),i.end()
 
+int max(int a, int b) { return a >= b ? a : b;}
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
@@ -74,41 +75,58 @@ const int maxN = 1e7;
 void solve()
 {
 	int n; cin >> n;
-	vi v(n);
-	ipArr(v, n);
+	int l, r; cin >> l >> r;
 
-	int evenSum = v[0];
-	int evenMin = v[0];
+	vi left(l), right(r);
 
-	int oddSum = v[1];
-	int oddMin = v[1];
-
-	int ans = evenSum * n + oddSum * n;
-
-	for (int i = 2; i < n; i++)
+	multimap<int, string> mp;
+	int matches = 0;
+	for (int &ele : left)
 	{
-		if (i & 1)
+		cin >> ele;
+		mp.insert({ele, "absent"});
+		//mp[ele] = "absent";
+	}
+	for (int &ele : right)
+	{
+		cin >> ele;
+		if (present(mp, ele))
 		{
-			oddSum += v[i];
-			oddMin = min(oddMin, v[i]);
+			auto itr = mp.find(ele);
+			for (auto pos = itr; pos != mp.end() and pos->first == ele; pos++)
+			{
+				if (pos->second == "absent")
+				{
+					pos -> second = "present";
+					matches++;
+				}
+			}
 		}
-		else
-		{
-			evenSum += v[i];
-			evenMin = min(evenMin, v[i]);
-		}
-
-		int evenNumbersSoFar = i / 2 + 1;
-		int oddNumbersSoFar = (i + 1) / 2;
-
-		int ansIfConsiderLengthI = evenSum + evenMin * (n - evenNumbersSoFar) +
-		                           oddSum + oddMin * (n - oddNumbersSoFar);
-
-		ans = min(ans, ansIfConsiderLengthI);
 	}
 
-	cout << ans << endl;
+	int largerArSz = max(l, r);
+	mi cnt;
+	vi lv = (largerArSz == l) ? left : right;
 
+	for (int i : lv)
+	{
+		cnt[i]++;
+	}
+	int internalMtch = 0;
+	for (auto [k, v] : cnt)
+	{
+		internalMtch += (v / 2);
+	}
+	if (l == r)
+	{
+
+	}
+	int canTransfer =  (abs(l - r) / 2) - (internalMtch);
+	int internalMatchesBeforeTransfer = max(canTransfer, 0);
+
+	//cerr << (abs(l - r) / 2) << " " << n / 2 << " " << matches << endl;
+	int ans = (abs(l - r) / 2) + (n / 2 - matches - internalMatchesBeforeTransfer);
+	cout << ans << endl;
 }
 void setUpLocal()
 {
