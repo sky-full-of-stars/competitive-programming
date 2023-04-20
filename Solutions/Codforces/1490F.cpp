@@ -58,13 +58,12 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+#define opArr(arr,n) for(int i=0;i<n;i++) cerr<<arr[i]<<" ";
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
 #define all(i) i.begin(),i.end()
 
-int max(int a, int b) { return a >= b ? a : b;}
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
@@ -75,65 +74,66 @@ const int maxN = 1e7;
 void solve()
 {
 	int n; cin >> n;
-	int l, r; cin >> l >> r;
-
-	vi left(l), right(r);
-	mi lcnt, rcnt;
-
-	for (int &ele : left)
+	int _n = n;
+	mi m;
+	int ele;
+	while (n--)
 	{
 		cin >> ele;
-		lcnt[ele]++;
+		m[ele]++;
 	}
-	for (int &ele : right)
+
+	vi freq;
+	for (auto [key, cnt] : m)
 	{
-		cin >> ele;
-		rcnt[ele]++;
+		freq.pb(cnt);
 	}
+	sortv(freq);
+	reverse(all(freq));
+	int mn = INF;
 
-	if (l < r)
+	int sz = sz(freq);
+	int suffix[sz];
+	suffix[0] = freq[0];
+	for (int i = 0; i < sz; i++)
 	{
-		swap(l, r);
-		swap(left, right);
-		swap(lcnt, rcnt);
+		if (i != 0)
+			suffix[i] = suffix[i - 1] + freq[i];
+
+		if (i == sz - 1 or freq[i] != freq[i + 1])
+		{
+			int expect = (i + 1) * freq[i];
+			int actual = suffix[i];
+			int excess = actual - expect;
+
+			int lowerFreq = (_n - suffix[i]);
+
+			int currentAns = excess + lowerFreq;
+			mn = min(mn, currentAns);
+		}
 	}
-
-	//remove matches;
-	for (int ele : left)
-	{
-		int lAvailable = lcnt[ele];
-		int rAvailable = rcnt[ele];
-
-		int select = min(lAvailable, rAvailable);
-
-		lcnt[ele] -= select;
-		rcnt[ele] -= select;
-
-		l -= select;
-		r -= select;
-	}
-	int ans = 0;
-	//transfer same colors to right
-	for (auto [key, ele] : lcnt)
-	{
-		int mxTransferPossible = (l - r) / 2;
-		int sameElementsToTransfer = ele / 2;
-
-		int _do = min(mxTransferPossible, sameElementsToTransfer);
-
-		l -= (_do * 2);
-
-		ans += _do;
-	}
-
-	//extra transfers needed
-	ans += (l - r) / 2;
-
-	//convert different colors;
-	ans += (l + r) / 2;
-	cout << ans << endl;
+	cout << mn << endl;
 }
+/*
 
+4 3 3  2  2  1  -> freq
+4 7 10 12 14 15 -> suffixSum
+
+
+5 5  4  3  3   2  2  2  1 ->freq
+5 10 14 17 20 22 24 26 27 ->suffix
+3 3  3  3  3
+
+At last occurance of '3':
+	expect -> 15 (if all elem were repeated 3 times)
+	actual -> 20 (count of reality)
+	excess -> 5
+
+	toRemoveLesserFreq -> (n- suf[i]);
+
+ans = excess + toRemoveLesserFreq
+
+*/
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE

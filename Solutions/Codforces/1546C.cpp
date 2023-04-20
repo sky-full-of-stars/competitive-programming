@@ -58,13 +58,12 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
 #define all(i) i.begin(),i.end()
 
-int max(int a, int b) { return a >= b ? a : b;}
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
@@ -75,65 +74,46 @@ const int maxN = 1e7;
 void solve()
 {
 	int n; cin >> n;
-	int l, r; cin >> l >> r;
+	vi v(n); ipArr(v, n);
+	vi _v = v;
 
-	vi left(l), right(r);
-	mi lcnt, rcnt;
+	mi expectedEvenIdxCnt;
+	mi expectedOddIdxCnt;
 
-	for (int &ele : left)
-	{
-		cin >> ele;
-		lcnt[ele]++;
-	}
-	for (int &ele : right)
-	{
-		cin >> ele;
-		rcnt[ele]++;
-	}
+	sortv(_v);
 
-	if (l < r)
+	for (int i = 0; i < _v.size(); i++)
 	{
-		swap(l, r);
-		swap(left, right);
-		swap(lcnt, rcnt);
+		if (i & 1)
+			expectedOddIdxCnt[_v[i]]++;
+		else
+			expectedEvenIdxCnt[_v[i]]++;
 	}
 
-	//remove matches;
-	for (int ele : left)
+	for (int i = 0; i < v.size(); i++)
 	{
-		int lAvailable = lcnt[ele];
-		int rAvailable = rcnt[ele];
+		bool matchFound = false;
+		if (i & 1 and expectedOddIdxCnt[v[i]] > 0)
+		{
+			expectedOddIdxCnt[v[i]]--;
+			matchFound = true;
+		}
+		else if (!(i & 1) and expectedEvenIdxCnt[v[i]] > 0)
+		{
+			expectedEvenIdxCnt[v[i]]--;
+			matchFound = true;
+		}
 
-		int select = min(lAvailable, rAvailable);
-
-		lcnt[ele] -= select;
-		rcnt[ele] -= select;
-
-		l -= select;
-		r -= select;
-	}
-	int ans = 0;
-	//transfer same colors to right
-	for (auto [key, ele] : lcnt)
-	{
-		int mxTransferPossible = (l - r) / 2;
-		int sameElementsToTransfer = ele / 2;
-
-		int _do = min(mxTransferPossible, sameElementsToTransfer);
-
-		l -= (_do * 2);
-
-		ans += _do;
+		if (!matchFound)
+		{
+			cout << "NO" << endl;
+			return;
+		}
 	}
 
-	//extra transfers needed
-	ans += (l - r) / 2;
-
-	//convert different colors;
-	ans += (l + r) / 2;
-	cout << ans << endl;
+	cout << "YES" << endl;
+	return;
 }
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -141,7 +121,6 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
-
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
