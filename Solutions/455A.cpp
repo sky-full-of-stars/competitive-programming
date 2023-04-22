@@ -68,23 +68,35 @@ int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
-
-const int maxN = 1e7;
-
 void solve()
 {
+	int n; cin >> n;
 
+	int ele;
+	mi cnt;
+	int maxN = 0;
+	for (int i = 0; i < n; i++)
+	{
+		cin >> ele;
+		maxN = max(maxN, ele);
+		cnt[ele]++;
+	}
 
+	int dp[maxN + 1][2];
+	dp[0][0] = 0;
+	dp[0][1] = 0;
 
+	for (int i = 1; i <= maxN; i++)
+	{
+		dp[i][1] = max(dp[i - 1][0] + cnt[i] * i,
+		               dp[i - 1][1]);
 
+		dp[i][0] = max(dp[i - 1][1],
+		               dp[i - 1][0]);
+	}
 
-
-
-
-
-
-
-
+	int ans = max(dp[maxN][1], dp[maxN][1]);
+	cout << ans << endl;
 }
 void setUpLocal()
 {
