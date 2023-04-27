@@ -73,7 +73,8 @@ const int maxN = 1e7;
 
 void solve()
 {
-
+	int n, m; cin >> n >> m;
+	string a, b; cin >> a >> b;
 
 
 
