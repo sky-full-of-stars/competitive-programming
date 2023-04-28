@@ -58,7 +58,7 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
-#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<"\n"; cout<<endl;
+#define opArr(arr,n) for(int i=0;i<n;i++) cout<<arr[i]<<" "; cout<<endl;
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
@@ -76,15 +76,46 @@ void solve()
 	int n, m; cin >> n >> m;
 	string a, b; cin >> a >> b;
 
+	vi firstOccurance, lastOccurance;
+	int i = 0, j = 0;
+	while (i < n and j < m)
+	{
+		if (a[i] == b[j])
+		{
+			firstOccurance.pb(i);
+			i++;
+			j++;
+		}
+		else
+		{
+			i++;
+		}
+	}
 
+	i = n - 1, j = m - 1;
+	while (i >= 0 and j >= 0)
+	{
+		if (a[i] == b[j])
+		{
+			lastOccurance.pb(i);
+			i--;
+			j--;
+		}
+		else
+		{
+			i--;
+		}
+	}
 
+	reverse(all(lastOccurance));
 
+	int mxDif = 0;
+	for (int i = 1; i < m; i++)
+	{
+		mxDif = max(mxDif, lastOccurance[i] - firstOccurance[i - 1]);
+	}
 
-
-
-
-
-
+	cout << mxDif << endl;
 
 }
 void setUpLocal()
