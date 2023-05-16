@@ -70,58 +70,33 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-int dp[2023][2023]; // pick only j elements from [0,i].
+
 void solve()
 {
 	int n; cin >> n;
+	vi prexor(n + 1);
 
-	vi v(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin >> v[i];
-	}
-
-	for (int i = 0; i <= n ; i++)
-	{
-		for (int j = 0; j <= n; j++)
-		{
-			dp[i][j] = INT_MIN;
-		}
-	}
-
-	dp[0][0] = 0;
+	int ele;
 	for (int i = 1; i <= n; i++)
 	{
-		for (int j = 0; j <= i; j++)
-		{
-			if (j == 0)
-			{
-				dp[i][j] = 0;
-				continue;
-			}
-
-			if (dp[i - 1][j - 1] + v[i - 1] >= 0)
-			{
-				int pick = dp[i - 1][j - 1] + v[i - 1];
-				int notpick = dp[i - 1][j];
-				dp[i][j] = max(pick, notpick);
-			}
-			else
-			{
-				dp[i][j] = dp[i - 1][j];
-			}
-		}
+		cin >> ele;
+		prexor[i] = prexor[i - 1] ^ ele;
 	}
 
-	for (int i = n; i >= 0; i--)
+	// check for 3 elements together
+
+	bool yes = !prexor[n];
+
+	for (int i = 1; i <= n; i++)
 	{
-		if (dp[n][i] >= 0)
+		for (int j = i + 1; j < n; j++)
 		{
-			cout << i << endl;
-			return;
+			yes |= ((prexor[i] == (prexor[j] ^ prexor[i])) and
+			        (prexor[i] == (prexor[n] ^ prexor[j])));
 		}
 	}
 
+	cout << (yes ? "YES" : "NO") << endl;
 }
 void setUpLocal()
 {
@@ -134,7 +109,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

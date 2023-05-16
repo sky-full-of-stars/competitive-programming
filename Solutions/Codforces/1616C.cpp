@@ -70,57 +70,20 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-int dp[2023][2023]; // pick only j elements from [0,i].
+
 void solve()
 {
-	int n; cin >> n;
 
-	vi v(n);
-	for (int i = 0; i < n; i++)
-	{
-		cin >> v[i];
-	}
 
-	for (int i = 0; i <= n ; i++)
-	{
-		for (int j = 0; j <= n; j++)
-		{
-			dp[i][j] = INT_MIN;
-		}
-	}
 
-	dp[0][0] = 0;
-	for (int i = 1; i <= n; i++)
-	{
-		for (int j = 0; j <= i; j++)
-		{
-			if (j == 0)
-			{
-				dp[i][j] = 0;
-				continue;
-			}
 
-			if (dp[i - 1][j - 1] + v[i - 1] >= 0)
-			{
-				int pick = dp[i - 1][j - 1] + v[i - 1];
-				int notpick = dp[i - 1][j];
-				dp[i][j] = max(pick, notpick);
-			}
-			else
-			{
-				dp[i][j] = dp[i - 1][j];
-			}
-		}
-	}
 
-	for (int i = n; i >= 0; i--)
-	{
-		if (dp[n][i] >= 0)
-		{
-			cout << i << endl;
-			return;
-		}
-	}
+
+
+
+
+
+
 
 }
 void setUpLocal()
