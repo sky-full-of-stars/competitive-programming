@@ -73,18 +73,46 @@ const int maxN = 1e7;
 
 void solve()
 {
+	int n; cin >> n;
+	vi v(n + 1);
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> v[i];
+	}
 
+	if (n <= 2)
+	{
+		cout << 0 << endl;
+		return;
+	}
 
+	int ans = n;
+	//lets pick 2 numbers to form AP.
+	//then see how many numbers needs to adjusted to fit in that AP.
+	for (int f = 1; f < n; f++)
+	{
+		for (int s = f + 1; s <= n; s++)
+		{
+			//2 numbers at idx f and s are fixed.
+			//lets adjust rest of the elements
+			int changes = 0;
+			for (int i = 1; i <= n; i++)
+			{
+				if (i == f or i == s)
+				{
+					continue;
+				}
 
+				//for i,f,s to be in AP
+				//v[i]-v[s] /(i-s) ==  v[f]-v[i]/(f-i)
+				if ((v[i] - v[s]) * (f - i) != (v[f] - v[i]) * (i - s))
+					changes++;
+			}
+			ans = min(ans, changes);
+		}
+	}
 
-
-
-
-
-
-
-
-
+	cout << ans << endl;
 }
 void setUpLocal()
 {
@@ -97,7 +125,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

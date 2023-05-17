@@ -55,7 +55,6 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #endif
 
 //---------------------------------------------------------------------------------------------------------//
-#define isPowOfTwo(x) return (x && (!(x&(x-1))));
 #define sz(a) (int)((a).size())
 #define present(c,x) ((c).find(x) != (c).end())
 #define ipArr(a,n)   for(int i=0;i<n;i++) cin>>a[i];
@@ -63,27 +62,34 @@ void err(istream_iterator<string> it, T a, Args... args) { cerr << *it << " = " 
 #define fill_arr(arr,n,i) fill(arr,arr+n,i)
 #define fill_vec(v,n,i) fill(v.begin(),v.begin()+n,i);
 #define sortv(a) sort(a.begin(),a.end())
-#define all(i) (i.begin(),i.end())
+#define all(i) i.begin(),i.end()
 
+int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
+bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
 const int maxN = 1e7;
 
 void solve()
-{  
-	
+{
+	int n; cin >> n;
+	vi dp(n + 1, 0);
 
+	dp[0] = 1;
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = 1; j <= 6; j++)
+		{
+			if (i - j < 0)
+			{
+				break;
+			}
+			dp[i] = (dp[i] + dp[i - j]) % mod;
+		}
+	}
 
-
-
-
-
-
-
-
-
-
+	cout << dp[n] << endl;
 }
 void setUpLocal()
 {

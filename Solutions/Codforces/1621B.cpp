@@ -73,58 +73,76 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int w; cin >> w;
+	int n;
+	cin >> n;
 
-	int n; cin >> n;
-	vi v(n);
-	ipArr(v, n);
-
-
-	while (w > 0)
+	int minSoFar = INT_MAX, maxSoFar = INT_MIN, minCostToIncludeMinVal = INT_MAX, minCostToIncludeMaxVal = INT_MAX;
+	/*
+	if we can get optimum value just by choosing 1 segment
+	we need to have certain checks.
+	whats the maxSingleSegment length and its cost. so on.
+	hence these 2 variables
+	*/
+	int mxLenOfSingleSeg, cost;
+	int ans = INT_MAX;
+	for (int i = 0; i < n; i++)
 	{
-		int mxdiff = -INF;
+		int l, r, c;
+		cin >> l >> r >> c;
 
-		int l, r;
-		for (int i = 1; i < n; i++)
+		if (i == 0)
 		{
-			int dif = abs(v[i] - v[i - 1]);
-			if (dif > mxdiff)
-			{
-				mxdiff = dif;
-				l = i - 1;
-				r = i;
-			}
+			minSoFar = l;
+			maxSoFar = r;
+			minCostToIncludeMinVal = minCostToIncludeMaxVal = c;
+			mxLenOfSingleSeg = (r - l + 1);
+			cost = c;
+			cout << c << endl;
+			continue;
+		}
+
+		if (l < minSoFar)
+		{
+			minSoFar = l;
+			minCostToIncludeMinVal = c;
+		}
+		if (l == minSoFar)
+		{
+			minCostToIncludeMinVal = min(minCostToIncludeMinVal, c);
+		}
+
+		if (r > maxSoFar)
+		{
+			maxSoFar = r;
+			minCostToIncludeMaxVal = c;
+		}
+		if (r == maxSoFar)
+		{
+			minCostToIncludeMaxVal = min(minCostToIncludeMaxVal, c);
 		}
 
 
-		if (v[l] >= v[r])
+		if (r - l + 1 > mxLenOfSingleSeg)
 		{
-			int difNeed = v[l] - v[r];
-			int take = min(w, difNeed );
-			v[l] -= take;
-			w -= take;
+			mxLenOfSingleSeg = r - l + 1;
+			cost = c;
+		}
+		else if (r - l + 1 == mxLenOfSingleSeg)
+		{
+			cost = min(c, cost);
+		}
+
+		int ans = (minCostToIncludeMinVal + minCostToIncludeMaxVal);
+		if (mxLenOfSingleSeg == (maxSoFar - minSoFar + 1))
+		{
+			cout << min(ans, cost) << endl;
 		}
 		else
 		{
-			int difNeed = v[r] - v[l];
-			int take = min(w, difNeed );
-			v[r] -= take;
-			w -= take;
+			cout << ans << endl;
 		}
 
-		//debug(w);
 	}
-
-	int ans = 0;
-	for (int i = 1; i < n; i++)
-	{
-		int dif = abs(v[i] - v[i - 1]);
-		ans += dif;
-	}
-
-	cout << ans << endl;
-
-
 }
 void setUpLocal()
 {
@@ -137,7 +155,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin >> t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
