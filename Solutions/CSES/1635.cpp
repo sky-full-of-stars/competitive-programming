@@ -73,18 +73,26 @@ const int maxN = 1e7;
 
 void solve()
 {
+	int n, k; cin >> n >> k;
+	vi v(n + 1);
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> v[i];
+	}
 
+	int dp[k + 1];
+	dp[0] = 1;
 
-
-
-
-
-
-
-
-
-
-
+	for (int i = 1; i <= k; i++)
+	{
+		dp[i] = 0;
+		for (int j = 1; j <= n; j++)
+		{
+			if (i - v[j] >= 0)
+				dp[i] = (dp[i] + dp[i - v[j]]) % mod;
+		}
+	}
+	cout << dp[k] << endl;
 }
 void setUpLocal()
 {
