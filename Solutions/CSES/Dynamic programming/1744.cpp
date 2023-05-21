@@ -73,17 +73,40 @@ const int maxN = 1e7;
 
 void solve()
 {
+	int a, b;
+	cin >> a >> b;
+
+	int dp[a + 1][b + 1 ]; //steps to make all squares with rec of sides a,b
 
 
+	for (int i = 1; i <= a; i++)
+	{
+		for (int j = 1; j <= b; j++)
+		{
+			if (i == j)
+			{
+				dp[i][j] = 0;
+			}
+			else
+			{
+				int ans = INF;
 
+				for (int len = 1; len < i; len++)
+				{
+					ans = min(ans, 1 + dp[i - len][j] + dp[len][j]);
+				}
 
+				for (int len = 1; len < j; len++)
+				{
+					ans = min(ans, 1 + dp[i][j - len] + dp[i][len]);
+				}
 
+				dp[i][j] = ans;
+			}
+		}
+	}
 
-
-
-
-
-
+	cout << dp[a][b];
 
 }
 void setUpLocal()
