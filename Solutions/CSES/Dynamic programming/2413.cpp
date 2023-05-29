@@ -69,72 +69,32 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
+const int maxN = 1e6 + 2;
+int n = 1e6 + 1;
+int dp[maxN][2];
 
-int n;
-double prob[20][20];
-double dp[1 << 20];
-
-double pMove(int mask, int fishToKill)
-{
-	int countOfFishAlive = __builtin_popcount(mask);
-	int numOfFightsPossible = (countOfFishAlive * (countOfFishAlive - 1)) / 2;
-
-	double totalProb = 0;
-	for (int fishNo = 0; fishNo < n; fishNo++)
-	{
-		if (mask & (1 << fishNo)) //has to be currently alive to be killed next
-		{
-			totalProb += prob[fishNo][fishToKill];
-		}
-	}
-	return totalProb / (1.0 * numOfFightsPossible);
-}
-
-double getProbOfAliveFish(int curMask)
-{
-	int countOfFishAlive = __builtin_popcount(curMask);
-	if (countOfFishAlive == n)
-	{
-		return 1;
-	}
-
-	if (dp[curMask] > -0.9)
-	{
-		return dp[curMask];
-	}
-
-	double ans = 0.0;
-	//iterate over all previous states possible
-	//fishToKill from prev state to get to cur state
-	for (int fishToKill = 0; fishToKill < n; fishToKill++)
-	{
-		// fishToKill is only valid if its not present in curState
-		if (!(curMask & (1 << fishToKill)))
-		{
-			int maskOfPrevState = curMask ^ (1 << fishToKill);
-
-			double probOfGettingHere = getProbOfAliveFish(maskOfPrevState);
-			double probOfTransitionFromPrevStateToCurState = pMove(maskOfPrevState, fishToKill);
-
-			ans += (probOfGettingHere * probOfTransitionFromPrevStateToCurState);
-		}
-	}
-
-	return dp[curMask] = ans;
-}
 void solve()
 {
-	cin >> n;
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < n; j++)
-			cin >> prob[i][j];
-	memset(dp, -1, sizeof dp);
-
-	for (int i = 0; i < n; i++)
+	dp[n + 1][0] = 1;
+	dp[n + 1][1] = 1;
+	dp[1][1] = 1;
+	dp[1][0] = 1;
+	for (int i = n; i >= 2; i--)
 	{
-		//only ith fish alive
-		cout << fixed << " " << setprecision(10) << getProbOfAliveFish((1 << i)) << " ";
+		int extendOne = (2 * dp[i + 1][0]) % mod;
+		int extendBoth = dp[i + 1][0];
+		int exntendBothButEndUpWithTileOfsz2 = dp[i + 1][1];
+		int extendNone = (dp[i + 1][0] + dp[i + 1][1]) % mod;
+
+		dp[i][0] = (extendBoth + extendOne + extendNone) % mod;
+		dp[i][1] = (exntendBothButEndUpWithTileOfsz2 + extendNone) % mod;
+	}
+
+	int q; cin >> q;
+	while (q--)
+	{
+		int lvl; cin >> lvl;
+		cout << (dp[n - lvl + 2][1] + dp[n - lvl + 2][0]) % mod << endl;
 	}
 }
 void setUpLocal()
@@ -148,7 +108,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; //cin >> t;
 	while (t--) solve();
 	return 0;
 }

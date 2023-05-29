@@ -71,70 +71,68 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int n;
-double prob[20][20];
-double dp[1 << 20];
+int dp[101][1 << 11];
+int owns[11][101];
 
-double pMove(int mask, int fishToKill)
+int f(int shirt, int mask, int& n)
 {
-	int countOfFishAlive = __builtin_popcount(mask);
-	int numOfFightsPossible = (countOfFishAlive * (countOfFishAlive - 1)) / 2;
-
-	double totalProb = 0;
-	for (int fishNo = 0; fishNo < n; fishNo++)
-	{
-		if (mask & (1 << fishNo)) //has to be currently alive to be killed next
-		{
-			totalProb += prob[fishNo][fishToKill];
-		}
-	}
-	return totalProb / (1.0 * numOfFightsPossible);
-}
-
-double getProbOfAliveFish(int curMask)
-{
-	int countOfFishAlive = __builtin_popcount(curMask);
-	if (countOfFishAlive == n)
+	if (mask == (1 << n) - 1)
 	{
 		return 1;
 	}
-
-	if (dp[curMask] > -0.9)
+	if (shirt > 100)
 	{
-		return dp[curMask];
+		return 0;
+	}
+	if (dp[shirt][mask] != -1)
+	{
+		return dp[shirt][mask];
 	}
 
-	double ans = 0.0;
-	//iterate over all previous states possible
-	//fishToKill from prev state to get to cur state
-	for (int fishToKill = 0; fishToKill < n; fishToKill++)
+	int ans = 0;
+	for (int person = 0; person < n; person++)
 	{
-		// fishToKill is only valid if its not present in curState
-		if (!(curMask & (1 << fishToKill)))
+		if (mask & (1 << person))
 		{
-			int maskOfPrevState = curMask ^ (1 << fishToKill);
-
-			double probOfGettingHere = getProbOfAliveFish(maskOfPrevState);
-			double probOfTransitionFromPrevStateToCurState = pMove(maskOfPrevState, fishToKill);
-
-			ans += (probOfGettingHere * probOfTransitionFromPrevStateToCurState);
+			continue;
+		}
+		if (owns[person][shirt])
+		{
+			int newMask = mask  | (1 << person);
+			ans = (ans + f(shirt + 1, newMask, n)) % mod;
 		}
 	}
 
-	return dp[curMask] = ans;
+	ans = (ans + f(shirt + 1, mask, n)) % mod;
+
+	return dp[shirt][mask] = ans;
 }
+void input(int n);
 void solve()
 {
+	int n;
 	cin >> n;
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < n; j++)
-			cin >> prob[i][j];
-	memset(dp, -1, sizeof dp);
 
+	memset(dp, -1, sizeof dp);
+	memset(owns, 0, sizeof owns);
+
+	input(n);
+
+	cout << f(0, 0, n) << endl;
+}
+void input(int n)
+{
+	string s;
+	cin.ignore();
 	for (int i = 0; i < n; i++)
 	{
-		//only ith fish alive
-		cout << fixed << " " << setprecision(10) << getProbOfAliveFish((1 << i)) << " ";
+		getline(cin, s);
+		stringstream in(s);
+		int x;
+		while (in >> x)
+		{
+			owns[i][x] = 1;
+		}
 	}
 }
 void setUpLocal()
@@ -148,7 +146,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
