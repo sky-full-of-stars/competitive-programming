@@ -9,7 +9,6 @@
 //---------------------------------------------------------------------------------------------------------//
 using namespace std;
 
-#define int long long int
 #define cont continue;
 #define ff first
 #define ss second
@@ -70,53 +69,55 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
+//WRONG ANSWER SOLUTION
 
 void solve()
 {
 	int n; cin >> n;
-	vi v(n);
-	int ele;
-	for (int i = 0; i < n; i++)
+	vi v(n + 1);
+	for (int i = 1; i <= n; i++)
 	{
-		cin >> ele;
-		v[i] = ele;
-	}
-	sortv(v);
-
-	if (n == 1)
-	{
-		(cout << 1);
-		return;
+		cin >> v[i];
 	}
 
-	int mid = (n + 1) / 2 ;
-	int ans = n;
-	cerr << mid << endl;
-	for (int i = 0; i < (n + 1) / 2 ; i++)
+	int l[n + 1]; // l[i] is the count of decreasing numbers till i
+	int r[n + 1]; // r[i] is the count of increasing numbers from i
+
+	l[1] = 1;
+	for (int i = 2; i <= n; i++)
 	{
-		while (true)
+		l[i] = (v[i] > v[i - 1]) ? l[i - 1] + 1 : 1;
+	}
+
+	r[n] = 1;
+	for (int i = n - 1; i > 0; i--)
+	{
+		r[i] = (v[i] < v[i + 1]) ? r[i + 1] + 1 : 1;
+	}
+
+	int ans = 1;
+	for (int i = 1; i <= n; i++)
+	{
+		//either pick all so far, or everything from now
+		ans = max({ans, l[i], r[i]});
+
+		//or change current element and pick all before
+		if (i != 1)
+			ans = max(ans, l[i - 1] + 1);
+
+		//change current element and pick all ahead
+		if (i != n)
+			ans = max(ans, r[i + 1] + 1);
+
+		//change current element and pick both sides
+		if (i + 1 <= n and i - 1 >= 1)
 		{
-			if (v[i] * 2 <= v[mid])
+			if (v[i + 1] - v[i - 1] > 1)
 			{
-				ans --;
-				mid++;
-				break;
-			}
-			else
-			{
-				mid++;
-			}
-			if (mid == n)
-			{
-				break;
+				ans = max(ans, l[i - 1] + 1 + r[i + 1]);
 			}
 		}
-		if (mid == n)
-		{
-			break;
-		}
 	}
-
 	cout << ans << endl;
 }
 void setUpLocal()

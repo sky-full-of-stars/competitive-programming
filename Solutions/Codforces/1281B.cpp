@@ -73,51 +73,38 @@ const int maxN = 1e7;
 
 void solve()
 {
-	int n; cin >> n;
-	vi v(n);
-	int ele;
-	for (int i = 0; i < n; i++)
+	string a, b; cin >> a >> b;
+	if (a < b)
 	{
-		cin >> ele;
-		v[i] = ele;
-	}
-	sortv(v);
-
-	if (n == 1)
-	{
-		(cout << 1);
-		return;
+		cout << a << endl;
+		return ;
 	}
 
-	int mid = (n + 1) / 2 ;
-	int ans = n;
-	cerr << mid << endl;
-	for (int i = 0; i < (n + 1) / 2 ; i++)
+	map<char, int> lastOccurance;
+	int i = 0;
+	for (char c : a)
 	{
-		while (true)
+		lastOccurance[c] = i++;
+	}
+
+	string sortedA = a;
+	sort(sortedA.begin(), sortedA.end());
+	for (int i = 0; i < a.size() - 1; i++)
+	{
+		char cur = a[i];
+		char canBe = sortedA[i];
+
+		swap(a[i], a[lastOccurance[canBe]]);
+
+		if (a < b)
 		{
-			if (v[i] * 2 <= v[mid])
-			{
-				ans --;
-				mid++;
-				break;
-			}
-			else
-			{
-				mid++;
-			}
-			if (mid == n)
-			{
-				break;
-			}
+			cout << a << endl;
+			return;
 		}
-		if (mid == n)
-		{
-			break;
-		}
+		swap(a[i], a[lastOccurance[canBe]]);
 	}
+	cout << "---" << endl;
 
-	cout << ans << endl;
 }
 void setUpLocal()
 {
@@ -130,7 +117,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
