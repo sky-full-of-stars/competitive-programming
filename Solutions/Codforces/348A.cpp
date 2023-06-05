@@ -73,50 +73,16 @@ const int maxN = 1e7;
 
 void solve()
 {
-	string s1, s2;
-	cin >> s1 >> s2;
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
 
-	int n = sz(s1);
-	int m = sz(s2);
-	int ans = 0;
+	int s = accumulate(all(v), 0ll);
+	int mx = *max_element(all(v));
 
-	/*
-		range from [strt, end] is cut off in s1.
-		choose to form s2 from remaining elements of s1.
-	*/
-	for (int strt = 0; strt < n; strt++)
-	{
-		for (int end = strt; end < n; end++)
-		{
-			bool possible = false;
-			int idx = 0;
-			for (int i = 0; i < n ; i++)
-			{
-				if (i >= strt and i <= end)
-				{
-					continue;
-				}
-
-				if (s1[i] == s2[idx])
-				{
-					idx++;
-					if (idx == m)
-					{
-						possible = true;
-						break;
-					}
-				}
-			}
-			if (possible)
-			{
-				ans = max(ans, end - strt + 1);
-			}
-		}
-
-	}
-	cout << ans << endl;
-
+	int eqnVal = ceil((double)s / (n - 1));
+	cout << max(mx, eqnVal) << endl;
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE

@@ -73,48 +73,48 @@ const int maxN = 1e7;
 
 void solve()
 {
-	string s1, s2;
-	cin >> s1 >> s2;
+	int n, h;
+	cin >> n >> h;
 
-	int n = sz(s1);
-	int m = sz(s2);
-	int ans = 0;
+	int mxBoth = -INF;
+	int mxSingle = 0;
 
-	/*
-		range from [strt, end] is cut off in s1.
-		choose to form s2 from remaining elements of s1.
-	*/
-	for (int strt = 0; strt < n; strt++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int end = strt; end < n; end++)
-		{
-			bool possible = false;
-			int idx = 0;
-			for (int i = 0; i < n ; i++)
-			{
-				if (i >= strt and i <= end)
-				{
-					continue;
-				}
-
-				if (s1[i] == s2[idx])
-				{
-					idx++;
-					if (idx == m)
-					{
-						possible = true;
-						break;
-					}
-				}
-			}
-			if (possible)
-			{
-				ans = max(ans, end - strt + 1);
-			}
-		}
-
+		int a, b; cin >> a >> b;
+		mxBoth = max(mxBoth, a - b);
+		mxSingle = max(mxSingle, a);
 	}
-	cout << ans << endl;
+
+	if (mxBoth <= 0 and h > mxSingle)
+	{
+		cout << -1 << endl;
+		return;
+	}
+
+	if (h <= mxSingle)
+	{
+		cout << 1 << endl;
+		return;
+	}
+	else
+	{
+		int opt1 = ceil((double)(h - mxSingle) / mxBoth) + 1;
+		int opt2 = ceil((double)h / mxBoth);
+		cout << min(opt1, opt2) << endl;
+		//int ans = 0;
+		// while (h > mxSingle)
+		// {
+		// 	h -= mxBoth;
+		// 	ans++;
+		// }
+		// if (h > 0)
+		// {
+		// 	ans++;
+		// }
+		//cout << ans << endl;
+		return;
+	}
 
 }
 void setUpLocal()
@@ -128,7 +128,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

@@ -28,7 +28,7 @@ typedef unordered_map<int, int> umi;
 //---------------------------------------------------------------------------------------------------------//
 #define EPS 1e-9
 #define INF LLONG_MAX
-const int mod = 1000 * 1000 * 1000 + 7; //1e9+7
+const int mod = 998244353;
 const double PI = 3.14159265358979323846264;
 const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
 //const int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1}, dy[8] = {0, 1, 0, -1, -1, 1, -1, 1};
@@ -73,49 +73,30 @@ const int maxN = 1e7;
 
 void solve()
 {
-	string s1, s2;
-	cin >> s1 >> s2;
+	int n; cin >> n;
+	vi v1(n);
+	vi v2(n);
+	ipArr(v1, n);
+	ipArr(v2, n);
 
-	int n = sz(s1);
-	int m = sz(s2);
-	int ans = 0;
-
-	/*
-		range from [strt, end] is cut off in s1.
-		choose to form s2 from remaining elements of s1.
-	*/
-	for (int strt = 0; strt < n; strt++)
+	//v1[i] * v2[i]...
+	// v1[i] occurs i*(n-i+1) times
+	vi vals(n);
+	for (int i = 0; i < n; i++)
 	{
-		for (int end = strt; end < n; end++)
-		{
-			bool possible = false;
-			int idx = 0;
-			for (int i = 0; i < n ; i++)
-			{
-				if (i >= strt and i <= end)
-				{
-					continue;
-				}
-
-				if (s1[i] == s2[idx])
-				{
-					idx++;
-					if (idx == m)
-					{
-						possible = true;
-						break;
-					}
-				}
-			}
-			if (possible)
-			{
-				ans = max(ans, end - strt + 1);
-			}
-		}
-
+		vals.push_back(v1[i] * (i + 1) * (n - i));
 	}
-	cout << ans << endl;
+	sort(vals.rbegin(), vals.rend()); // maximums first
 
+	sortv(v2); // mins first;
+
+	int ans = 0;
+	for (int i = 0; i < n; i++)
+	{
+		ans = (ans + (vals[i] % mod * v2[i]) % mod) % mod;
+	}
+
+	cout << ans << endl;
 }
 void setUpLocal()
 {
