@@ -71,137 +71,60 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 const int maxN = 1e7;
 
-int max(int a, int b)
-{
-	return a >= b ? a : b;
-}
-char intToChar(int c)
-{
-	return (char)(c + 64);
-}
-int charToInt(char c)
-{
-	return (int)(c - 'A' + 1);
-}
-
-bool rcformat(string s)
-{
-	bool lettersOver = false;
-	for (int i = 0; i < sz(s); i++)
-	{
-		char c = s[i];
-		if (!isdigit(c))
-		{
-			if (!lettersOver)
-			{
-				continue;
-			}
-			else
-			{
-				return true;
-			}
-
-		}
-		else
-		{
-			if (!lettersOver)
-			{
-				lettersOver = true;
-			}
-			else
-			{
-				continue;
-			}
-		}
-	}
-	return false;
-}
-
-pi getRC(string s)
-{
-	int i = 1;
-	while (isdigit(s[i]))
-	{
-		i++;
-	}
-	int row = stoi(s.substr(1, i));
-	i++;
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string getCol(int c)
-{
-	string s2 = "";
-
-	while (c)
-	{
-		int rem = c % 26;
-		if (rem)
-		{
-			s2 = intToChar(rem) + s2;
-			c /= 26;
-		}
-		else
-		{
-			s2 = "Z" + s2;
-			c /= 26;
-			c--;
-		}
-
-	}
-	return s2;
-}
-
-string f1(string s)
-{
-	pi rowcol = getRC(s);
-	string col = getCol(rowcol.ss);
-	return col + to_string(rowcol.ff);
-}
-
-pair<string, int> getRC2(string s)
-{
-	int i = 0;
-	while (!isdigit(s[i]))
-	{
-		i++;
-	}
-	string row = s.substr(0, i);
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string f2(string s)
-{
-	pair<string, int> rowcol = getRC2(s);
-
-	int col = 0;
-	int multiple = 1;
-	string colS = rowcol.ff;
-	for (int i = sz(colS) - 1; i >= 0; i--)
-	{
-		int val = charToInt(colS[i]);
-		col += (multiple * val);
-		multiple *= 26;
-	}
-	string row = to_string(rowcol.ss);
-	return "R" + row + "C" + to_string(col);
-}
-
 void solve()
 {
-	string s; cin >> s;
+	int n, m;
+	cin >> n >> m;
 
-	if (rcformat(s))
+	int v[n][m];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			cin >> v[i][j];
+
+	int unique_row = 0;
+	for (int i = 0; i < n; i++)
 	{
-		cout << f1(s);
+		set<int> distinct;
+		for (int j = 0; j < m; j++)
+		{
+			distinct.insert(v[i][j]);
+		}
+		if (sz(distinct) > 1)
+		{
+			unique_row = i;
+			break;
+		}
 	}
-	else
+
+	int exor = 0;
+	for (int i = 0; i < n; i++)
 	{
-		cout << f2(s);
+		if (i != unique_row)
+		{
+			exor ^= v[i][0];
+		}
 	}
-	cout << endl;
+
+	for (int i = 0; i < m; i++)
+	{
+		if ((exor ^ v[unique_row][i]) > 0)
+		{
+			cout << "TAK" << endl;
+			for (int j = 0; j < n; j++)
+			{
+				if (j == unique_row)
+				{
+					cout << i + 1 << " ";
+				}
+				else
+				{
+					cout << 1 << " ";
+				}
+			}
+			return;
+		}
+	}
+	cout << "NIE" << endl;
 }
 void setUpLocal()
 {
@@ -214,7 +137,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

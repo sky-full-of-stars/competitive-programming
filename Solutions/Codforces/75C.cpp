@@ -1,5 +1,4 @@
 #include "bits/stdc++.h"
-
 #ifndef ONLINE_JUDGE
 #include <bits/headerfile.hpp>
 #else
@@ -9,7 +8,6 @@
 //---------------------------------------------------------------------------------------------------------//
 using namespace std;
 
-#define int long long int
 #define cont continue;
 #define ff first
 #define ss second
@@ -69,139 +67,69 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
-
-int max(int a, int b)
+si getAllDivisors(int n)
 {
-	return a >= b ? a : b;
-}
-char intToChar(int c)
-{
-	return (char)(c + 64);
-}
-int charToInt(char c)
-{
-	return (int)(c - 'A' + 1);
-}
-
-bool rcformat(string s)
-{
-	bool lettersOver = false;
-	for (int i = 0; i < sz(s); i++)
+	si ans;//possibleGcds
+	for (int i = 1; i * i <= n ; i++)
 	{
-		char c = s[i];
-		if (!isdigit(c))
+		if (n % i == 0)
 		{
-			if (!lettersOver)
-			{
-				continue;
-			}
-			else
-			{
-				return true;
-			}
-
-		}
-		else
-		{
-			if (!lettersOver)
-			{
-				lettersOver = true;
-			}
-			else
-			{
-				continue;
-			}
+			ans.insert(i);
+			ans.insert(n / i);
 		}
 	}
-	return false;
+	return ans;
 }
 
-pi getRC(string s)
+int _gcd(int a, int b)
 {
-	int i = 1;
-	while (isdigit(s[i]))
-	{
-		i++;
-	}
-	int row = stoi(s.substr(1, i));
-	i++;
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string getCol(int c)
-{
-	string s2 = "";
-
-	while (c)
-	{
-		int rem = c % 26;
-		if (rem)
-		{
-			s2 = intToChar(rem) + s2;
-			c /= 26;
-		}
-		else
-		{
-			s2 = "Z" + s2;
-			c /= 26;
-			c--;
-		}
-
-	}
-	return s2;
-}
-
-string f1(string s)
-{
-	pi rowcol = getRC(s);
-	string col = getCol(rowcol.ss);
-	return col + to_string(rowcol.ff);
-}
-
-pair<string, int> getRC2(string s)
-{
-	int i = 0;
-	while (!isdigit(s[i]))
-	{
-		i++;
-	}
-	string row = s.substr(0, i);
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string f2(string s)
-{
-	pair<string, int> rowcol = getRC2(s);
-
-	int col = 0;
-	int multiple = 1;
-	string colS = rowcol.ff;
-	for (int i = sz(colS) - 1; i >= 0; i--)
-	{
-		int val = charToInt(colS[i]);
-		col += (multiple * val);
-		multiple *= 26;
-	}
-	string row = to_string(rowcol.ss);
-	return "R" + row + "C" + to_string(col);
+	return b == 0 ? a : gcd(b, a % b);
 }
 
 void solve()
 {
-	string s; cin >> s;
+	int n, m; cin >> n >> m;
+	int gcd = _gcd(n, m);
+	debug(gcd);
+	si factors = getAllDivisors(gcd);
+	vi v(factors.begin(), factors.end());
+	debug(v);
 
-	if (rcformat(s))
+	int t; cin >> t;
+	while (t--)
 	{
-		cout << f1(s);
+		int l, r; cin >> l >> r;
+
+		auto itr = lower_bound(all(v), r);
+		int idx = itr - v.begin();
+		if (v[idx] == r)
+		{
+			cout << v[idx] << endl;
+			continue;
+		}
+		else
+		{
+			idx --;
+			if (idx >= 0)
+			{
+				if ( v[idx] >= l and v[idx] <= r)
+				{
+					cout << v[idx] << endl;
+					continue;
+				}
+				else
+				{
+					cout << -1 << endl;
+					continue;
+				}
+			}
+			else
+			{
+				cout << -1 << endl;
+				continue;
+			}
+		}
 	}
-	else
-	{
-		cout << f2(s);
-	}
-	cout << endl;
 }
 void setUpLocal()
 {
@@ -214,7 +142,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

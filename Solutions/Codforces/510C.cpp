@@ -70,139 +70,139 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-
-int max(int a, int b)
-{
-	return a >= b ? a : b;
-}
-char intToChar(int c)
-{
-	return (char)(c + 64);
-}
+vector<int> gp[27];
+pair<char, char> none = {'-', '-'};
+pair<char, char> impossible = {'*', '*'};
+vi indegree;
+bool vis[27];
+bool dfsVis[27];
 int charToInt(char c)
 {
-	return (int)(c - 'A' + 1);
+	return (int)(c - 'a' + 1);
 }
 
-bool rcformat(string s)
+char intToChar(int c)
 {
-	bool lettersOver = false;
-	for (int i = 0; i < sz(s); i++)
+	return (char)(c + 96);
+}
+
+vi path;
+void dfs(int from, stack<int> &s)
+{
+	vis[from] = true;
+	for (auto i : gp[from])
 	{
-		char c = s[i];
-		if (!isdigit(c))
+		if (!vis[i])
 		{
-			if (!lettersOver)
-			{
-				continue;
-			}
-			else
+			dfs(i, s);
+		}
+	}
+	s.push(from);
+}
+
+bool cycle(int from)
+{
+	vis[from] = true;
+	dfsVis[from] = true;
+	for (auto i : gp[from])
+	{
+		if (!vis[i])
+		{
+			if (cycle(i))
 			{
 				return true;
 			}
-
 		}
-		else
+		else if (dfsVis[i])
 		{
-			if (!lettersOver)
-			{
-				lettersOver = true;
-			}
-			else
-			{
-				continue;
-			}
+			return true;
 		}
 	}
+	dfsVis[from] = false;
 	return false;
 }
-
-pi getRC(string s)
+pair<char, char> getFirstDifferingChars(string s1, string s2)
 {
-	int i = 1;
-	while (isdigit(s[i]))
-	{
-		i++;
-	}
-	int row = stoi(s.substr(1, i));
-	i++;
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string getCol(int c)
-{
-	string s2 = "";
-
-	while (c)
-	{
-		int rem = c % 26;
-		if (rem)
-		{
-			s2 = intToChar(rem) + s2;
-			c /= 26;
-		}
-		else
-		{
-			s2 = "Z" + s2;
-			c /= 26;
-			c--;
-		}
-
-	}
-	return s2;
-}
-
-string f1(string s)
-{
-	pi rowcol = getRC(s);
-	string col = getCol(rowcol.ss);
-	return col + to_string(rowcol.ff);
-}
-
-pair<string, int> getRC2(string s)
-{
+	int n = sz(s1);
+	int m = sz(s2);
 	int i = 0;
-	while (!isdigit(s[i]))
+	while (i < n and i < m)
 	{
+		if (s1[i] != s2[i])
+		{
+			return {s1[i], s2[i]};
+		}
 		i++;
 	}
-	string row = s.substr(0, i);
-	int col = stoi(s.substr(i, sz(s)));
-	return {row, col};
-}
-
-string f2(string s)
-{
-	pair<string, int> rowcol = getRC2(s);
-
-	int col = 0;
-	int multiple = 1;
-	string colS = rowcol.ff;
-	for (int i = sz(colS) - 1; i >= 0; i--)
+	if (i == n)
 	{
-		int val = charToInt(colS[i]);
-		col += (multiple * val);
-		multiple *= 26;
+		return none;
 	}
-	string row = to_string(rowcol.ss);
-	return "R" + row + "C" + to_string(col);
+	else
+	{
+		return impossible;
+	}
 }
 
 void solve()
 {
-	string s; cin >> s;
+	int n; cin >> n;
+	vector<string> v(n);
+	ipArr(v, n);
 
-	if (rcformat(s))
+	for (int i = 1; i < n; i++)
 	{
-		cout << f1(s);
+		pair<char, char> diff = getFirstDifferingChars(v[i - 1], v[i]);
+		if (diff == none)
+		{
+			continue;
+		}
+		if (diff == impossible)
+		{
+			cout << "Impossible" << endl;
+			return;
+		}
+		debug(diff);
+		int from = charToInt(diff.ff);
+		int to = charToInt(diff.ss);
+		if (from != to)
+			gp[from].push_back(to);
 	}
-	else
+
+	for (int i = 1; i <= 26; i++)
 	{
-		cout << f2(s);
+		if (!vis[i] and sz(gp[i]) > 0)
+		{
+			if (cycle(i))
+			{
+				cout << "Impossible" << endl;
+				return;
+			}
+		}
 	}
-	cout << endl;
+	memset(vis, false, sizeof vis);
+	stack<int> s;
+	for (int i = 1; i <= 26; i++)
+	{
+		if (!vis[i] and sz(gp[i]) > 0)
+		{
+			dfs(i, s);
+		}
+	}
+	while (!s.empty())
+	{
+		cout << intToChar(s.top());
+		s.pop();
+	}
+	for (int i = 1; i <= 26; i++)
+	{
+		if (!vis[i])
+		{
+			cout << intToChar(i);
+		}
+	}
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -210,11 +210,12 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
+
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
