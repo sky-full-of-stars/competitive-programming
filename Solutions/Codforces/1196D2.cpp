@@ -70,17 +70,40 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-int min(int a, int b)
-{
-	return a <= b ? a : b;
-}
 
 void solve()
 {
 	int n, k; cin >> n >> k;
-	k = min(k, 30);
-	int ans = 0;
-	ans = min(1 << k, n + 1);
+	string s; cin >> s;
+
+	string expected = "RGB";
+
+	int ans = INF;
+	for (int offset = 0; offset < 3; offset++)
+	{
+		vi diff(n, 0); //binary array depecting if values differ or not
+		diff[-1] = 0;
+		int curCount = 0; //cumulative num of differences so far
+		for (int strt = 0; strt < n; strt++)
+		{
+			//cerr << expected[(offset + strt) % 3] << " " << s[strt] << endl;
+			if (expected[(offset + strt) % 3] != s[strt])
+			{
+				diff[strt] = (((strt - 1) >= 0) ? diff[strt - 1] : 0 ) + 1;
+			}
+			else
+			{
+				diff[strt] = (strt - 1 >= 0) ? diff[strt - 1] : 0;
+			}
+
+			if (strt >= k - 1)
+			{
+				curCount = diff[strt] - diff[strt - k];
+				ans = min(ans, curCount);
+			}
+		}
+		//debug(offset, diff);
+	}
 	cout << ans << endl;
 
 }

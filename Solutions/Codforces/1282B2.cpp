@@ -70,19 +70,36 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-int min(int a, int b)
-{
-	return a <= b ? a : b;
-}
 
 void solve()
 {
-	int n, k; cin >> n >> k;
-	k = min(k, 30);
-	int ans = 0;
-	ans = min(1 << k, n + 1);
-	cout << ans << endl;
+	int n, p, k; cin >> n >> p >> k;
+	vi v(n); ipArr(v, n); sortv(v);
 
+	/*
+	if we buy products till i (also same as if we buy i products)
+	whats the min amount we have to pay
+
+	It also makes no sense to take not the cheapest gifts without a stock,
+	since the total cost from this will only increase.
+	*/
+	vi dp(n + 1);
+	dp[0] = 0;
+	int ans = 0;
+	for (int i = 1; i < k; i++)
+	{
+		dp[i] = dp[i - 1] + v[i - 1];
+		if (dp[i] <= p)
+			ans = i;
+	}
+	for (int i = k; i <= n; i++)
+	{
+		dp[i] = v[i - 1] + dp[i - k];
+		if (dp[i] <= p)
+			ans = i;
+	}
+	//debug(dp);
+	cout << ans << endl;
 }
 void setUpLocal()
 {

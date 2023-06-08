@@ -69,20 +69,48 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 1e7;
-int min(int a, int b)
+const int maxN = 2 * 1e5 + 1;
+
+bool ok(int x, vi& v, int& n)
 {
-	return a <= b ? a : b;
+	int l = 0, r = 0;
+
+	while (r < n and (v[r] - v[l] + 1) / 2 <= x) r++;
+
+	l = r;
+	while (r < n and (v[r] - v[l] + 1) / 2 <= x) r++;
+
+	l = r;
+	while (r < n and (v[r] - v[l] + 1) / 2 <= x) r++;
+
+	return (r == n);
 }
 
 void solve()
 {
-	int n, k; cin >> n >> k;
-	k = min(k, 30);
-	int ans = 0;
-	ans = min(1 << k, n + 1);
-	cout << ans << endl;
+	int n;
+	cin >> n;
+	vi v(n);
+	ipArr(v, n);
+	sortv(v);
 
+	int lo = 0, hi = (int)1e9;
+	int ans = 0;
+	while (lo <= hi)
+	{
+		int mid = (lo + hi) / 2;
+		if (ok(mid, v, n))
+		{
+			ans = mid;
+			hi = mid - 1;
+		}
+		else
+		{
+			lo = mid + 1;
+		}
+	}
+
+	cout << ans << endl;
 }
 void setUpLocal()
 {

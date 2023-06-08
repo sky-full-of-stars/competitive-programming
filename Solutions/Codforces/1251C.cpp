@@ -70,17 +70,61 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 
 
 const int maxN = 1e7;
-int min(int a, int b)
-{
-	return a <= b ? a : b;
-}
 
 void solve()
 {
-	int n, k; cin >> n >> k;
-	k = min(k, 30);
-	int ans = 0;
-	ans = min(1 << k, n + 1);
+	string s; cin >> s;
+	int n = sz(s);
+
+	string even, odd;
+	for (auto i : s)
+	{
+		int ele = (int)(i - '0');
+		if (ele % 2 == 0)
+			even += i;
+		else
+			odd += i;
+	}
+
+	reverse(all(even));
+	reverse(all(odd));
+
+	//debug(even, odd);
+
+	string ans = "";
+	while (!odd.empty() or !even.empty())
+	{
+		if (odd.empty())
+		{
+			while (!even.empty())
+			{
+				ans += even.back();
+				even.pop_back();
+			}
+			continue;
+		}
+		if (even.empty())
+		{
+			while (!odd.empty())
+			{
+				ans += odd.back();
+				odd.pop_back();
+			}
+			continue;
+		}
+		if (odd.back() < even.back())
+		{
+			ans += odd.back();
+			odd.pop_back();
+			continue;
+		}
+		if (even.back() < odd.back())
+		{
+			ans += even.back();
+			even.pop_back();
+			continue;
+		}
+	}
 	cout << ans << endl;
 
 }
