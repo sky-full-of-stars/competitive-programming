@@ -28,7 +28,7 @@ typedef unordered_map<int, int> umi;
 //---------------------------------------------------------------------------------------------------------//
 #define EPS 1e-9
 #define INF LLONG_MAX
-const int mod = 1000 * 1000 * 1000 + 7; //1e9+7
+const int mod = 998244353;
 const double PI = 3.14159265358979323846264;
 const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
 //const int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1}, dy[8] = {0, 1, 0, -1, -1, 1, -1, 1};
@@ -69,60 +69,47 @@ bool isPowOfTwo(int x) {return (x && (!(x & (x - 1))));}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int maxN = 2e5 + 7;
-vector<int> gp[maxN];
-int level[maxN];
-int noOfChildren[maxN];
+const int maxN = 1e7;
 
-void dfs(int cur, int par = -1, int lvl = 0)
+int multiply(int a, int b)
 {
-	level[cur] = lvl;
-	int subTreeCount = 0;
+	return (a * b) % mod;
+}
 
-	for (auto child : gp[cur])
+int binpow(int a, int b)
+{
+	int ans = 1;
+	while (b > 0)
 	{
-		if (child != par)
+		if (b & 1)
 		{
-			dfs(child, cur, lvl + 1);
-			subTreeCount +=  noOfChildren[child];
+			ans = multiply(ans , a);
 		}
+		a = multiply(a , a);
+		b /= 2;
 	}
-	subTreeCount += 1;
-	noOfChildren[cur] = subTreeCount;
+	return ans;
+}
+
+int divide(int a, int b)
+{
+	return multiply(a, binpow(b, mod - 2));
 }
 
 void solve()
 {
-	int n; int k;
-	cin >> n >> k;
+	int n; cin >> n;
 
-	int u, v;
-	for (int i = 0; i < n - 1; i++)
+	vi fib(n + 1);
+	fib[0] = 0;
+	fib[1] = 1;
+	for (int i = 2; i <= n; i++)
 	{
-		cin >> u >> v;
-		gp[u].pb(v);
-		gp[v].pb(u);
+		fib[i] = (fib[i - 1] + fib[i - 2]) % mod;
 	}
-
-	dfs(1);
-
-	vi contribution;
-	//distanceFromRoot - numOfNodesBelowThisCurNode
-	for (int i = 1; i <= n; i++)
-	{
-		contribution.pb(level[i] - (noOfChildren[i] - 1));
-	}
-
-	sortv(contribution);
-	reverse(all(contribution));
-
-	int ans = 0;
-	for (int i = 0; i < k; i++)
-	{
-		ans += (contribution[i]);
-	}
-	cout << ans << endl;
+	cout << divide(fib[n], binpow(2, n)) << endl;
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -130,6 +117,7 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
+
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
