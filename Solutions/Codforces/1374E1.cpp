@@ -90,58 +90,78 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
-int ans;
-int dp[1005][1005][2];
+
 void clear()
 {
-	ans = 0;
-	memset(dp, -1, sizeof dp);
+
 }
-int n, k;
-int findH(int poleNo, int k, int dir)
-{
-	if (dp[poleNo][k][dir] != -1)
-	{
-		return dp[poleNo][k][dir];
-	}
 
-	int cnt = 0;
-	if (poleNo == 0 or poleNo == n + 1)
-	{
-		return 1;
-	}
-
-	if (dir)
-	{
-		cnt += findH(poleNo + 1, k, dir);
-		cnt %= MOD;
-
-		if (poleNo > 0 and poleNo <= n and k - 1 > 0)
-		{
-			cnt +=  findH(poleNo - 1, k - 1, dir ^ 1);
-			cnt %= MOD;
-		}
-
-	}
-	else
-	{
-		cnt += findH(poleNo - 1, k, dir);
-		cnt %= MOD;
-
-		if (poleNo > 0 and poleNo <= n  and k - 1 > 0)
-		{
-			cnt += findH(poleNo + 1, k - 1, dir ^ 1);
-			cnt %= MOD;
-		}
-	}
-
-	return dp[poleNo][k][dir] = cnt;
-}
 void solve()
 {
-	memset(dp, -1, sizeof dp);
-	cin >> n >> k;
-	cout << findH(1, k, 1) << endl;
+	int n, k; cin >> n >> k;
+	vi both, alice, bob;
+
+	for (int i = 0; i < n; i++)
+	{
+		int time, a, b;
+		cin >> time >> a >> b;
+
+		if (a & b)
+		{
+			both.pb(time);
+		}
+		else if (a and !b)
+		{
+			alice.pb(time);
+		}
+		else if (b and !a)
+		{
+			bob.pb(time);
+		}
+	}
+
+	sortv(both);
+	sortv(alice);
+	sortv(bob);
+
+	int aidx = 0, bidx = 0, bothidx = 0;
+
+	int ans = 0;
+	while (bothidx < sz(both) and k)
+	{
+		if (aidx < sz(alice) and bidx < sz(bob))
+		{
+			if (alice[aidx] + bob[bidx] < both[bothidx])
+			{
+				ans += (alice[aidx] + bob[bidx]);
+				aidx++;
+				bidx++;
+			}
+			else
+			{
+				ans += both[bothidx];
+				bothidx++;
+			}
+			k--;
+		}
+		else
+		{
+			ans += both[bothidx];
+			bothidx++;
+			k--;
+		}
+	}
+
+	while (aidx < sz(alice) and bidx < sz(bob) and k)
+	{
+		ans += (alice[aidx] + bob[bidx]);
+		aidx++;
+		bidx++;
+		k--;
+	}
+
+	cout << (!k ? ans : -1) << endl;
+
 	clear();
 }
 void setUpLocal()
@@ -155,7 +175,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
