@@ -94,13 +94,65 @@ const int N = 1e7;
 void clear()
 {
 
+
 }
 
 void solve()
 {
+	int n, k; read(n, k);
+
+	int r;
+	if (k == 0)
+	{
+		r = 0;
+	}
+	else if (k % n == 0)
+	{
+		r = 0;
+	}
+	else
+	{
+		r = 1;
+	}
+	cout << 2 * pow(r, 2) << endl;
 
 
+	int ans[n][n];
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			ans[i][j] = 0;
+		}
+	}
+	int cnt = 0;
+	vi lastFilledIdxInRow(n);
+	for (int i = 0; i < n and cnt < k; i++)
+	{
+		ans[i][i] = 1;
+		lastFilledIdxInRow[i] = i;
+		cnt++;
+	}
 
+	while (cnt < k)
+	{
+		for (int i = 0; i < n and cnt < k; i++)
+		{
+			int newCol = (lastFilledIdxInRow[i] + 1) % n;
+			ans[i][newCol] = 1;
+			lastFilledIdxInRow[i] = newCol;
+			cnt++;
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cout << ans[i][j];
+		}
+		cout << endl;
+	}
 	clear();
 }
 void setUpLocal()
@@ -114,7 +166,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
