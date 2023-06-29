@@ -28,8 +28,8 @@ typedef map<int, int> mi;
 const int MOD = 1e9 + 7;
 const double PI = 3.14159265358979323846264;
 
-#define yes cout << "Yes" << endl
-#define no cout << "No" << endl
+#define yes cout << "YES" << endl
+#define no cout << "NO" << endl
 const pi steps[] = {{1, 0}, {0, 1}, { -1, 0}, {0, -1}, {1, -1}, {1, 1}, { -1, -1}, { -1, 1}}; //for (auto [dx,dy] : steps)
 //const int dx[8] = {1, 0, -1, 0, 1, 1, -1, -1}, dy[8] = {0, 1, 0, -1, -1, 1, -1, 1};
 
@@ -95,11 +95,36 @@ void clear()
 {
 
 }
-
+//https://www.youtube.com/watch?v=GQK6c_B4NKM
 void solve()
 {
+	int a, b, x; read(a, b, x);
 
-
+	while (true)
+	{
+		if (a < b)
+		{
+			swap(a, b);
+		}
+		if (a == x or b == x)
+		{
+			yes; return;
+		}
+		if (!a or !b)
+		{
+			no; return;
+		}
+		if ((a > x) and (a - x) % b == 0)
+		{
+			yes; return;
+		}
+		else
+		{
+			int temp = a;
+			a = b;
+			b = temp % b;
+		}
+	}
 
 	clear();
 }
