@@ -1,8 +1,8 @@
 #include "bits/stdc++.h"
-using namespace std;
-#pragma GCC diagnostic ignored "-Wunused-variable" // Ignore unused variable warning
-#pragma GCC diagnostic ignored "-Wunknown-pragmas" // Ignore unknown pragmas warning
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 
+using namespace std;
 //---------------------------------------------------------------------------------------------------------//
 
 #define int long long int
@@ -100,16 +100,57 @@ void clear()
 
 void solve()
 {
+	int n; cin >> n;
+	string a, b; read(a, b);
 
+	int c00 = 0, c11 = 0, c01 = 0, c10 = 0;
+	for (int i = 0; i < n; i++)
+	{
+		char atA = a[i];
+		char atB = b[i];
+		if (atA == '0' and atB == '0') c00++;
+		if (atA == '0' and atB == '1') c01++;
+		if (atA == '1' and atB == '0') c10++;
+		if (atA == '1' and atB == '1') c11++;
+	}
 
+	int ans = INT_MAX;
 
+	if (c10 == c01)
+	{
+		ans = c10 + c01;
+	}
 
+	//pick candle 10 change rest all
+	if (c10 > 0)
+	{
+		int new00 = c10 - 1;
+		int new01 = c11;
+		int new11 = c01;
+		int new10 = c00 + 1;
 
+		if (new10 == new01)
+		{
+			//https://codeforces.com/blog/entry/98253#comment-870872
+			ans = min(ans, 1 + new10 + new01);
+		}
+	}
 
+	//pick candle 11 change rest all
+	if (c11 > 0)
+	{
+		int new00 = c10;
+		int new01 = c11 - 1;
+		int new11 = c01 + 1;
+		int new10 = c00;
 
+		if (new10 == new01)
+		{
+			ans = min(ans, 1 + new10 + new01);
+		}
+	}
 
-
-
+	cout << ((ans == INT_MAX) ? -1 : ans) << endl;
 
 	clear();
 }
@@ -124,7 +165,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
