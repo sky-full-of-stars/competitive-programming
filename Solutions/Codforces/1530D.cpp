@@ -107,54 +107,25 @@ void solve()
 	{
 		cin >> v[i];
 	}
-	vector<bool> used(n + 1, false);
-
-	int ans = 0;
-	vi satisifaction(n + 1, -1);
+	cout << n << endl;
 	for (int i = 1; i <= n; i++)
 	{
-		if (!used[v[i]] and v[i] != i)
-		{
-			used[v[i]] = true;
-			ans++;
-			satisifaction[i] = v[i];
-		}
-	}
-
-	cout << ans << endl;
-	int cur = 1;
-	for (int i = 1; i <= n; i++)
-	{
-		if (satisifaction[i] != -1)
-		{
-			continue;
-		}
-		while (cur <= n and used[cur])
-		{
-			cur++;
-		}
-		satisifaction[i] = cur;
-		used[cur] = true;
-	}
-
-	for (int i = 1; i <= n; i++)
-	{
-		cout << satisifaction[i] << " ";
+		cout << v[i] << " ";
 	}
 	cout << endl;
 	clear();
 }
-void setUpLocal()
-{
-#ifndef ONLINE_JUDGE
-	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
-	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
-#endif
-}
+// void setUpLocal()
+// {
+// #ifndef ONLINE_JUDGE
+// 	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
+// 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
+// #endif
+// }
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
-	setUpLocal();
+	//setUpLocal();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;

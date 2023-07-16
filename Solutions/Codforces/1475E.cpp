@@ -176,10 +176,10 @@ void solve()
 
 void setUpLocal()
 {
-#ifndef ONLINE_JUDGE
-	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
-	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
-#endif
+// #ifndef ONLINE_JUDGE
+// 	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
+// 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
+// #endif
 }
 int32_t main()
 {
