@@ -103,29 +103,81 @@ void solve()
 {
 	int n; cin >> n;
 	vi v(n + 1);
+
+	map<int, si> beingGiftedBy;
+	vi ans(n + 1);
 	for (int i = 1; i <= n; i++)
 	{
 		cin >> v[i];
+		beingGiftedBy[v[i]].insert(i);
+		ans[i] = v[i];
 	}
-	cout << n << endl;
+	debug(beingGiftedBy);
+	cout << sz(beingGiftedBy) << endl;
+	vi peopleWithNoGifts;
 	for (int i = 1; i <= n; i++)
 	{
-		cout << v[i] << " ";
+		if (sz(beingGiftedBy[i]) == 0)
+		{
+			peopleWithNoGifts.pb(i);
+		}
+	}
+	debug(peopleWithNoGifts);
+	debug(beingGiftedBy);
+
+	int idx = 0;
+	for (auto ele : beingGiftedBy)
+	{
+		si gifters = ele.ss;
+		int giftersSz = sz(gifters);
+		if (giftersSz == 1 or giftersSz == 0)
+		{
+			continue;
+		}
+
+		giftersSz --; // leave 1 gifter to ele.ff
+		while (giftersSz--) // other gifters should gift `peopleWithNoGifts`
+		{
+			int gifterConsidered = -1;
+			for (auto gifter : gifters)
+			{
+				int personToGetGift = peopleWithNoGifts[idx];
+				if (gifter != personToGetGift)
+				{
+					ans[gifter] = personToGetGift;
+					gifterConsidered = gifter;
+					idx++;
+					debug(idx);
+					break;
+				}
+			}
+			gifters.erase(gifterConsidered);
+		}
+		if (idx == sz(peopleWithNoGifts))
+		{
+			break;
+		}
+	}
+
+	for (int i = 1; i <= n; i++)
+	{
+		cout << ans[i] << " ";
 	}
 	cout << endl;
+
 	clear();
 }
-// void setUpLocal()
-// {
-// #ifndef ONLINE_JUDGE
-// 	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
-// 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
-// #endif
-// }
+void setUpLocal()
+{
+#ifndef ONLINE_JUDGE
+	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
+	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
+#endif
+}
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
-	//setUpLocal();
+	setUpLocal();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
