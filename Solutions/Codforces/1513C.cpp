@@ -92,52 +92,38 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
-
+const int N = 2e5 + 5;
+int dp[N][11];
 void clear()
 {
 
 }
-
-void solveEven(vi& v, int n)
+void init()
 {
-	for (int i = 0; i < n; i += 2)
+	for (int i = 0; i < 10; i++)
 	{
-		cout << v[i + 1] << " " << -v[i] << " ";
+		dp[0][i] = 1;
 	}
-}
-
-void solveOdd(int a, int b, int c)
-{
-	if (a + b != 0)
+	for (int i = 1; i < N; i++)
 	{
-		cout << -c << " " << -c << " " << (a + b) << " ";
-	}
-	else if (a + c != 0)
-	{
-		cout << -b << " " << (a + c) << " " << -b << " ";
-	}
-	else if (b + c != 0)
-	{
-		cout << b + c << " " << -a << " " << -a << " ";
+		for (int j = 0; j < 9; j++)
+		{
+			dp[i][j] = dp[i - 1][j + 1];
+		}
+		dp[i][9] = (dp[i - 1][1] + dp[i - 1][0]) % MOD;
 	}
 }
 void solve()
 {
-	int n; cin >> n;
-	vi v(n); ipArr(v, n);
+	string s; int m;
+	cin >> s >> m;
 
-	if (n & 1)
+	int ans = 0;
+	for (char c : s)
 	{
-		solveEven(v, n - 3);
-		int a = v[n - 3], b = v[n - 2], c = v[n - 1];
-		solveOdd(a, b, c);
+		ans = (ans + dp[m][c - '0']) % MOD;
 	}
-	else
-	{
-		solveEven(v, n);
-	}
-	cout << endl;
+	cout << ans << endl;
 
 	clear();
 }
@@ -152,6 +138,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
+	init();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
