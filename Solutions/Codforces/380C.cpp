@@ -92,41 +92,98 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int MAXN = 2e5 + 5;
+const int N = 1e7;
 
-
-void solve() {
-	int n;
-	cin >> n;
-	vi v(n); ipArr(v, n);
-
-	mi cnt;
-	for (auto i : v)
+class node
+{
+public:
+	int close, open, full;
+public:
+	node()
 	{
-		cnt[i]++;
+		close = 0, open = 0, full = 0;
+	}
+	node(int _c, int _o, int _f)
+	{
+		close = _c;
+		open = _o;
+		full = _f;
+	}
+};
+
+class segTree {
+	vector<node> seg;
+
+private:
+	node merge(node l, node r)
+	{
+		int mergedFull = min(l.open, r.close);
+		int newFull = l.full + r.full + mergedFull;
+		int newOpen = l.open + r.open - mergedFull;
+		int newClose = l.close + r.close - mergedFull;
+		return node(newClose, newOpen, newFull);
+	}
+public:
+	segTree(int n)
+	{
+		seg.resize(4 * n);
 	}
 
-	vi freq(n + 1, 0);
-	for (int i = 1; i <= n; i++) //initial position
+	void build(int idx, int lo, int hi, string& s)
 	{
-		if (cnt[i] == 0)
+		if (lo == hi)
 		{
-			continue;
+			seg[idx] = node((s[lo] == ')'), (s[lo] == '('), 0);
+			return;
 		}
-		else
-		{
-			//consider all positions you can jump to with intial jump of 'i'
-			for (int jumpTo = i; jumpTo <= n; jumpTo += i)
-			{
-				freq[jumpTo] += cnt[i];
-			}
-		}
+
+		int mid = (lo + hi) >> 1;
+		build(2 * idx + 1, lo, mid, s);
+		build(2 * idx + 2, mid + 1, hi, s);
+		seg[idx] = merge(seg[2 * idx + 1], seg[2 * idx + 2]);
 	}
 
-	cout << *max_element(all(freq)) << endl;
+	node query(int idx, int lo, int hi, int l, int r)
+	{
+		//no overlap
+		// lo hi l r OR l r lo hi
+		if (hi < l or r < lo)
+		{
+			return node();
+		}
+
+		//complete overlap
+		// l low high r
+		if ( lo >= l and r >= hi)
+		{
+			return seg[idx];
+		}
+
+		//partial overlap
+		int mid = (lo + hi) / 2;
+		node left = query(2 * idx + 1, lo, mid, l, r);
+		node right = query(2 * idx + 2, mid + 1, hi, l, r);
+		return merge(left , right);
+	}
+};
+
+void solve()
+{
+	string s; cin >> s;
+	int n = sz(s);
+
+	segTree obj(n);
+	obj.build(0, 0, n - 1, s);
+
+	int t; cin >> t;
+	while (t--)
+	{
+		int l, r;
+		cin >> l >> r;
+		l--; r--;
+		cout << obj.query(0, 0, n - 1, l, r).full * 2 << endl;
+	}
 }
-
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -138,7 +195,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

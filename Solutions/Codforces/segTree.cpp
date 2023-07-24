@@ -92,41 +92,109 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int MAXN = 2e5 + 5;
+const int N = 1e7;
 
+class segTree {
+public:
+	static int n;
+	vi seg;
 
-void solve() {
-	int n;
-	cin >> n;
-	vi v(n); ipArr(v, n);
-
-	mi cnt;
-	for (auto i : v)
+public:
+	segTree(int _n)
 	{
-		cnt[i]++;
+		n = _n;
+		seg.resize(4 * n);
 	}
 
-	vi freq(n + 1, 0);
-	for (int i = 1; i <= n; i++) //initial position
+	void build(int idx, int lo, int hi, vi v)
 	{
-		if (cnt[i] == 0)
+		if (lo == hi)
 		{
-			continue;
+			seg[idx] = v[lo];
+			return;
+		}
+
+		int mid = (lo + hi) >> 1;
+		build(2 * idx + 1, lo, mid, v);
+		build(2 * idx + 2, mid + 1, hi, v);
+		seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
+	}
+
+	void build(vi v)
+	{
+		return build(0, 0, n - 1, v);
+	}
+
+	int query(int l, int r, int idx , int lo, int hi)
+	{
+		//no overlap
+		//lo hi l r OR l r lo hi
+		if (hi < l or r < lo)
+		{
+			return 0;
+		}
+
+		//complete overlap
+		// lo  l r  hi
+		if (l > lo and r < hi)
+		{
+			return seg[idx];
+		}
+
+		//partial overlap
+		int mid = (lo + hi) >> 1;
+		int left = query(l, r, 2 * idx + 1, lo, mid);
+		int right = query(l, r, 2 * idx + 2, mid + 1, hi);
+		return (left + right);
+	}
+
+	int query(int l, int r)
+	{
+		if (l <= r)
+			return query(l, r, 0, 0, n - 1);
+		else
+			return -1;
+	}
+
+	void update(int pos, int val, int idx, int lo, int hi)
+	{
+		if (lo == hi)
+		{
+			seg[idx] = val;
+		}
+
+		int mid = (lo + hi) >> 1;
+		if (pos <= mid)
+		{
+			update(pos, val, 2 * idx + 1, lo, mid);
 		}
 		else
 		{
-			//consider all positions you can jump to with intial jump of 'i'
-			for (int jumpTo = i; jumpTo <= n; jumpTo += i)
-			{
-				freq[jumpTo] += cnt[i];
-			}
+			update(pos, val, 2 * idx + 2, mid + 1, hi);
 		}
+		seg[idx] = seg[2 * idx + 1] + seg[2 * idx + 2];
 	}
 
-	cout << *max_element(all(freq)) << endl;
+	void update(int pos, int val)
+	{
+		return update(pos, val, 0, 0, n - 1);
+	}
+
+};
+
+
+void solve()
+{
+	int n; cin >> n;
+	vi v(n);
+
+
+
+
+
+
+
 }
-
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -138,7 +206,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

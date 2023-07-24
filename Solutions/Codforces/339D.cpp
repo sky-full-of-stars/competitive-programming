@@ -1,3 +1,12 @@
+// this is 2nd day and 2nd problem of segtree
+
+// ref: https://www.youtube.com/watch?v=NEG-SoyigGE
+//    : https://www.youtube.com/live/rXnXRU8yMF0?feature=share
+
+// will continue seg tree for today and tom.
+// plan is to just know it exists and use basic usecases.
+
+
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
@@ -92,40 +101,115 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int MAXN = 2e5 + 5;
+class segTree {
+public:
+	int size;
+	vi seg;
 
-
-void solve() {
-	int n;
-	cin >> n;
-	vi v(n); ipArr(v, n);
-
-	mi cnt;
-	for (auto i : v)
+public:
+	segTree(int _n)
 	{
-		cnt[i]++;
+		int N = (1 << _n);
+		size = N;
+		seg.resize(4 * N);
 	}
 
-	vi freq(n + 1, 0);
-	for (int i = 1; i <= n; i++) //initial position
+	void build(int idx, int lo, int hi, vi& v, bool isOr)
 	{
-		if (cnt[i] == 0)
+		if (lo == hi)
 		{
-			continue;
+			seg[idx] = v[lo];
+			return;
+		}
+
+		int mid = (lo + hi) >> 1;
+		build(2 * idx + 1, lo, mid, v, !isOr);
+		build(2 * idx + 2, mid + 1, hi, v, !isOr);
+		if (isOr)
+		{
+			seg[idx] = (seg[2 * idx + 1] | seg[2 * idx + 2]);
 		}
 		else
 		{
-			//consider all positions you can jump to with intial jump of 'i'
-			for (int jumpTo = i; jumpTo <= n; jumpTo += i)
-			{
-				freq[jumpTo] += cnt[i];
-			}
+			seg[idx] = (seg[2 * idx + 1] ^ seg[2 * idx + 2]);
 		}
 	}
 
-	cout << *max_element(all(freq)) << endl;
-}
+	void build(vi& v)
+	{
+		int n = log2(size);
+		debug(n);
+		if (n & 1)
+		{
+			return build(0, 0, size - 1, v, 1);
+		}
+		else
+		{
+			return build(0, 0, size - 1, v, 0);
+		}
+	}
 
+
+	void update(int pos, int val, int idx, int lo, int hi, bool isOr)
+	{
+		if (lo == hi)
+		{
+			seg[idx] = val;
+			return;
+		}
+
+		int mid = (lo + hi) >> 1;
+		if (pos <= mid)
+		{
+			update(pos, val, 2 * idx + 1, lo, mid, !isOr);
+		}
+		else
+		{
+			update(pos, val, 2 * idx + 2, mid + 1, hi, !isOr);
+		}
+		if (isOr)
+		{
+			seg[idx] = (seg[2 * idx + 1] | seg[2 * idx + 2]);
+		}
+		else
+		{
+			seg[idx] = (seg[2 * idx + 1] ^ seg[2 * idx + 2]);
+		}
+	}
+
+	void update(int pos, int val)
+	{
+		int n = log2(size);
+		if (n & 1)
+		{
+			return update(pos, val, 0, 0, size - 1, 1);
+		}
+		else
+		{
+			return update(pos, val, 0, 0, size - 1, 0);
+		}
+	}
+};
+
+void solve()
+{
+	int n, q;
+	cin >> n >> q;
+	vi v(1 << n);
+	ipArr(v, 1 << n);
+
+	segTree obj(n);
+	obj.build(v);
+	debug(obj.seg[0]);
+	while (q--)
+	{
+		int pos, val;
+		cin >> pos >> val;
+		pos--;
+		obj.update(pos, val);
+		cout << obj.seg[0] << endl;
+	}
+}
 
 void setUpLocal()
 {
@@ -138,7 +222,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
