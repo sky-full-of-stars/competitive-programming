@@ -2,53 +2,79 @@
 
 #define int unsigned long long
 using namespace std;
-/*
-int calc(int x,int y)
+
+void setUpLocal()
 {
-        int mx = max(x,y);
-		int ans = mx*mx;
-		if(mx&1)
+#ifndef ONLINE_JUDGE
+	freopen("/Users/asuryana/Documents/CP/input.txt", "r", stdin);
+	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
+#endif
+}
+
+void solve(int x, int y)
+{
+	int ans = 0;
+	if (x >= y)
+	{
+		if (x & 1)
 		{
-			ans = ans - (x-1) -(mx-y);
+			int first = (x * x);
+			ans = first - y + 1;
+			cout << ans;
+			return;
 		}
 		else
 		{
-			ans = ans - (mx-x) - (y-1);
+			x--;
+			int first = (x * x) + 1;
+			ans = first + y - 1;
+			cout << ans;
+			return;
 		}
-    return ans;
+	}
+	else
+	{
+		if (y & 1)
+		{
+			y--;
+			int first = (y * y) + 1;
+			ans = first + x - 1;
+			cout << ans;
+			return;
+		}
+		else
+		{
+			int first = (y * y);
+			ans = first - x + 1;
+			cout << ans;
+			return;
+		}
+	}
 }
-void print()
-{
-    for(int i=1;i<6;i++)
-    {
-        for(int j=1;j<6;j++)
-        {
-            cout<<calc(i,j)<<"      ";
-        }
-        cout<<endl;
-    }
-}
-*/
 int32_t main()
 {
+	setUpLocal();
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
 	cout.tie(0);
-	int t, x, y, ans, mx; cin >> t;
-	//print();
+	int t; cin >> t;
+
+	// for (int i = 1; i <= 6; i++)
+	// {
+	// 	for (int j = 1; j <= 6; j++)
+	// 	{
+	// 		solve(j, i);
+	// 		cout << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+
 	while (t--)
 	{
-		cin >> x >> y;
-		mx = max(x, y);
-		ans = mx * mx;
-		if (mx & 1)
-		{
-			cout << ans - (x - 1) - (y - mx) << endl; // ans-x-y+1+mx
-		}
-		else
-		{
-			cout << ans - (mx - x) - (y - 1) << endl;
-		}
+		int ro, co; cin >> ro >> co;
+		solve(co, ro);
+		cout << endl;
 	}
+
 	return 0;
 }
