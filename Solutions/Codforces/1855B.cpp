@@ -92,95 +92,35 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e6 + 2;
+const int N = 1e7;
 
 void clear()
 {
 
 }
 
-vi firstSubset;
-int n;
-map<pair<int, int>, bool> dp;
-
-bool equalSumSubset(int i, int sum)
-{
-	if (sum == 0)
-	{
-		return true;
-	}
-	if (i > n or sum < 0)
-	{
-		return false;
-	}
-	if (dp.find({i, sum}) != dp.end())
-	{
-		return dp[ {i, sum}];
-	}
-
-	if (equalSumSubset(i + 1, sum - i))
-	{
-		firstSubset.pb(i);
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-
-	if (equalSumSubset(i + 1, sum))
-	{
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-	return dp[ {i, sum}] = false;
-}
 
 void solve()
 {
-	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
-	}
+	int n; cin >> n;
 
-	int desiredSubsetSum = allSum / 2;
-	if (equalSumSubset(1, desiredSubsetSum))
+	int prev = 1;
+	for (int i = 2; i <= n; i++)
 	{
-		cout << "YES" << endl;
-	}
-	else
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	sortv(firstSubset);
-	vi secondSubset;
-	for (int i = 1; i <= n; i++)
-	{
-		if (!binary_search(all(firstSubset), i)) {
-			secondSubset.pb(i);
+		if (n % i == 0)
+		{
+			if (i == prev + 1)
+				prev = i;
+			else
+				break;
+		}
+		else
+		{
+			break;
 		}
 	}
 
-	cout << sz(firstSubset) << endl;
-	for (auto i : firstSubset)
-		cout << i << " ";
-	cout << endl;
-	cout << sz(secondSubset) << endl;
-	for (auto i : secondSubset)
-		cout << i << " ";
-
+	cout << prev << endl;
 	clear();
 }
 void setUpLocal()
@@ -194,7 +134,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }

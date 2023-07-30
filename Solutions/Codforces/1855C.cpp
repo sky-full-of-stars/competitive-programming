@@ -92,97 +92,88 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e6 + 2;
+const int N = 1e7;
+// int mx, mn;
 
-void clear()
-{
-
-}
-
-vi firstSubset;
-int n;
-map<pair<int, int>, bool> dp;
-
-bool equalSumSubset(int i, int sum)
-{
-	if (sum == 0)
-	{
-		return true;
-	}
-	if (i > n or sum < 0)
-	{
-		return false;
-	}
-	if (dp.find({i, sum}) != dp.end())
-	{
-		return dp[ {i, sum}];
-	}
-
-	if (equalSumSubset(i + 1, sum - i))
-	{
-		firstSubset.pb(i);
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-
-	if (equalSumSubset(i + 1, sum))
-	{
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-	return dp[ {i, sum}] = false;
-}
+// void clear()
+// {
+// 	mx = 0, mn = 0;
+// }
 
 void solve()
 {
+	int n;
 	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
+
+	int v[n];
+	int mx = 0, mn = 0;
+	for (int i = 0 ; i < n; i ++) {
+		cin >> v[i];
+		if (v[mx] < v[i]) mx = i;
+		if (v[mn] > v[i]) mn = i;
 	}
 
-	int desiredSubsetSum = allSum / 2;
-	if (equalSumSubset(1, desiredSubsetSum))
-	{
-		cout << "YES" << endl;
-	}
-	else
-	{
-		cout << "NO" << endl;
-		return;
-	}
+	vpi res;
 
-	sortv(firstSubset);
-	vi secondSubset;
-	for (int i = 1; i <= n; i++)
+	if (v[mn] != v[mx])
 	{
-		if (!binary_search(all(firstSubset), i)) {
-			secondSubset.pb(i);
+		if (v[mx] > 0)
+		{
+			for (int i = 0; i < n - 1; i++)
+			{
+				while (v[i] > v[i + 1])
+				{
+					v[i + 1] = v[i + 1] + v[mx];
+					res.pb({i + 1, mx});
+
+					if (v[i + 1] > v[mx])
+					{
+						mx = i + 1;
+					}
+				}
+
+
+				// for (int i = 0; i < n - 1; i++)
+				// {
+				// 	cerr<<v[i]<<" ";
+				// }
+
+			}
+			// for (int i = 0; i < n - 1; i++)
+			// {
+			// 	cerr<<v[i]<<" ";
+			// }
+		}
+		else
+		{
+			for (int i = n - 1; i >= 1; i--)
+			{
+				while (v[i] < v[i - 1])
+				{
+					v[i - 1] = v[i - 1] + v[mn];
+					res.pb({i - 1, mn});
+
+					if (v[i - 1] < v[mn])
+					{
+						mn = i;
+					}
+
+				}
+				// for (int i = 0; i < n - 1; i++)
+				// {
+				// 	cerr<<v[i]<<" ";
+				// }
+			}
+			// for (int i = 0; i < n - 1; i++)
+			// {
+			// 	cerr<<v[i]<<" ";
+			// }
 		}
 	}
-
-	cout << sz(firstSubset) << endl;
-	for (auto i : firstSubset)
-		cout << i << " ";
-	cout << endl;
-	cout << sz(secondSubset) << endl;
-	for (auto i : secondSubset)
-		cout << i << " ";
-
-	clear();
+	cout << sz(res) << endl;
+	for (auto x : res) cout << x.first + 1 << " " << x.second + 1 << endl;
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -194,7 +185,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
