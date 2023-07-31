@@ -100,6 +100,8 @@ void clear()
 }
 //iykyk
 //https://oeis.org/search?q=0+6+28+96+252+550+1056+1848&language=english&go=Search
+
+//BEAUTIFUL: https://www.youtube.com/watch?v=12Y8OrlRS3U
 void solve()
 {
 	int n; cin >> n;

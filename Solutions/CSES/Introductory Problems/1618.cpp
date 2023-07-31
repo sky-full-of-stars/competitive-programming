@@ -92,184 +92,54 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e6 + 2;
+const int N = 1e7;
 
 void clear()
 {
 
 }
 
-//gave TLE
-int n;
-vi firstSubset;
-map<pair<int, int>, bool> dp;
-bool equalSumSubset(int i, int sum)
+void solve()
 {
-	if (sum == 0)
+
+	int n; cin >> n;
+
+	int ans = 0;
+
+	//25
+	//every 5 can combine with a 2 to give 10
+
+	//5 10 15 20 25 -> total 5 5s is wrong
+	//5 10 15 20 5*5-> total 6 5s available
+
+	//it'll happen again at 5*5*k
+	//ie at 25 50 75 so on
+
+	//just how
+	//so #of 5s is n/5 if you ignore extras in 25 75... so on
+	//#of 1 exrta 5s in 25 is n/25
+	// ie at 25 50 75 100... there are extra 1 5 available
+	// so n->100 -> (100/25) exrta 5s
+
+	//but at 25*5 25*5*2....
+	//more hidden 5s are present
+	//25*5 -> doesnt just give 2 5s
+	// it gives 1 more extra 5s
+	// to consider 125 250.... they give 3 5s. so extra 1 is available per each
+	// so n-> 250 those 2 extra 5s are available.. = 250/125
+
+	//so on...
+
+	//n/5 + n/25 + n/125
+	for (int i = 5; n / i >= 1; i *= 5)
 	{
-		return true;
-	}
-	if (i > n or sum < 0)
-	{
-		return false;
-	}
-	if (dp.find({i, sum}) != dp.end())
-	{
-		return dp[ {i, sum}];
+		ans += (n / i);
 	}
 
-	if (equalSumSubset(i + 1, sum - i))
-	{
-		firstSubset.pb(i);
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-
-	if (equalSumSubset(i + 1, sum))
-	{
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-	return dp[ {i, sum}] = false;
-}
-
-void solveDP()
-{
-	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	int desiredSubsetSum = allSum / 2;
-	if (equalSumSubset(1, desiredSubsetSum))
-	{
-		cout << "YES" << endl;
-	}
-	else
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	sortv(firstSubset);
-	vi secondSubset;
-	for (int i = 1; i <= n; i++)
-	{
-		if (!binary_search(all(firstSubset), i)) {
-			secondSubset.pb(i);
-		}
-	}
-
-	cout << sz(firstSubset) << endl;
-	for (auto i : firstSubset)
-		cout << i << " ";
-	cout << endl;
-	cout << sz(secondSubset) << endl;
-	for (auto i : secondSubset)
-		cout << i << " ";
+	cout << ans << endl;
 
 	clear();
 }
-
-void solve()
-{
-	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	int desiredSum = allSum / 2;
-	debug(desiredSum);
-
-	//now
-	//desiredSum  = n*(n+1)/4
-	//is an integer
-	//so it has to be either divisible by n or by (n+1)
-	if (desiredSum % n == 0)
-	{
-		int k = desiredSum / n;
-		vi firstSubset, secondSubset;
-		k--;
-		firstSubset.pb(n);
-
-		int i = 1;
-		while (k--)
-		{
-			firstSubset.pb(n - i);
-			firstSubset.pb(i);
-			i++;
-		}
-
-		sortv(firstSubset);
-		for (int i = 1; i <= n; i++)
-		{
-			if (!binary_search(all(firstSubset), i)) {
-				secondSubset.pb(i);
-			}
-		}
-
-		cout << "YES" << endl;
-		cout << sz(firstSubset) << endl;
-		for (auto i : firstSubset)
-			cout << i << " ";
-		cout << endl;
-		cout << sz(secondSubset) << endl;
-		for (auto i : secondSubset)
-			cout << i << " ";
-		return;
-	}
-	if (desiredSum % (n + 1) == 0)
-	{
-		int k = desiredSum / (n + 1);
-		vi firstSubset, secondSubset;
-
-		int i = 0;
-		while (k--)
-		{
-			firstSubset.pb(n - i);
-			firstSubset.pb(i + 1);
-			i++;
-		}
-
-		sortv(firstSubset);
-		for (int i = 1; i <= n; i++)
-		{
-			if (!binary_search(all(firstSubset), i)) {
-				secondSubset.pb(i);
-			}
-		}
-
-		cout << "YES" << endl;
-		cout << sz(firstSubset) << endl;
-		for (auto i : firstSubset)
-			cout << i << " ";
-		cout << endl;
-		cout << sz(secondSubset) << endl;
-		for (auto i : secondSubset)
-			cout << i << " ";
-		return;
-	}
-
-	cout << "we fucked up" << endl;
-
-}
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE

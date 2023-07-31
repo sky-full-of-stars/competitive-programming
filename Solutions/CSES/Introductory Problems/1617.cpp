@@ -92,184 +92,27 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e6 + 2;
+const int N = 1e7;
 
 void clear()
 {
 
 }
-
-//gave TLE
-int n;
-vi firstSubset;
-map<pair<int, int>, bool> dp;
-bool equalSumSubset(int i, int sum)
+int f(int n)
 {
-	if (sum == 0)
+	int ans = 1;
+	for (int i = 0; i < n; i++)
 	{
-		return true;
+		ans = (ans * 2) % MOD;
 	}
-	if (i > n or sum < 0)
-	{
-		return false;
-	}
-	if (dp.find({i, sum}) != dp.end())
-	{
-		return dp[ {i, sum}];
-	}
-
-	if (equalSumSubset(i + 1, sum - i))
-	{
-		firstSubset.pb(i);
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-
-	if (equalSumSubset(i + 1, sum))
-	{
-		return dp[ {i, sum}] = true;
-	}
-	else
-	{
-		if (!firstSubset.empty())
-			firstSubset.pop_back();
-		dp[ {i, sum}] = false;
-	}
-	return dp[ {i, sum}] = false;
+	return ans;
 }
-
-void solveDP()
-{
-	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	int desiredSubsetSum = allSum / 2;
-	if (equalSumSubset(1, desiredSubsetSum))
-	{
-		cout << "YES" << endl;
-	}
-	else
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	sortv(firstSubset);
-	vi secondSubset;
-	for (int i = 1; i <= n; i++)
-	{
-		if (!binary_search(all(firstSubset), i)) {
-			secondSubset.pb(i);
-		}
-	}
-
-	cout << sz(firstSubset) << endl;
-	for (auto i : firstSubset)
-		cout << i << " ";
-	cout << endl;
-	cout << sz(secondSubset) << endl;
-	for (auto i : secondSubset)
-		cout << i << " ";
-
-	clear();
-}
-
 void solve()
 {
-	cin >> n;
-	int allSum = (n * (n + 1)) / 2;
-	if (allSum & 1)
-	{
-		cout << "NO" << endl;
-		return;
-	}
-
-	int desiredSum = allSum / 2;
-	debug(desiredSum);
-
-	//now
-	//desiredSum  = n*(n+1)/4
-	//is an integer
-	//so it has to be either divisible by n or by (n+1)
-	if (desiredSum % n == 0)
-	{
-		int k = desiredSum / n;
-		vi firstSubset, secondSubset;
-		k--;
-		firstSubset.pb(n);
-
-		int i = 1;
-		while (k--)
-		{
-			firstSubset.pb(n - i);
-			firstSubset.pb(i);
-			i++;
-		}
-
-		sortv(firstSubset);
-		for (int i = 1; i <= n; i++)
-		{
-			if (!binary_search(all(firstSubset), i)) {
-				secondSubset.pb(i);
-			}
-		}
-
-		cout << "YES" << endl;
-		cout << sz(firstSubset) << endl;
-		for (auto i : firstSubset)
-			cout << i << " ";
-		cout << endl;
-		cout << sz(secondSubset) << endl;
-		for (auto i : secondSubset)
-			cout << i << " ";
-		return;
-	}
-	if (desiredSum % (n + 1) == 0)
-	{
-		int k = desiredSum / (n + 1);
-		vi firstSubset, secondSubset;
-
-		int i = 0;
-		while (k--)
-		{
-			firstSubset.pb(n - i);
-			firstSubset.pb(i + 1);
-			i++;
-		}
-
-		sortv(firstSubset);
-		for (int i = 1; i <= n; i++)
-		{
-			if (!binary_search(all(firstSubset), i)) {
-				secondSubset.pb(i);
-			}
-		}
-
-		cout << "YES" << endl;
-		cout << sz(firstSubset) << endl;
-		for (auto i : firstSubset)
-			cout << i << " ";
-		cout << endl;
-		cout << sz(secondSubset) << endl;
-		for (auto i : secondSubset)
-			cout << i << " ";
-		return;
-	}
-
-	cout << "we fucked up" << endl;
-
+	int n; cin >> n;
+	cout << f(n) << endl;
+	clear();
 }
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
