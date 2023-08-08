@@ -27,7 +27,7 @@ typedef map<int, int> mi;
 //---------------------------------------------------------------------------------------------------------//
 
 #define EPS 1e-9
-#define INF 1e17
+#define INF 1e18
 const int MOD = 1e9 + 7;
 const double PI = 3.14159265358979323846264;
 
@@ -92,115 +92,74 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e5 + 5;
-
-int n, m;
-vpi gp[N];
-int fullPrice[N];
-int discPrice[N];
-
+const int N = 1e9 + 3;
+mi ans;
 void clear()
 {
 
 }
-typedef pair<int, pair<int, int>>  pppi;
-
-void dijkstras()
-{
-	fill_n(fullPrice, n + 2, INF);
-	fill_n(discPrice, n + 2, INF);
-
-	priority_queue<pppi, vector<pppi>, greater<pppi>> pq;
-	fullPrice[1] = 0;
-	discPrice[1] = 0;
-	pq.push({0, {1, 0}});
-
-	while (!pq.empty())
-	{
-		pppi root = pq.top();
-		pq.pop();
-
-		int dist = root.ff;
-		int src = root.ss.ff;
-		int isCouponUsed = root.ss.ss;
-
-		if (isCouponUsed)
-		{
-			if (discPrice[src] < dist)
-			{
-				continue;
-			}
-		}
-		else
-		{
-			if (fullPrice[src] < dist)
-			{
-				continue;
-			}
-		}
-
-		for (auto [to, edgeWeight] : gp[src])
-		{
-			if (!isCouponUsed)
-			{
-				//use coupon now
-				if (discPrice[to] > dist + (edgeWeight / 2))
-				{
-					discPrice[to] = dist + (edgeWeight / 2);
-					pq.push({discPrice[to], {to, 1}});
-				}
-
-				//dont use coupon
-				if (fullPrice[to] > dist + edgeWeight)
-				{
-					fullPrice[to] = dist + edgeWeight;
-					pq.push({fullPrice[to], {to, 0}});
-				}
-			}
-			else
-			{
-				//dont use coupon, its already used
-				//whatever amount we pay to reach here, its discounted amount itself
-				//discount previosuly only availed
-				if (discPrice[to] > dist + edgeWeight)
-				{
-					discPrice[to] = dist + edgeWeight;
-					pq.push({discPrice[to], {to, 1}});
-				}
-			}
-		}
-	}
-}
-
-void debugV(int n)
-{
-	for (int i = 1; i <= n; i++)
-	{
-		cerr << fullPrice[i] << " ";
-	}
-	cerr << endl;
-	for (int i = 1; i <= n; i++)
-	{
-		cerr << discPrice[i] << " ";
-	}
-}
 
 void solve()
 {
-	cin >> n >> m;
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
+	vi _v = v;
+	sortv(v);
 
-	while (m--)
+	int mn = *min_element(all(v));
+	int sum = accumulate(all(v), 0ll);
+	int fmn = 0;
+	for (int i : v)
 	{
-		int u, v, w;
-		cin >> u >> v >> w;
-
-		gp[u].pb({v, w});
+		fmn += (i - mn + 1);
 	}
 
-	dijkstras();
-	//debugV(n);
+	ans[mn] = fmn;
+	vi cum(n, 0);
+	cum[0] = v[0];
+	for (int i = 1; i < n; i++)
+	{
+		cum[i] = cum[i - 1] + v[i];
+	}
+	debug(cum)
+	debug(sum);
+	for (int i = 1; i < n; i++)
+	{
+		if (present(ans, v[i]))
+		{
+			continue;
+		}
+		// debug(i);
+		// debug(v[i]);
 
-	cout << min(fullPrice[n], discPrice[n]) << endl;
+		int extraAdd = (v[i] * n - sum);
+
+
+		int extraDel = ((i + 1) * v[i] - cum[i]) + ((sum - cum[i]) - (n - i - 1) * v[i]);
+		if (v[i] == 5)
+		{
+			debug((i + 1) * v[i]);
+			debug((sum - cum[i ]));
+			debug(cum[i]);
+			debug((n - i - 1) * v[i]);
+			debug(i);
+			debug(extraAdd)
+			debug(extraDel)
+		}
+
+		int dif = extraAdd - extraDel;
+		//debug(dif);
+		int finalVal = fmn + dif;
+
+		ans[v[i]] = finalVal;
+	}
+	debug(ans);
+	for (auto i : _v)
+	{
+		cout << ans[i] << " ";
+	}
+	cout << endl;
+
 	clear();
 }
 void setUpLocal()
@@ -214,7 +173,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; 	cin >> t;
 	while (t--) solve();
 	return 0;
 }

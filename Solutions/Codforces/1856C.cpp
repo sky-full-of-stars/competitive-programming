@@ -27,7 +27,7 @@ typedef map<int, int> mi;
 //---------------------------------------------------------------------------------------------------------//
 
 #define EPS 1e-9
-#define INF 1e17
+#define INF 1e18
 const int MOD = 1e9 + 7;
 const double PI = 3.14159265358979323846264;
 
@@ -53,7 +53,7 @@ void write(T&&... args) {
 #define debug(x)
 #endif
 
-//void _print(ll t) {cerr << t;}
+void _print(bool t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
@@ -92,115 +92,78 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e5 + 5;
-
-int n, m;
-vpi gp[N];
-int fullPrice[N];
-int discPrice[N];
+const int N = 1e7;
 
 void clear()
 {
 
 }
-typedef pair<int, pair<int, int>>  pppi;
 
-void dijkstras()
+//https://www.youtube.com/watch?v=jxLu6DMDV7o
+void solve()
 {
-	fill_n(fullPrice, n + 2, INF);
-	fill_n(discPrice, n + 2, INF);
+	int n, k; cin >> n >> k;
 
-	priority_queue<pppi, vector<pppi>, greater<pppi>> pq;
-	fullPrice[1] = 0;
-	discPrice[1] = 0;
-	pq.push({0, {1, 0}});
-
-	while (!pq.empty())
+	vi v(n);
+	for (int i = 0; i < n; i++)
 	{
-		pppi root = pq.top();
-		pq.pop();
+		cin >> v[i];
+	}
+	int mx = *max_element(all(v));
 
-		int dist = root.ff;
-		int src = root.ss.ff;
-		int isCouponUsed = root.ss.ss;
 
-		if (isCouponUsed)
+	int l = mx;
+	int r = mx + k;
+	int ans = -1;
+	while (l <= r)
+	{
+		int mid = (l + r) / 2;
+		// debug(l);
+		// debug(r);
+		// debug(mid);
+
+		bool isMidPossible = false;
+		for (int mxAtIdx = 0; mxAtIdx < n ; mxAtIdx++)
 		{
-			if (discPrice[src] < dist)
+			int to = mid;
+			int stepsDone = 0;
+			bool possible = false;
+
+			for (int j = mxAtIdx ; j < n ; j++)
 			{
-				continue;
+				if (v[j] < to)
+				{
+					stepsDone += (to - v[j]);
+				}
+				else
+				{
+					possible = true;
+					break;
+				}
+				to--;
 			}
+			// debug(mxAtIdx);
+			// debug(stepsDone);
+			if (possible and stepsDone <= k)
+			{
+				isMidPossible = true;
+				break;
+			}
+		}
+		//debug(isMidPossible);
+		if (isMidPossible)
+		{
+			ans = mid;
+			l = mid + 1;
 		}
 		else
 		{
-			if (fullPrice[src] < dist)
-			{
-				continue;
-			}
-		}
-
-		for (auto [to, edgeWeight] : gp[src])
-		{
-			if (!isCouponUsed)
-			{
-				//use coupon now
-				if (discPrice[to] > dist + (edgeWeight / 2))
-				{
-					discPrice[to] = dist + (edgeWeight / 2);
-					pq.push({discPrice[to], {to, 1}});
-				}
-
-				//dont use coupon
-				if (fullPrice[to] > dist + edgeWeight)
-				{
-					fullPrice[to] = dist + edgeWeight;
-					pq.push({fullPrice[to], {to, 0}});
-				}
-			}
-			else
-			{
-				//dont use coupon, its already used
-				//whatever amount we pay to reach here, its discounted amount itself
-				//discount previosuly only availed
-				if (discPrice[to] > dist + edgeWeight)
-				{
-					discPrice[to] = dist + edgeWeight;
-					pq.push({discPrice[to], {to, 1}});
-				}
-			}
+			r = mid - 1;
 		}
 	}
-}
 
-void debugV(int n)
-{
-	for (int i = 1; i <= n; i++)
-	{
-		cerr << fullPrice[i] << " ";
-	}
-	cerr << endl;
-	for (int i = 1; i <= n; i++)
-	{
-		cerr << discPrice[i] << " ";
-	}
-}
+	cout << ans << endl;
 
-void solve()
-{
-	cin >> n >> m;
-
-	while (m--)
-	{
-		int u, v, w;
-		cin >> u >> v >> w;
-
-		gp[u].pb({v, w});
-	}
-
-	dijkstras();
-	//debugV(n);
-
-	cout << min(fullPrice[n], discPrice[n]) << endl;
 	clear();
 }
 void setUpLocal()
@@ -214,7 +177,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
