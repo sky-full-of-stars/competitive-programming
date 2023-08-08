@@ -92,79 +92,88 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e5 + 3;
-const int K = 11;
+const int N = 1e5 + 4;
 vector<pair<int, pi>> edges;
-int dist[N][K];
-vector<pi> gp[N];
+int n, m;
+int dist[N];
+int relaxant[N];
 
 void clear()
 {
 
 }
 
-int n, m, k;
-void dijkstras()
+void belmanFord()
 {
-	for (int i = 0; i <= n; i++)
+	for (int i = 1; i <= n; i++)
 	{
-		for (int j = 0; j <= k; j++)
-		{
-			dist[i][j] = INF;
-		}
+		dist[i] = INF;
 	}
-
-	priority_queue<pi, vector<pi>, greater<pi>> pq;
-
-	pq.push({0, 1});
-
-	while (!pq.empty())
+	int relaxedNode;
+	for (int i = 1; i <= n; i++)
 	{
-		//debug(pq.top());
-		int soFar = pq.top().ff;
-		int src = pq.top().ss;
-		pq.pop();
-
-		if (dist[src][k - 1] < soFar)
+		relaxedNode = -1;
+		for (auto edge : edges)
 		{
-			continue;
-		}
+			int u = edge.ff;
+			int v = edge.ss.ff;
+			int w = edge.ss.ss;
 
-		for (auto [to, edgeWt] : gp[src])
-		{
-			if (dist[to][k - 1] > soFar + edgeWt)
+			if (dist[v] > dist[u] + w)
 			{
-				dist[to][k - 1] = soFar + edgeWt;
-				pq.push({dist[to][k - 1], to});
-
-				sort(dist[to], dist[to] + k);
+				dist[v] = dist[u] + w;
+				relaxant[v] = u;
+				relaxedNode = v;
 			}
 		}
 	}
 
+	if (relaxedNode == -1)
+	{
+		cout << "NO" << endl;
+	}
+	else
+	{
+		cout << "YES" << endl;
+
+		int nodeInCycle = relaxedNode;
+		int _cnt = n;
+		while (_cnt--)
+		{
+			nodeInCycle = relaxant[nodeInCycle];
+		}
+
+		vi path;
+		path.pb(nodeInCycle);
+		int duplicateSrc = nodeInCycle;
+		while (true)
+		{
+			nodeInCycle = relaxant[nodeInCycle];
+			path.pb(nodeInCycle);
+			if (nodeInCycle == duplicateSrc)
+			{
+				break;
+			}
+		}
+		reverse(all(path));
+		for (auto i : path)
+		{
+			cout << i << " ";
+		}
+	}
 }
 
 void solve()
 {
-
-	cin >> n >> m >> k;
-
+	cin >> n >> m;
 	while (m--)
 	{
 		int u, v, w;
 		cin >> u >> v >> w;
-		gp[u].pb({v, w});
+		edges.pb({u, {v, w}});
 	}
 
-	dijkstras();
-
-	for (auto i : dist[n])
-	{
-		if (i == INF)
-			break;
-		cout << i << " ";
-	}
-	cout << endl;
+	belmanFord();
 
 	clear();
 }

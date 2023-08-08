@@ -53,7 +53,7 @@ void write(T&&... args) {
 #define debug(x)
 #endif
 
-//void _print(ll t) {cerr << t;}
+void _print(bool t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
@@ -92,79 +92,98 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e5 + 3;
-const int K = 11;
-vector<pair<int, pi>> edges;
-int dist[N][K];
-vector<pi> gp[N];
-
+const int N = 1e7;
+vi gp[N];
+bool vis[N];
+bool isInPath[N];
+stack<int> recStk;
 void clear()
 {
 
 }
 
-int n, m, k;
-void dijkstras()
+bool dfsToCheckCycleInDirectedGraph(int src)
 {
-	for (int i = 0; i <= n; i++)
+	vis[src] = true;
+	isInPath[src] = true;
+	recStk.push(src);
+
+	for (auto to : gp[src])
 	{
-		for (int j = 0; j <= k; j++)
+		if (!vis[to])
 		{
-			dist[i][j] = INF;
-		}
-	}
-
-	priority_queue<pi, vector<pi>, greater<pi>> pq;
-
-	pq.push({0, 1});
-
-	while (!pq.empty())
-	{
-		//debug(pq.top());
-		int soFar = pq.top().ff;
-		int src = pq.top().ss;
-		pq.pop();
-
-		if (dist[src][k - 1] < soFar)
-		{
-			continue;
-		}
-
-		for (auto [to, edgeWt] : gp[src])
-		{
-			if (dist[to][k - 1] > soFar + edgeWt)
+			if (dfsToCheckCycleInDirectedGraph(to))
 			{
-				dist[to][k - 1] = soFar + edgeWt;
-				pq.push({dist[to][k - 1], to});
-
-				sort(dist[to], dist[to] + k);
+				return true;
+			}
+		}
+		else
+		{
+			if (isInPath[to])
+			{
+				recStk.push(to);
+				return true;
 			}
 		}
 	}
 
+	isInPath[src] = false;
+	recStk.pop();
+	return false;
 }
 
 void solve()
 {
-
-	cin >> n >> m >> k;
-
+	int n, m; cin >> n >> m;
 	while (m--)
 	{
-		int u, v, w;
-		cin >> u >> v >> w;
-		gp[u].pb({v, w});
+		int u, v; cin >> u >> v;
+		gp[u].pb(v);
 	}
 
-	dijkstras();
 
-	for (auto i : dist[n])
+	bool cyclePresent = false;
+	for (int i = 1; i <= n; i++)
 	{
-		if (i == INF)
+		if (!vis[i])
+		{
+			cyclePresent = dfsToCheckCycleInDirectedGraph(i);
+		}
+		if (cyclePresent)
+		{
 			break;
-		cout << i << " ";
+		}
 	}
-	cout << endl;
+	debug(cyclePresent);
+	if (cyclePresent)
+	{
+		vi path;
+
+		int cycleHead = recStk.top();
+		path.pb(cycleHead);
+		recStk.pop();
+		while (!recStk.empty())
+		{
+			int node = recStk.top();
+			recStk.pop();
+			path.pb(node);
+			if (node == cycleHead)
+			{
+				break;
+			}
+		}
+		reverse(all(path));
+		cout << sz(path) << endl;
+		for (auto i : path)
+		{
+			cout << i << " ";
+		}
+		cout << endl;
+	}
+	else
+	{
+		cout << "IMPOSSIBLE" << endl;
+	}
 
 	clear();
 }
