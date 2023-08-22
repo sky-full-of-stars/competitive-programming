@@ -92,8 +92,16 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
+const int N = 3e3 + 3;
 
+int a[N];
+int b[N];
+int c[N];
+
+void clear()
+{
+
+}
 
 void solve()
 {
@@ -101,6 +109,13 @@ void solve()
 
 
 
+
+
+
+
+
+
+	clear();
 }
 void setUpLocal()
 {
@@ -113,7 +128,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
