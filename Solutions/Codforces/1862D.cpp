@@ -94,56 +94,53 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	if (n == 1)
+	{
+		cout << 2 << endl;
+		return;
+	}
 
+	int lo = 1;
+	int hi = min(n, 2648956421);
 
+	int ans = -1;
+	while (hi >= lo)
+	{
+		int mid = lo + (hi - lo) / 2l;
 
+		int possible;
+		if (mid % 2 == 0)
+		{
+			possible = (mid / 2) * (mid - 1);
+		}
+		else
+		{
+			possible = ((mid - 1) / 2) * (mid);
+		}
+		debug(mid)
+		debug(possible);
+		if ( possible >= n)
+		{
+			ans = mid;
+			hi = mid - 1;
+		}
+		else
+		{
+			lo = mid + 1;
+		}
+	}
+	cerr << endl;
+	cout << ans << endl;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

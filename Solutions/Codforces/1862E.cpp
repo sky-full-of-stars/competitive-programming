@@ -93,57 +93,60 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
+int ans = 0;
+int n, m, d;
+vi v;
+map<pi , int> dp;
 
+void clear()
+{
+	ans = 0;
+	map<pi, int> nx;
+	dp = nx;
+}
+
+
+int solve(int day, int prev, int tot)
+{
+	if (tot == 0)
+	{
+		return dp[ {day, prev}] = 0;
+	}
+
+	if (day == n + 1)
+	{
+		return dp[ {day, prev}] = 0;
+	}
+
+	//pick
+	int op1;
+	if (prev == -1)
+	{
+		op1 = (v[day] - (d * (day))) + solve(day + 1, day, tot - 1);
+	}
+	else
+	{
+		op1 = (v[day] - (d * (day - prev))) + solve(day + 1, day, tot - 1);
+	}
+
+	//not pick
+	int op2 = solve(day + 1, prev, tot);
+
+	return dp[ {day, prev}] = max(op1, op2);
+}
 
 void solve()
 {
-	int n; cin >> n;
+	cin >> n >> m >> d;
+	v.resize(n + 1);
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> v[i];
+	}
 
+	cout << solve(1, -1, m) << endl;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

@@ -94,56 +94,72 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	vi v(n + 1);
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> v[i];
+	}
 
+	vi ans;
+	for (int i = n ; i > 0; i--)
+	{
+		if (i == n)
+		{
+			int oc = v[i];
+			while (oc--)
+			{
+				ans.pb(i);
+				if (sz(ans) > sz(v))
+				{
+					no; return;
+				}
+			}
+			continue;
+		}
+		else
+		{
+			int dif = v[i] - v[i + 1];
+			while (dif--)
+			{
+				ans.pb(i);
+				if (sz(ans) > sz(v))
+				{
+					no; return;
+				}
+			}
+		}
+	}
+	bool same = true;
+	if ( sz(ans) + 1 == sz(v))
+	{
+		for (int i = 0; i < n; i++)
+		{
+			if (v[i + 1] != ans[i])
+			{
+				same = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		same = false;
+	}
 
+	if (same)
+		yes;
+	else
+		no;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

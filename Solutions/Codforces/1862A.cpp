@@ -92,58 +92,114 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
+const int N = 25;
+char v[N][N];
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, m; cin >> n >> m;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			cin >> v[i][j];
+		}
+	}
+	// for (int i = 0; i < n; i++)
+	// {
+	// 	for (int j = 0; j < m; j++)
+	// 	{
+	// 		cout << v[i][j] << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+	bool V = false, i = false, k = false, a = false;
+
+	int co = 0;
+	for (; co < m; co++)
+	{
+		for (int ro = 0; ro < n; ro++)
+		{
+			if (v[ro][co] == 'v')
+			{
+				V = true;
+				co++;
+				break;
+			}
+		}
+		if (V)
+		{
+			break;
+		}
+	}
+
+	for (; co < m; co++)
+	{
+		if (V)
+		{
+			for (int ro = 0; ro < n; ro++)
+			{
+				if (v[ro][co] == 'i')
+				{
+					i = true;
+					co++;
+					break;
+				}
+			}
+		}
+		if (i)
+		{
+			break;
+		}
+	}
+	for (; co < m; co++)
+	{
+		if (V and i)
+		{
+			for (int ro = 0; ro < n; ro++)
+			{
+				if (V and i and v[ro][co] == 'k')
+				{
+					k = true;
+					co++;
+					break;
+				}
+			}
+		}
+		if (k)
+		{
+			break;
+		}
+	}
+	for (; co < m; co++)
+	{
+		if (V and i and k)
+		{
+			for (int ro = 0; ro < n; ro++)
+			{
+				if (V and i and k and v[ro][co] == 'a')
+				{
+					a = true;
+					cout << "YES" << endl;
+					return;
+				}
+			}
+		}
+		if (a)
+		{
+			break;
+		}
+	}
+
+	cout << "NO" << endl;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

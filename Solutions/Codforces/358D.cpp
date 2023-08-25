@@ -103,16 +103,28 @@ void clear()
 
 }
 
+int solve(int idx, bool prevFedAlready)
+{
+	int feedCurNow, feedCurLater;
+	if (prevFedAlready)
+	{
+
+	}
+	else
+	{
+
+	}
+
+}
+
 void solve()
 {
 	int n; cin >> n;
+	ipArr(a, n);
+	ipArr(b, n);
+	ipArr(c, n);
 
-
-
-
-
-
-
+	solve(0, 0);
 
 
 	clear();

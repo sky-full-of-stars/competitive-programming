@@ -94,10 +94,40 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	vi v(n); ipArr(v, n);
+
+	vi ans;
+	for (int i = 0; i < n; i++)
+	{
+		if ( i == 0)
+		{
+			ans.pb(v[i]); continue;
+		}
+
+		if (v[i] >= v[i - 1])
+		{
+			ans.pb(v[i]); continue;
+		}
+		else
+		{
+			ans.pb(v[i]);
+			ans.pb(v[i]);
+		}
+	}
+	cout << sz(ans) << endl;
+	for (auto i : ans)
+	{
+		cout << i << " ";
+	}
+	cout << endl;
 
 
 
@@ -105,45 +135,7 @@ void solve()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {
