@@ -1,5 +1,6 @@
 #include <map>
 #include "bits/stdc++.h"
+#include <type_traits>
 using namespace std;
 template<typename K, typename V>
 class interval_map {
@@ -11,6 +12,7 @@ public:
 	interval_map(V const& val)
 		: m_valBegin(val)
 	{}
+
 
 	void assign( K const& keyBegin, K const& keyEnd, V const& val ) {
 
@@ -153,6 +155,7 @@ public:
 				return;
 			}
 		}
+
 	}
 
 	// look-up of the value associated with key
@@ -166,7 +169,11 @@ public:
 	}
 
 	void test() {
-		const int numTests = 100000;
+
+		cout << "classA: "
+		     << is_default_constructible<interval_map>::value << endl;
+
+		const int numTests = 1;
 		for (int i = 0; i < numTests; ++i) {
 			// Generate random keys and value
 			int keyBegin = std::rand() % 100;
