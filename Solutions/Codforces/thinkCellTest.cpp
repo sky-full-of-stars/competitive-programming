@@ -170,10 +170,7 @@ public:
 
 	void test() {
 
-		cout << "classA: "
-		     << is_default_constructible<interval_map>::value << endl;
-
-		const int numTests = 1;
+		const int numTests = 1000000;
 		for (int i = 0; i < numTests; ++i) {
 			// Generate random keys and value
 			int keyBegin = std::rand() % 100;
