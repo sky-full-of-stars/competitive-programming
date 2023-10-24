@@ -94,23 +94,45 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	vi v(3);
+	ipArr(v, 3);
 
+	sortv(v);
 
+	int cnt = 3;
+	int f = v[0];
+	int s = v[1];
+	int t = v[2];
 
+	while (s != f and cnt > 0)
+	{
+		s = s - f;
+		cnt--;
+	}
 
+	while (t != f and cnt > 0)
+	{
+		t = t - f;
+		cnt--;
+	}
 
+	if (cnt >= 0 and s == f and t == f)
+	{
+		yes;
+	}
+	else
+	{
+		no;
+	}
 
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

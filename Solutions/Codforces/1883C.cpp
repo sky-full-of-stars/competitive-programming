@@ -94,23 +94,83 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, k;
+	cin >> n >> k;
 
+	vi v(n);
+	ipArr(v, n);
 
+	if (k == 2)
+	{
+		for (auto i : v)
+		{
+			if (i % k == 0)
+			{
+				cout << 0 << endl;
+				return;
+			}
+		}
+		cout << 1 << endl;
+		return;
+	}
+	else if (k == 3 or k == 5)
+	{
+		int ans = INT_MAX;
+		for (auto i : v)
+		{
+			if (i % k == 0)
+			{
+				cout << 0 << endl;
+				return;
+			}
+			ans = min(ans, k - (i % k));
+		}
+		cout << ans << endl;
+		return;
+	}
+	else if (k == 4)
+	{
+		int ans = INT_MAX;
+		int divBy2Cnt = 0;
+		for (auto i : v)
+		{
+			if (i % k == 0)
+			{
+				cout << 0 << endl;
+				return;
+			}
+			ans = min(ans, k - (i % k));
+			if (i % 2 == 0)
+			{
+				divBy2Cnt++;
+			}
+			if (divBy2Cnt >= 2)
+			{
+				cout << 0 << endl;
+				return;
+			}
+		}
 
+		if (divBy2Cnt == 1)
+		{
+			cout << min(ans, 1) << endl;
+			return;
+		}
+		if (divBy2Cnt == 0)
+		{
+			cout << min(ans, 2) << endl;
+			return;
+		}
+	}
 
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

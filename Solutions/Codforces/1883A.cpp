@@ -94,23 +94,31 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	string s; cin >> s;
+	int cur = 1;
+	int ans = 0;
+	for (auto c : s)
+	{
+		int to = c - '0';
+		if (to == 0)
+		{
+			to = 10;
+		}
+		ans += abs(to - cur);
+		cur = to;
+		ans++;
+	}
 
+	cout << ans << endl;
 
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

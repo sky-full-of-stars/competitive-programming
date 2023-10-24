@@ -59,7 +59,6 @@ void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
 void _print(lld t) {cerr << t;}
 void _print(double t) {cerr << t;}
-void _print(ull t) {cerr << t;}
 
 template <class T, class V> void _print(pair <T, V> p);
 template <class T> void _print(vector <T> v);
@@ -94,23 +93,37 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
+
 	int n; cin >> n;
+	vi v(n);
+	ipArr(v, n);
 
+	int ans = 0;
+	int prevMultipliedTimes = 0;
+	for (int i = 1; i < n; i++)
+	{
+		int need = ceil(log2l((v[i - 1] * 1.0 / v[i])));
+		debug(v[i]);
+		debug(need);
+		prevMultipliedTimes += need;
 
+		if (prevMultipliedTimes < 0)
+		{
+			prevMultipliedTimes = 0;
+		}
 
+		ans += prevMultipliedTimes;
+	}
+	cout << ans << endl;
 
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

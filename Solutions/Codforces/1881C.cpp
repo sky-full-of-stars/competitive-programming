@@ -94,23 +94,39 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	char v[n][n];
 
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cin >> v[i][j];
+		}
+	}
 
-
-
-
-
-
-
-
-
-
-
-
+	int ans = 0;
+	for (int i = 0; i < n / 2; i++)
+	{
+		for (int j = 0; j < n / 2; j++)
+		{
+			vector<char> chars {v[i][j], v[n - 1 - j][i], v[n - 1 - i][n - 1 - j], v[j][n - 1 - i]};
+			sortv(chars);
+			for (auto i : chars)
+			{
+				ans += (chars[3] - i);
+			}
+		}
+	}
+	cout << ans << endl;
+	clear();
 }
 void setUpLocal()
 {

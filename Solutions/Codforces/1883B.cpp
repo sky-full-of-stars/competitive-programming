@@ -94,23 +94,40 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, k; cin >> n >> k;
+	string s; cin >> s;
+
+	map<char, int> mp;
+	for (auto i : s)
+	{
+		mp[i]++;
+	}
+
+	int oddSz = 0;
+	for (auto i : mp)
+	{
+		if (i.second & 1)
+			oddSz++;
+	}
+
+	if (k < oddSz - 1)
+	{
+		no;
+	}
+	else
+	{
+		yes;
+	}
 
 
-
-
-
-
-
-
-
-
-
-
-
+	clear();
 }
 void setUpLocal()
 {

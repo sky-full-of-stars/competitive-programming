@@ -94,23 +94,47 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	multiset<int> startsAt, endsAt;
+	while (n--)
+	{
+		char c; cin >> c;
+		int l, r; cin >> l >> r;
 
+		if (c == '+')
+		{
+			startsAt.insert(l);
+			endsAt.insert(r);
+		}
+		else
+		{
+			startsAt.erase(startsAt.find(l));
+			endsAt.erase(endsAt.find(r));
+		}
 
+		if (startsAt.size() > 0 and
+		        // you want to check if atleast 1 pairs dont intersect
 
-
-
-
-
-
-
-
-
-
-
+		        //find first pair which ends
+		        //find last pair which starts
+		        // if atleast these 2 pairs dont intersect
+		        //then no intersection pair is possible
+		        (*endsAt.begin() < *startsAt.rbegin()))
+		{
+			yes;
+		}
+		else
+		{
+			no;
+		}
+	}
 }
 void setUpLocal()
 {
@@ -123,7 +147,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin >> t;
 	while (t--) solve();
 	return 0;
 }

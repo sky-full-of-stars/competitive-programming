@@ -94,23 +94,29 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, m; cin >> n >> m;
 
+	string a, b; cin >> a >> b;
 
-
-
-
-
-
-
-
-
-
-
-
+	int limit = (sz(a) >= sz(b)) ? 2 : 6;
+	for (int i = 0; i < limit; i++)
+	{
+		if (a.find(b) != string::npos)
+		{
+			cout << i << endl;
+			return;
+		}
+		a += a;
+	}
+	cout << "-1" << endl;
+	clear();
 }
 void setUpLocal()
 {
