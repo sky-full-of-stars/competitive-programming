@@ -102,15 +102,37 @@ void clear()
 void solve()
 {
 	int n; cin >> n;
+	vi v(n);
+	ipArr(v, n);
 
+	vector<int> isRightMost(n, 0);
+	set<int> seen;
+	for (int i = n - 1; i >= 0; i--)
+	{
+		if (!present(seen, v[i]))
+		{
+			isRightMost[i] = 1;
+		}
+		seen.insert(v[i]);
+	}
+	//debug(isRightMost);
+	for (int i = n - 2; i >= 0; i--)
+	{
+		isRightMost[i] += isRightMost[i + 1];
+	}
+	//debug(isRightMost);
 
-
-
-
-
-
-
-
+	seen.clear();
+	int ans = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (!present(seen, v[i]))
+		{
+			ans += isRightMost[i];
+		}
+		seen.insert(v[i]);
+	}
+	cout << ans << endl;
 
 	clear();
 }
@@ -125,7 +147,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
