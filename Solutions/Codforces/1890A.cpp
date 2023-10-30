@@ -94,12 +94,71 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	vi v(n); ipArr(v, n);
+
+	mi m;
+	for (auto i : v)
+	{
+		m[i]++;
+	}
 
 
+	if (sz(m) == 1)
+	{
+		yes; return;
+	}
+	else if (sz(m) == 2)
+	{
+		int c1 = -1, c2 = -1;
+		for (auto i : m)
+		{
+			if (c1 == -1)
+			{
+				c1 = i.second;
+				continue;
+			}
+			if (c2 == -1)
+			{
+				c2 = i.second;
+				continue;
+			}
+		}
+
+		if (n % 2 == 0)
+		{
+			if (c1 == c2 and c1 == n / 2)
+			{
+				yes; return;
+			}
+			else
+			{
+				no; return;
+			}
+		}
+		else
+		{
+			if (c1 == n / 2 or c1 == (n + 1) / 2)
+			{
+				yes; return;
+			}
+			else
+			{
+				no; return;
+			}
+		}
+	}
+
+	no;
+	return;
+	clear();
 }
 void setUpLocal()
 {

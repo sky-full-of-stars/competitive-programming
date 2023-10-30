@@ -1,7 +1,10 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
+#include <algorithm>
+#include <functional>
+#include <cctype>
+#include <locale>
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
@@ -95,11 +98,109 @@ int max(int a, int b) {return (a > b) ? a : b;}
 const int N = 1e7;
 
 
+vi v;
+int f = 0;
+int l = 0;
+
+void clear()
+{
+	v.clear();
+	f = 0;
+	l = 0;
+}
+
+bool possible(string s, int cnt)
+{
+	debug(s);
+	if (cnt < 0)
+	{
+		return false;
+	}
+
+	int n = s.size();
+	int st = 0;
+	while (st < n / 2 and s[st] == s[n - 1 - st])
+	{
+		s[st] = '';
+		s[n - 1 - st] = '';
+		st++;
+	}
+
+	s.erase(0, s.find_first_not_of("\t\n\v\f\r ")); // left trim
+	s.erase(s.find_last_not_of("\t\n\v\f\r ") + 1); // right trim
+
+	if (sz(s) == 0)
+	{
+		return true;
+	}
+
+
+	for (int i = 0; i < n / 2; i++)
+	{
+		if (s[i] != s[n - 1 - i])
+		{
+			cerr << "1";
+			int remchars = (n - i - 2);
+			if (remchars == 0)
+			{
+				return true;
+			}
+			else
+			{
+				string _s = s.substr(i + 1, n - i - 1);
+				return possible(_s, cnt);
+			}
+		}
+		else
+		{
+			char cur = s[i];
+			if (s[i] == '0')
+			{
+				s = s + "01";
+				debug(s);
+				v.pb(n - i + 1);
+				string _s = s.substr(1, sz(s) - 2);
+				debug(_s);
+				return possible(_s, cnt - 1);
+			}
+			else
+			{
+
+				s = "01" + s;
+				v.pb(i + 1);
+				string _s = s.substr(1, sz(s) - 2);
+				return possible(_s, cnt - 1);
+			}
+		}
+	}
+}
+
 void solve()
 {
 	int n; cin >> n;
+	string s; cin >> s;
 
-
+	if (n & 1)
+	{
+		cout << -1 << endl;
+		return;
+	}
+	else
+	{
+		bool res = possible(s, 300);
+		if (res)
+		{
+			cout << sz(v) << endl;
+			for (auto i : v)
+			{
+				cout << i << " ";
+			}
+			cout << endl;
+		}
+		else
+			cout << "-1" << endl;
+	}
+	clear();
 }
 void setUpLocal()
 {

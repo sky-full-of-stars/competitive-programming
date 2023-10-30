@@ -94,12 +94,71 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
+
+bool good(string s)
+{
+	int n = sz(s);
+	for (int i = 1; i < n; i++)
+	{
+		if (s[i] == s[i - 1])
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, m; cin >> n >> m;
+	string a, b; cin >> a >> b;
+
+	if (good(a))
+	{
+		yes; return;
+	}
+	else
+	{
+		if (!good(b))
+		{
+			no; return;
+		}
+
+		char f = b[0], l = b[m - 1];
+
+		for (int i = 1; i < n; i++)
+		{
+			if (a[i] != a[i - 1])
+			{
+				continue;
+			}
+			else
+			{
+				if (a[i - 1] != f and l != a[i])
+				{
+					continue;
+				}
+				else
+				{
+					no; return;
+				}
+			}
+		}
+
+		yes; return;
+	}
 
 
+
+
+
+
+
+	clear();
 }
 void setUpLocal()
 {
