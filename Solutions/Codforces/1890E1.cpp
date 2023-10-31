@@ -1,10 +1,7 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#include <algorithm>
-#include <functional>
-#include <cctype>
-#include <locale>
+
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
@@ -97,91 +94,39 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
-
-vi v;
-int f = 0;
-int l = 0;
-
 void clear()
 {
-	v.clear();
-	f = 0;
-	l = 0;
-}
-
-bool possible(string s)
-{
-	map<char, int> cnt;
-	for (auto i : s)
-	{
-		cnt[i]++;
-	}
-	if (cnt['1'] != cnt['0'])
-	{
-		return false;
-	}
-
-	int lo = 0;
-	int hi = sz(s) - 1;
-
-	while (lo <= hi)
-	{
-		if (s[lo] != s[hi])
-		{
-			lo++, hi--;
-		}
-		else
-		{
-			if (s[lo] == '0')
-			{
-				s.insert(hi + 1, "01");
-				v.pb(hi + 1);
-				hi += 2;
-				lo++, hi--;
-			}
-			else
-			{
-				s.insert(lo, "01");
-				v.pb(lo);
-				hi += 2;
-				lo++, hi--;
-			}
-		}
-	}
-
-	if (sz(v) <= 300)
-	{
-		return true;
-	}
-	return false;
 
 }
 
 void solve()
 {
-	int n; cin >> n;
-	string s; cin >> s;
+	int n, m, k;
+	cin >> n >> m >> k;
 
-	if (n & 1)
+	vi v(n + 1, 0);
+	while (m--)
 	{
-		cout << -1 << endl;
-		return;
+		int l, r; cin >> l >> r;
+		v[l]++;
+		if (r != n)
+			v[r]--;
 	}
-	else
+	int alwaysDry = 0;
+	for (int i = 1; i <= n ; i++)
 	{
-		bool res = possible(s);
-		if (res)
+		v[i] += v[i - 1];
+		if (v[i] == 0)
 		{
-			cout << sz(v) << endl;
-			for (auto i : v)
-			{
-				cout << i << " ";
-			}
-			cout << endl;
+			alwaysDry++;
 		}
-		else
-			cout << "-1" << endl;
 	}
+
+
+
+
+
+
 	clear();
 }
 void setUpLocal()

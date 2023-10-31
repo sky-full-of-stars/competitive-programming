@@ -1,10 +1,7 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#include <algorithm>
-#include <functional>
-#include <cctype>
-#include <locale>
+
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
@@ -97,91 +94,36 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 const int N = 1e7;
 
-
-vi v;
-int f = 0;
-int l = 0;
-
 void clear()
 {
-	v.clear();
-	f = 0;
-	l = 0;
-}
-
-bool possible(string s)
-{
-	map<char, int> cnt;
-	for (auto i : s)
-	{
-		cnt[i]++;
-	}
-	if (cnt['1'] != cnt['0'])
-	{
-		return false;
-	}
-
-	int lo = 0;
-	int hi = sz(s) - 1;
-
-	while (lo <= hi)
-	{
-		if (s[lo] != s[hi])
-		{
-			lo++, hi--;
-		}
-		else
-		{
-			if (s[lo] == '0')
-			{
-				s.insert(hi + 1, "01");
-				v.pb(hi + 1);
-				hi += 2;
-				lo++, hi--;
-			}
-			else
-			{
-				s.insert(lo, "01");
-				v.pb(lo);
-				hi += 2;
-				lo++, hi--;
-			}
-		}
-	}
-
-	if (sz(v) <= 300)
-	{
-		return true;
-	}
-	return false;
 
 }
 
 void solve()
 {
-	int n; cin >> n;
-	string s; cin >> s;
+	int n, c; cin >> n >> c;
+	vi v(n); ipArr(v, n);
 
-	if (n & 1)
+	int pendingSum = 0ll;
+	int connectedSum = v[0];
+	bool connectN = false;
+	for (int i = 1; i < n; i++)
 	{
-		cout << -1 << endl;
-		return;
-	}
-	else
-	{
-		bool res = possible(s);
-		if (res)
+		pendingSum += v[i];
+		debug(pendingSum);
+		if (connectedSum + v[i] >= ((i + 1) * c))
 		{
-			cout << sz(v) << endl;
-			for (auto i : v)
+			connectedSum += pendingSum;
+			pendingSum = 0;
+			debug(connectedSum);
+			if (i == n - 1)
 			{
-				cout << i << " ";
+				connectN = true;
 			}
-			cout << endl;
 		}
-		else
-			cout << "-1" << endl;
 	}
+
+	connectN ? yes : no;
 	clear();
 }
 void setUpLocal()
