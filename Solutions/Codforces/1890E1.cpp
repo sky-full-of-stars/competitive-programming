@@ -104,28 +104,123 @@ void solve()
 	int n, m, k;
 	cin >> n >> m >> k;
 
-	vi v(n + 1, 0);
-	while (m--)
+	vector<pi> v;
+	for (int i = 1; i <= m; i++)
 	{
 		int l, r; cin >> l >> r;
-		v[l]++;
-		if (r != n)
-			v[r]--;
+		v.pb({l, r});
 	}
-	int alwaysDry = 0;
-	for (int i = 1; i <= n ; i++)
+
+	sortv(v);
+
+	set<pi> rainStart;
+	set<pi> rainEnd;
+	mi rainOnThisDayAffectedHowManyCities;
+	map<pi, int> rainCombinationDaysAffectedCityCnt;
+
+	for (int i = 1; i <= m; i++)
 	{
-		v[i] += v[i - 1];
-		if (v[i] == 0)
+		int startCity = v[i - 1].first;
+		rainStart.insert({startCity, i}); //mth day
+	}
+
+	int ans = 0;
+	int cnt = 0;
+
+	for (int city = 1; city <= n; city++)
+	{
+		while (!rainStart.empty())
 		{
-			alwaysDry++;
+			auto front = *rainStart.begin();
+			int lCity = front.first;
+			int day = front.second;
+
+			if (lCity > city)
+			{
+				break;
+			}
+			else
+			{
+				cnt++;
+				rainStart.erase(front);
+				int rcity;
+				int idxInV = day - 1;
+				rcity = v[idxInV].second;
+				rainEnd.insert({rcity + 1, day});
+			}
+		}
+
+		while (!rainEnd.empty())
+		{
+			auto front = *rainEnd.begin();
+			int lCity = front.first;
+			int day = front.second;
+
+			if (lCity > city)
+			{
+				break;
+			}
+			else
+			{
+				cnt--;
+				rainEnd.erase(front);
+			}
+		}
+
+		debug(cnt);
+
+		if (cnt == 0)
+		{
+			ans ++;
+		}
+
+		if (cnt == 1)
+		{
+			auto first = *rainEnd.begin();
+			int day = first.second;
+			rainOnThisDayAffectedHowManyCities[day]++;
+		}
+
+		if (cnt == 2)
+		{
+			auto firstDay = rainEnd.begin()->second;
+			auto secondDay = (++rainEnd.begin())->second;
+			rainCombinationDaysAffectedCityCnt[ {firstDay, secondDay}]++;
 		}
 	}
 
 
+	int remove2RainsWithNonOverlappingCities = 0;
+	vi values;
+	for (auto [i, val] : rainOnThisDayAffectedHowManyCities)
+	{
+		values.pb(val);
+	}
+	sort(all(values), greater<int>());
+	int consider = 2;
+	for (auto i = values.begin(); i != values.end() and consider; i++)
+	{
+		remove2RainsWithNonOverlappingCities += *i;
+		consider--;
+	}
+
+	debug(remove2RainsWithNonOverlappingCities);
 
 
+	int mx = -1;
+	for (auto [i, j] : rainCombinationDaysAffectedCityCnt)
+	{
+		int day1 = i.first;
+		int day2 = i.second;
+		mx = max(mx, rainOnThisDayAffectedHowManyCities[day1] +
+		         rainOnThisDayAffectedHowManyCities[day2] +
+		         j);
+	}
+	debug(rainCombinationDaysAffectedCityCnt);
+	debug(mx);
 
+	ans += max(mx, remove2RainsWithNonOverlappingCities);
+	cout << ans << endl;
 
 	clear();
 }
