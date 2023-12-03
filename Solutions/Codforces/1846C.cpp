@@ -93,79 +93,77 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
-char mat[3][3];
-char randomChar = 'a';
+
 void clear()
 {
-	randomChar = 'a';
-}
 
-bool ro1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[0][1] == init and mat[0][2] == init);
 }
-bool ro2same(char &init)
+bool comp(pair<int, pi> a, pair<int, pi> b)
 {
-	init = mat[1][0];
-	return (mat[1][1] == init and mat[1][2] == init);
-}
-bool ro3same(char &init)
-{
-	init = mat[2][0];
-	return (mat[2][1] == init and mat[2][2] == init);
-}
-bool co1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][0] == init and mat[2][0] == init);
-}
-bool co2same(char &init)
-{
-	init = mat[0][1];
-	return (mat[1][1] == init and mat[2][1] == init);
-}
-bool co3same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][2] == init and mat[2][2] == init);
-}
-bool dia1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][1] == init and mat[2][2] == init);
-}
-bool dia2same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][1] == init and mat[2][0] == init);
+	if (a.ff > b.ff)
+		return true;
+	if (a.ff < b.ff)
+		return false;
+	else //if (a.ff == b.ff)
+	{
+		if (a.ss.ff < b.ss.ff)
+			return true;
+		if (a.ss.ff > b.ss.ff)
+			return false;
+		else// (a.ss.ff == b.ss.ff)
+			return a.ss.ss < b.ss.ss;
+	}
 }
 void solve()
 {
-	for (int i = 0; i < 3; i++)
+	int n, m, h;
+	cin >> n >> m >> h;
+
+	vector<pair<int, pi>> ans;
+	for (int student = 0; student < n; student++)
 	{
-		for (int j = 0; j < 3; j++)
+		vi v(m);
+		ipArr(v, m);
+		sortv(v);
+
+		vi sufTime(m);
+		sufTime[0] = v[0];
+
+		int solved = 0;
+		int sumSoFar = 0;
+		if (sufTime[0] <= h)
 		{
-			cin >> mat[i][j];
-			if (mat[i][j] == '.')
-				mat[i][j] = randomChar++;
+			solved = 1;
+			sumSoFar = sufTime[0];
 		}
+		for (int i = 1; i < m; i++)
+		{
+			sufTime[i] = sufTime[i - 1] + v[i];
+
+			if (sufTime[i] <= h)
+			{
+				solved = i + 1;
+				sumSoFar += sufTime[i];
+			}
+			else
+			{
+				break;
+			}
+		}
+		//cout << student << " " << solved << " " << sumSoFar << endl;
+		ans.pb({ -solved, {sumSoFar, student}});
 	}
 
-	char init = '-';
-	if (ro1same(init)) { cout << init << endl; return;}
-	if (ro2same(init)) { cout << init << endl; return;}
-	if (ro3same(init)) { cout << init << endl; return;}
+	sortv(ans);
+	//sort(ans.begin(), ans.end(), comp);
+	//debug(ans);
 
+	for (int i = 0; i < n; i++)
+	{
+		if (ans[i].second.second == 0)
+			cout << i + 1 << endl;
+	}
 
-	if (co1same(init)) { cout << init << endl; return;}
-	if (co2same(init)) { cout << init << endl; return;}
-	if (co3same(init)) { cout << init << endl; return;}
-
-	if (dia1same(init)) { cout << init << endl; return;}
-	if (dia2same(init)) { cout << init << endl; return;}
-
-	cout << "DRAW" << endl;
 	clear();
 }
 void setUpLocal()

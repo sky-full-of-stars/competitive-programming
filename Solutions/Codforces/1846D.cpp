@@ -93,79 +93,42 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
-char mat[3][3];
-char randomChar = 'a';
+
 void clear()
 {
-	randomChar = 'a';
+
 }
 
-bool ro1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[0][1] == init and mat[0][2] == init);
-}
-bool ro2same(char &init)
-{
-	init = mat[1][0];
-	return (mat[1][1] == init and mat[1][2] == init);
-}
-bool ro3same(char &init)
-{
-	init = mat[2][0];
-	return (mat[2][1] == init and mat[2][2] == init);
-}
-bool co1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][0] == init and mat[2][0] == init);
-}
-bool co2same(char &init)
-{
-	init = mat[0][1];
-	return (mat[1][1] == init and mat[2][1] == init);
-}
-bool co3same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][2] == init and mat[2][2] == init);
-}
-bool dia1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][1] == init and mat[2][2] == init);
-}
-bool dia2same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][1] == init and mat[2][0] == init);
-}
 void solve()
 {
-	for (int i = 0; i < 3; i++)
+	int t, d, h; cin >> t >> d >> h;
+
+	vi v(t); ipArr(v, t); sortv(v);
+
+	double ans = 0.00;
+	for (int i = 0; i < t; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		int curH = v[i];
+		if (i == t - 1 or curH + h <= v[i + 1])
 		{
-			cin >> mat[i][j];
-			if (mat[i][j] == '.')
-				mat[i][j] = randomChar++;
+			double area	= (0.5) * (d) * (h);
+			ans += area;
+			//debug(area);
+		}
+		else
+		{
+			//trapezoid
+			double newHeight = v[i + 1] - curH;
+			double smallBase = ((h - newHeight) * (d) / (h));
+
+			double area = (0.5) * (newHeight) * (d + smallBase);
+			//debug(area);
+			ans += area;
 		}
 	}
 
-	char init = '-';
-	if (ro1same(init)) { cout << init << endl; return;}
-	if (ro2same(init)) { cout << init << endl; return;}
-	if (ro3same(init)) { cout << init << endl; return;}
+	cout << std::fixed << std::setprecision(6) << ans << endl;
 
-
-	if (co1same(init)) { cout << init << endl; return;}
-	if (co2same(init)) { cout << init << endl; return;}
-	if (co3same(init)) { cout << init << endl; return;}
-
-	if (dia1same(init)) { cout << init << endl; return;}
-	if (dia2same(init)) { cout << init << endl; return;}
-
-	cout << "DRAW" << endl;
 	clear();
 }
 void setUpLocal()

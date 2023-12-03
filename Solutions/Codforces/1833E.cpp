@@ -92,80 +92,79 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
-char mat[3][3];
-char randomChar = 'a';
+const int N = 2e5 + 7;
+
+vector<set<int>> gp(N);
+vector<int> vis(N, false);
+vector<int> currentNodes;
+
 void clear()
 {
-	randomChar = 'a';
+	gp.clear();
+	vis.clear();
 }
 
-bool ro1same(char &init)
+void dfs(int n)
 {
-	init = mat[0][0];
-	return (mat[0][1] == init and mat[0][2] == init);
+	vis[n] = true;
+	currentNodes.push_back(n);
+
+	for (auto child : gp[n])
+	{
+		if (!vis[child])
+		{
+			dfs(child);
+		}
+	}
 }
-bool ro2same(char &init)
-{
-	init = mat[1][0];
-	return (mat[1][1] == init and mat[1][2] == init);
-}
-bool ro3same(char &init)
-{
-	init = mat[2][0];
-	return (mat[2][1] == init and mat[2][2] == init);
-}
-bool co1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][0] == init and mat[2][0] == init);
-}
-bool co2same(char &init)
-{
-	init = mat[0][1];
-	return (mat[1][1] == init and mat[2][1] == init);
-}
-bool co3same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][2] == init and mat[2][2] == init);
-}
-bool dia1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][1] == init and mat[2][2] == init);
-}
-bool dia2same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][1] == init and mat[2][0] == init);
-}
+
 void solve()
 {
-	for (int i = 0; i < 3; i++)
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
+
+	vi degree(n + 1, 0);
+	for (int i = 1; i <= n; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		gp[i].insert(v[i - 1]);
+		gp[v[i - 1]].insert(i);
+	}
+
+	for (int i = 1; i <= n; i++)
+	{
+		degree[i] = sz(gp[i]);
+	}
+
+	int availableToBeConnected = 0;
+	int cycles = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		if (!vis[i])
 		{
-			cin >> mat[i][j];
-			if (mat[i][j] == '.')
-				mat[i][j] = randomChar++;
+			dfs(i);
+
+			bool isCycle = true;
+			for (auto node : currentNodes)
+			{
+				if (degree[node] == 1)
+				{
+					availableToBeConnected++;
+					isCycle = false;
+					break;
+				}
+			}
+
+			if (isCycle)
+				cycles++;
+
+			currentNodes.clear();
 		}
 	}
 
-	char init = '-';
-	if (ro1same(init)) { cout << init << endl; return;}
-	if (ro2same(init)) { cout << init << endl; return;}
-	if (ro3same(init)) { cout << init << endl; return;}
+	cout << cycles + min(1, availableToBeConnected) << " "
+	     << cycles + availableToBeConnected << endl;
 
 
-	if (co1same(init)) { cout << init << endl; return;}
-	if (co2same(init)) { cout << init << endl; return;}
-	if (co3same(init)) { cout << init << endl; return;}
-
-	if (dia1same(init)) { cout << init << endl; return;}
-	if (dia2same(init)) { cout << init << endl; return;}
-
-	cout << "DRAW" << endl;
 	clear();
 }
 void setUpLocal()

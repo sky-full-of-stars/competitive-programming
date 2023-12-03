@@ -93,79 +93,127 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
-char mat[3][3];
-char randomChar = 'a';
+
 void clear()
 {
-	randomChar = 'a';
+
 }
 
-bool ro1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[0][1] == init and mat[0][2] == init);
-}
-bool ro2same(char &init)
-{
-	init = mat[1][0];
-	return (mat[1][1] == init and mat[1][2] == init);
-}
-bool ro3same(char &init)
-{
-	init = mat[2][0];
-	return (mat[2][1] == init and mat[2][2] == init);
-}
-bool co1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][0] == init and mat[2][0] == init);
-}
-bool co2same(char &init)
-{
-	init = mat[0][1];
-	return (mat[1][1] == init and mat[2][1] == init);
-}
-bool co3same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][2] == init and mat[2][2] == init);
-}
-bool dia1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][1] == init and mat[2][2] == init);
-}
-bool dia2same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][1] == init and mat[2][0] == init);
-}
 void solve()
 {
-	for (int i = 0; i < 3; i++)
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
+	int mx = *max_element(all(v));
+
+	vi res;
+
+	if (v[0] == mx)
 	{
-		for (int j = 0; j < 3; j++)
+		if (v[n - 1] == mx - 1)
 		{
-			cin >> mat[i][j];
-			if (mat[i][j] == '.')
-				mat[i][j] = randomChar++;
+			res.pb(v[n - 1]);
+			for (int i = 0; i < n - 1; i++)
+			{
+				res.pb(v[i]);
+			}
+		}
+		else
+		{
+			int l = 0;
+			int r = 0;
+			for (int i = 0; i < n; i++)
+			{
+				if (v[i] == mx - 1)
+				{
+					r = i - 1; break;
+				}
+			}
+
+			l = r;
+			debug(r);
+			for (int i = r + 1; i < n; i++)
+			{
+				res.push_back(v[i]);
+			}
+			res.pb(v[l]);
+			for (int i = 0; i < l; i++)
+			{
+				res.pb(v[i]);
+			}
 		}
 	}
+	else if (v[n - 1] == mx)
+	{
+		int r = n - 1;
+		int l = n - 1;
+		while (l > 0)
+		{
+			if (v[l] >= v[0])
+			{
+				l--;
+			}
+			else
+			{
+				l++;
+				break;
+			}
+		}
 
-	char init = '-';
-	if (ro1same(init)) { cout << init << endl; return;}
-	if (ro2same(init)) { cout << init << endl; return;}
-	if (ro3same(init)) { cout << init << endl; return;}
+		debug(l);
+		for (int i = r; i >= l; i--)
+		{
+			res.pb(v[i]);
+		}
 
+		for (int i = 0; i < l; i++)
+		{
+			res.pb(v[i]);
+		}
+	}
+	else
+	{
+		int r = n - 1;
+		while (r >= 0)
+		{
+			r--;
+			if (v[r] == mx)
+			{
+				r--;
+				break;
+			}
+		}
+		debug(r);
+		int l = r - 1;
+		while (l > 0)
+		{
+			if (v[l] > v[0])
+			{
+				l--;
+			}
+			else
+			{
+				l++;
+				break;
+			}
+		}
+		debug(l);
+		for (int i = r + 1; i < n; i++)
+		{
+			res.pb(v[i]);
+		}
+		for (int i = r; i >= l ; i--)
+		{
+			res.pb(v[i]);
+		}
+		for (int i = 0; i < l; i++)
+		{
+			res.pb(v[i]);
+		}
+	}
+	cerr << endl;
+	opArr(res, n);
+	return;
 
-	if (co1same(init)) { cout << init << endl; return;}
-	if (co2same(init)) { cout << init << endl; return;}
-	if (co3same(init)) { cout << init << endl; return;}
-
-	if (dia1same(init)) { cout << init << endl; return;}
-	if (dia2same(init)) { cout << init << endl; return;}
-
-	cout << "DRAW" << endl;
 	clear();
 }
 void setUpLocal()

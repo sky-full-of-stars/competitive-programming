@@ -93,79 +93,37 @@ int max(int a, int b) {return (a > b) ? a : b;}
 
 
 const int N = 1e7;
-char mat[3][3];
-char randomChar = 'a';
+
 void clear()
 {
-	randomChar = 'a';
+
 }
 
-bool ro1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[0][1] == init and mat[0][2] == init);
-}
-bool ro2same(char &init)
-{
-	init = mat[1][0];
-	return (mat[1][1] == init and mat[1][2] == init);
-}
-bool ro3same(char &init)
-{
-	init = mat[2][0];
-	return (mat[2][1] == init and mat[2][2] == init);
-}
-bool co1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][0] == init and mat[2][0] == init);
-}
-bool co2same(char &init)
-{
-	init = mat[0][1];
-	return (mat[1][1] == init and mat[2][1] == init);
-}
-bool co3same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][2] == init and mat[2][2] == init);
-}
-bool dia1same(char &init)
-{
-	init = mat[0][0];
-	return (mat[1][1] == init and mat[2][2] == init);
-}
-bool dia2same(char &init)
-{
-	init = mat[0][2];
-	return (mat[1][1] == init and mat[2][0] == init);
-}
 void solve()
 {
-	for (int i = 0; i < 3; i++)
+	int n; cin >> n;
+	string s; cin >> s;
+
+
+	set<string> st;
+
+
+	for (int i = 1; i < n; i++)
 	{
-		for (int j = 0; j < 3; j++)
-		{
-			cin >> mat[i][j];
-			if (mat[i][j] == '.')
-				mat[i][j] = randomChar++;
-		}
+		string temp = "";
+		temp += s[i - 1];
+		temp += s[i];
+		st.insert(temp);
 	}
-
-	char init = '-';
-	if (ro1same(init)) { cout << init << endl; return;}
-	if (ro2same(init)) { cout << init << endl; return;}
-	if (ro3same(init)) { cout << init << endl; return;}
+	cout << sz(st) << endl;
+	return;
 
 
-	if (co1same(init)) { cout << init << endl; return;}
-	if (co2same(init)) { cout << init << endl; return;}
-	if (co3same(init)) { cout << init << endl; return;}
 
-	if (dia1same(init)) { cout << init << endl; return;}
-	if (dia2same(init)) { cout << init << endl; return;}
 
-	cout << "DRAW" << endl;
+
+
+
 	clear();
 }
 void setUpLocal()
