@@ -92,85 +92,60 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 2e5 + 7;
-
-vector<set<int>> gp;
-vector<int> vis;
-vector<int> currentNodes;
+const int N = 1e7;
 
 void clear()
 {
-	gp.clear();
-	vis.clear();
-}
 
-void dfs(int n)
-{
-	vis[n] = true;
-	currentNodes.push_back(n);
-
-	for (auto child : gp[n])
-	{
-		if (!vis[child])
-		{
-			dfs(child);
-		}
-	}
 }
 
 void solve()
 {
 	int n; cin >> n;
-	vi v(n); ipArr(v, n);
-	//debug(v);
+	string s; cin >> s;
 
-	gp.resize(n + 1);
-	vis.resize(n + 1, false);
-	vi degree(n + 1, 0);
-	for (int i = 1; i <= n; i++)
+	if (n & 1)
 	{
-		gp[i].insert(v[i - 1]);
-		gp[v[i - 1]].insert(i);
+		cout << -1 << endl;
+		return;
 	}
-	//debug(gp);
 
-	for (int i = 1; i <= n; i++)
+	map<int, int> freq;
+	for (auto i : s)
 	{
-		degree[i] = sz(gp[i]);
-	}
-	//debug(degree);
-
-	int availableToBeConnected = 0;
-	int cycles = 0;
-	for (int i = 1; i <= n; i++)
-	{
-		if (!vis[i])
+		freq[i - 'a']++;
+		if (freq[i - 'a'] * 2 > n)
 		{
-			dfs(i);
-
-			bool isCycle = true;
-			for (auto node : currentNodes)
-			{
-				if (degree[node] == 1)
-				{
-					availableToBeConnected++;
-					isCycle = false;
-					break;
-				}
-			}
-
-			if (isCycle)
-				cycles++;
-
-			currentNodes.clear();
+			cout << -1 << endl;
+			return;
 		}
 	}
 
-	cout << cycles + min(1, availableToBeConnected) << " "
-	     << cycles + availableToBeConnected << endl;
+	int totalPalindromePairs = 0;
+	map<int, int> palindromeCharFreq;
+	for (int i = 0; i * 2 < n; i++)
+	{
+		if (s[i] == s[n - 1 - i])
+		{
+			totalPalindromePairs++;
+			palindromeCharFreq[s[i] - 'a']++;
+		}
+	}
+
+	for (auto i : palindromeCharFreq)
+	{
+		if (i.ss * 2 > totalPalindromePairs)
+		{
+			cout << i.ss << endl;
+			return;
+		}
+	}
+	cout << (totalPalindromePairs + 1) / 2 << endl;
+	return;
 
 	clear();
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -178,6 +153,7 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
+
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);

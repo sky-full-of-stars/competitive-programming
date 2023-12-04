@@ -92,84 +92,14 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 2e5 + 7;
-
-vector<set<int>> gp;
-vector<int> vis;
-vector<int> currentNodes;
-
-void clear()
-{
-	gp.clear();
-	vis.clear();
-}
-
-void dfs(int n)
-{
-	vis[n] = true;
-	currentNodes.push_back(n);
-
-	for (auto child : gp[n])
-	{
-		if (!vis[child])
-		{
-			dfs(child);
-		}
-	}
-}
-
 void solve()
 {
 	int n; cin >> n;
-	vi v(n); ipArr(v, n);
-	//debug(v);
+	int ans;
 
-	gp.resize(n + 1);
-	vis.resize(n + 1, false);
-	vi degree(n + 1, 0);
-	for (int i = 1; i <= n; i++)
-	{
-		gp[i].insert(v[i - 1]);
-		gp[v[i - 1]].insert(i);
-	}
-	//debug(gp);
+	ans = 26 + (n * (n + 1)) - (2 * 10) + (n - 4);
 
-	for (int i = 1; i <= n; i++)
-	{
-		degree[i] = sz(gp[i]);
-	}
-	//debug(degree);
-
-	int availableToBeConnected = 0;
-	int cycles = 0;
-	for (int i = 1; i <= n; i++)
-	{
-		if (!vis[i])
-		{
-			dfs(i);
-
-			bool isCycle = true;
-			for (auto node : currentNodes)
-			{
-				if (degree[node] == 1)
-				{
-					availableToBeConnected++;
-					isCycle = false;
-					break;
-				}
-			}
-
-			if (isCycle)
-				cycles++;
-
-			currentNodes.clear();
-		}
-	}
-
-	cout << cycles + min(1, availableToBeConnected) << " "
-	     << cycles + availableToBeConnected << endl;
-
-	clear();
+	cout << ans << endl;
 }
 void setUpLocal()
 {
