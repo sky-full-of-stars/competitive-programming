@@ -98,82 +98,41 @@ void clear()
 {
 
 }
-//O(n+k+k)
-//O(t * (n+k))
+
 void solve()
 {
-	int n, k; cin >> n >> k;
-	vi v(n); ipArr(v, n);
+	string s; cin >> s;
+	int n = sz(s);
 
-	int ans = 0ll;
-	int largestRem = 0;
-	vi remainders(k + 1, 0);
-	for (int i : v)
+	int last1 = -1;
+	for (int i = 0; i < n; i++)
 	{
-		int rem = (i % k);
-		largestRem = max(largestRem, rem);
-
-		ans += (i / k);
-		remainders[rem]++;
-	}
-
-	int mxLimit = min(k, largestRem);
-
-	for (int i = 1; i + i <= mxLimit ; i++)
-	{
-		if (i + i == k)
+		if (s[i] == '1')
 		{
-			ans += (remainders[i] / 2);
-			remainders[i] = (remainders[i] & 1) ? 1 : 0;
-			continue;
+			last1 = i;
 		}
-
-		int rem1 = i;
-		int rem2 = k - i;
-
-		int cnt1 = remainders[rem1];
-		int cnt2 = remainders[rem2];
-
-		int deduct = min(cnt1, cnt2);
-		ans += deduct;
-		remainders[rem1] -= deduct;
-		remainders[rem2] -= deduct;
 	}
 
-	int l = 1;
-	int r = mxLimit;
-
-	while (l <= r)
+	int ans = 0;
+	if (last1 == -1)
 	{
-		int cnt1 = remainders[l];
-		int cnt2 = remainders[r];
-		if (l == r)
+		last1++;
+	}
+	for (int i = last1; i < n; i++)
+	{
+		if (s[i] == '0')
 		{
-			if (l + r >= k)
-				ans += (remainders[l] / 2);
+			ans++;
 			break;
-		}
-		if (l + r >= k)
-		{
-			int deduct = min(cnt1, cnt2);
-			ans += deduct;
-			remainders[l] -= deduct;
-			remainders[r] -= deduct;
 		}
 		else
 		{
-			l++;
-		}
-		if (remainders[l] == 0)
-		{
-			l++;
-		}
-		if (remainders[r] == 0)
-		{
-			r--;
+			ans++;
 		}
 	}
+
 	cout << ans << endl;
+
 	clear();
 }
 void setUpLocal()

@@ -98,82 +98,81 @@ void clear()
 {
 
 }
-//O(n+k+k)
-//O(t * (n+k))
+
+void dfsLinear(int node, vi & vis, vi gp[], vi &path)
+{
+	vis[node] = true;
+	path.pb(node);
+	int neigh = -1;
+	for (int j : gp[node])
+	{
+		if (!vis[j])
+		{
+			neigh = j; break;
+		}
+	}
+	if (neigh != -1)
+	{
+		dfsLinear(neigh, vis, gp, path);
+	}
+	else
+	{
+		return;
+	}
+}
 void solve()
 {
-	int n, k; cin >> n >> k;
-	vi v(n); ipArr(v, n);
+	int n; cin >> n;
 
-	int ans = 0ll;
-	int largestRem = 0;
-	vi remainders(k + 1, 0);
-	for (int i : v)
+	int root = -1;
+	vi gp[n + 1];
+	vi vis(n + 1, false);
+	vector<vector<int>> ans;
+
+	for (int i = 1; i <= n; i++)
 	{
-		int rem = (i % k);
-		largestRem = max(largestRem, rem);
-
-		ans += (i / k);
-		remainders[rem]++;
-	}
-
-	int mxLimit = min(k, largestRem);
-
-	for (int i = 1; i + i <= mxLimit ; i++)
-	{
-		if (i + i == k)
+		int ele; cin >> ele;
+		if (i == ele)
 		{
-			ans += (remainders[i] / 2);
-			remainders[i] = (remainders[i] & 1) ? 1 : 0;
+			root = i;
 			continue;
 		}
-
-		int rem1 = i;
-		int rem2 = k - i;
-
-		int cnt1 = remainders[rem1];
-		int cnt2 = remainders[rem2];
-
-		int deduct = min(cnt1, cnt2);
-		ans += deduct;
-		remainders[rem1] -= deduct;
-		remainders[rem2] -= deduct;
+		gp[ele].pb(i);
 	}
 
-	int l = 1;
-	int r = mxLimit;
+	queue<int> q;
+	q.push(root);
+	vi path1;
+	dfsLinear(root, vis, gp, path1);
+	ans.pb(path1);
 
-	while (l <= r)
+	while (!q.empty())
 	{
-		int cnt1 = remainders[l];
-		int cnt2 = remainders[r];
-		if (l == r)
+		int cur = q.front();
+		q.pop();
+
+		for (int i : gp[cur])
 		{
-			if (l + r >= k)
-				ans += (remainders[l] / 2);
-			break;
-		}
-		if (l + r >= k)
-		{
-			int deduct = min(cnt1, cnt2);
-			ans += deduct;
-			remainders[l] -= deduct;
-			remainders[r] -= deduct;
-		}
-		else
-		{
-			l++;
-		}
-		if (remainders[l] == 0)
-		{
-			l++;
-		}
-		if (remainders[r] == 0)
-		{
-			r--;
+			if (!vis[i])
+			{
+				vi path;
+				dfsLinear(i, vis, gp, path);
+				ans.pb(path);
+			}
+			q.push(i);
 		}
 	}
-	cout << ans << endl;
+
+	//debug(ans);
+	cout << sz(ans) << endl;
+	for (vi i : ans)
+	{
+		cout << sz(i) << endl;
+		for (int ele : i)
+			cout << ele << " ";
+		cout << endl;
+	}
+	cout << endl;
 	clear();
 }
 void setUpLocal()
