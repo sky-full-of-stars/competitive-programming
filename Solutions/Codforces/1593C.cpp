@@ -98,30 +98,47 @@ void clear()
 {
 
 }
+/*
 
-void solveEditorial()
+10 6
+8 7 5 4 9 4
+
+10 9 8 5 4 4 ....0
+H  m m m m m ....C
+   | |
+   | takes 1+2 mins to reach hole, cat takes 10 mins
+   |
+  takes 1 mins to reach hole, cat takes 10 mins
+
+*/
+void solve()
 {
-	string s; cin >> s;
+	int n, k; cin >> n >> k;
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	vi v(k);
+	ipArr(v, k);
+
+	sort(v.rbegin(), v.rend());
+
+	int totTimeElapsed = 0;
+	int totalSave = 0;
+
+	for (int i = 0; i < k ; i++)
 	{
-		if (!prevSeen[s[i]])
+		int timeForCurMouseToReachHole = (n - v[i]);
+		int totalTimeCurMouseTakesToBeSafe = (totTimeElapsed + timeForCurMouseToReachHole);
+		if (totalTimeCurMouseTakesToBeSafe < n)
 		{
-			prevSeen[s[i]] = 1;
+			totalSave++;
+			totTimeElapsed += timeForCurMouseToReachHole;
 		}
 		else
 		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			break;
 		}
 	}
 
-	cout << n - evenStrLen << endl;
-
+	cout << totalSave << endl;
 	clear();
 }
 void setUpLocal()
@@ -136,6 +153,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

@@ -99,28 +99,26 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	int n; cin >> n;
+	int minSteps = INF;
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	//1 -> 2 -> 3 ...->x -> xx -> xxx -> (xxx..y times)
+	//totalSum >= n
+	// x * y >= n
+	// we can iterate only till sqrt(x) and try every value of y
+	// y = ceil(n/x) = n+x-1/x;
+	//y is the number of times x should be repeated.
+	//x already exists once, so you need to do y-1 more.
+	//ans = increementSteps + copySteps = (x-1) + (y-1);
+	for (int x = 1; x * x <= n; x++)
 	{
-		if (!prevSeen[s[i]])
-		{
-			prevSeen[s[i]] = 1;
-		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
-		}
+		int y = (n + x - 1) / x;
+		int steps = x - 1 + y - 1;
+		minSteps = min(minSteps, steps);
 	}
-
-	cout << n - evenStrLen << endl;
+	cout << minSteps << endl;
 
 	clear();
 }
@@ -136,6 +134,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

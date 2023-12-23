@@ -99,6 +99,8 @@ void clear()
 
 }
 
+//not completint this implementation
+//bad day bad problem
 void solve()
 {
 	int n; cin >> n;
@@ -168,6 +170,7 @@ void solve()
 		int l = 0;
 		v.resize(n + 1);
 		v[n] = 0;
+		map<int, int> mp;
 		for (int i = 0; i < n; i++)
 		{
 			if (!v[i])
@@ -183,8 +186,7 @@ void solve()
 
 				if (!(negs & 1))
 				{
-					cout << "0 0" << endl;
-					return;
+					mp[negs] = {l, n - i};
 				}
 				else
 				{
@@ -214,8 +216,10 @@ void solve()
 
 					}
 
+
 					if (cntOf2TillFirstNeg < cntOf2TillLastNeg)
 					{
+
 						cout << firstNeg + 1 << " " << 0 << endl;
 					}
 					else

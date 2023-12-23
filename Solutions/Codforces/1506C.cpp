@@ -99,28 +99,27 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	string a, b;
+	cin >> a >> b;
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	int n = sz(a);
+	int m = sz(b);
+
+	int ans = n + m;
+	for (int start = 0; start < n; start++)
 	{
-		if (!prevSeen[s[i]])
+		for (int len = 0; len <= (n - start); len++)
 		{
-			prevSeen[s[i]] = 1;
-		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			string sub = a.substr(start, len);
+			if (b.find(sub) != string::npos)
+			{
+				ans = min(ans, n + m - (2 * len));
+			}
 		}
 	}
-
-	cout << n - evenStrLen << endl;
+	cout << ans << endl;
 
 	clear();
 }
@@ -136,6 +135,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

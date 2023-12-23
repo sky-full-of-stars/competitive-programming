@@ -99,28 +99,103 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
+	int a, b; cin >> a >> b;
 	string s; cin >> s;
-
 	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	for (char i : s)
 	{
-		if (!prevSeen[s[i]])
+		if (i == '?') continue;
+		i == '0' ? a-- : b--;
+	}
+
+	for (int i = 0; i <= (n - 1) / 2; i++)
+	{
+		if (i == n - i - 1)
+			continue;
+		if ((s[i] == '?' and s[n - i - 1] != '?'))
 		{
-			prevSeen[s[i]] = 1;
+			s[i] = s[n - i - 1];
+			if (s[i] == '1')
+			{
+				b--;
+			}
+			else
+			{
+				a--;
+			}
 		}
-		else
+		if ((s[i] != '?' and s[n - i - 1] == '?'))
 		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			s[n - i - 1] = s[i];
+			if (s[i] == '1')
+			{
+				b--;
+			}
+			else
+			{
+				a--;
+			}
+		}
+		if (s[i] != s[n - i - 1])
+		{
+			cout << -1 << endl;
+			return;
+		}
+		if (a < 0 or b < 0)
+		{
+			cout << -1 << endl;
+			return;
 		}
 	}
 
-	cout << n - evenStrLen << endl;
+	for (int i = 0; i <= (n - 1) / 2; i++)
+	{
+		if (s[i] == '?' and i == n - i - 1)
+		{
+			if (a >= b)
+			{
+				s[i] = '0';
+				a --;
+			}
+			else
+			{
+				s[i] = '1';
+				b --;
+			}
+			continue;
+		}
+		if (s[i] == '?')
+		{
+			if (a >= b)
+			{
+				s[i] = s[n - i - 1] = '0';
+				a -= 2;
+			}
+			else
+			{
+				s[i] = s[n - i - 1] = '1';
+				b -= 2;
+			}
+		}
+		if (a < 0 or b < 0)
+		{
+			cout << -1 << endl;
+			return;
+		}
+	}
+	debug(s);
+
+	if (!a and !b)
+	{
+		cout << s << endl;
+	}
+	else
+	{
+		cout << -1 << endl;
+		return;
+	}
 
 	clear();
 }
@@ -136,6 +211,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

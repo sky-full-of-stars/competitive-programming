@@ -99,28 +99,57 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	int g1 = v[0];
+	for (int i = 2; i < n; i += 2)
 	{
-		if (!prevSeen[s[i]])
+		g1 = gcd(g1, v[i]);
+	}
+
+	bool ok = true;
+	for (int i = 1; i < n; i += 2)
+	{
+		if (v[i] % g1 == 0)
 		{
-			prevSeen[s[i]] = 1;
-		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			ok = false;
+			break;
 		}
 	}
 
-	cout << n - evenStrLen << endl;
+	if (ok)
+	{
+		cout << g1 << endl;
+		return;
+	}
+
+
+
+	int g2 = v[1];
+	for (int i = 3; i < n; i += 2)
+	{
+		g2 = gcd(g2, v[i]);
+	}
+
+	ok = true;
+	for (int i = 0; i < n; i += 2)
+	{
+		if (v[i] % g2 == 0)
+		{
+			ok = false;
+			break;
+		}
+	}
+	if (ok)
+	{
+		cout << g2 << endl;
+		return;
+	}
+	cout << 0 << endl;
+	return;
 
 	clear();
 }
@@ -136,6 +165,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

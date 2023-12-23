@@ -99,28 +99,41 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	int n; cin >> n;
+	vi v(n); ipArr(v, n);
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	int ans = 0;
+	sortv(v);
+	int mx = *max_element(all(v));
+
+	for (int i = 2; i <= 2 * mx; i++)
 	{
-		if (!prevSeen[s[i]])
+		int desiredSum  = i;
+		int l = 0;
+		int r = n - 1;
+		int cnt = 0;
+		while (l < r)
 		{
-			prevSeen[s[i]] = 1;
+			int sum = v[l] + v[r];
+			if ( sum == desiredSum)
+			{
+				cnt++; l++; r--; continue;
+			}
+			if (sum > desiredSum)
+			{
+				r--;
+			}
+			else
+			{
+				l++;
+			}
 		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
-		}
+		ans = max(ans, cnt);
 	}
 
-	cout << n - evenStrLen << endl;
+	cout << ans << endl;
 
 	clear();
 }
@@ -136,6 +149,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

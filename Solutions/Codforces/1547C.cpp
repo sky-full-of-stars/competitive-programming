@@ -99,29 +99,44 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	int tot, n, m;
+	cin >> tot >> n >> m;
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	vi v1(n); ipArr(v1, n);
+	vi v2(m); ipArr(v2, m);
+
+	vi ans;
+	int l1 = 0, l2 = 0;
+	while (l1 < n or l2 < m)
 	{
-		if (!prevSeen[s[i]])
+		if (l1 < n and v1[l1] == 0)
 		{
-			prevSeen[s[i]] = 1;
+			ans.pb(v1[l1]);
+			l1++; tot++; continue;
 		}
-		else
+		if (l2 < m and v2[l2] == 0)
 		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			ans.pb(v2[l2]);
+			l2++; tot++; continue;
 		}
+		if (l1 < n and v1[l1] <= tot)
+		{
+			ans.pb(v1[l1]);
+			l1++; continue;
+		}
+		if (l2 < m and v2[l2] <= tot)
+		{
+			ans.pb(v2[l2]);
+			l2++; continue;
+		}
+		//none could happen
+		cout << -1 << endl;
+		return;
 	}
 
-	cout << n - evenStrLen << endl;
-
+	opArr(ans, sz(ans));
 	clear();
 }
 void setUpLocal()
@@ -136,6 +151,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

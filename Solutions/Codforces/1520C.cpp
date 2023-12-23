@@ -99,28 +99,91 @@ void clear()
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
+	int n; cin >> n;
+	int ans[n + 2][n + 2];
 
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i <= n + 1; i++)
 	{
-		if (!prevSeen[s[i]])
+		for (int j = 0; j <= n + 1; j++)
 		{
-			prevSeen[s[i]] = 1;
-		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			ans[i][j] = INF;
 		}
 	}
 
-	cout << n - evenStrLen << endl;
+	int cur = 1;
+	for (int i = 1; i <= n; i++)
+	{
+		if (!(i & 1))
+		{
+			for (int j = 1; j <= n; j += 2)
+			{
+				ans[i][j] = cur++;
+			}
+		}
+		else
+		{
+			for (int j = 2; j <= n; j += 2)
+			{
+				ans[i][j] = cur++;
+			}
+		}
+	}
+
+	for (int i = 1; i <= n; i++)
+	{
+		if ((i & 1))
+		{
+			for (int j = 1; j <= n; j += 2)
+			{
+				ans[i][j] = cur++;
+			}
+		}
+		else
+		{
+			for (int j = 2; j <= n; j += 2)
+			{
+				ans[i][j] = cur++;
+			}
+		}
+	}
+
+	bool pos = true;
+	for (int i = 1; i <= n; i++)
+	{
+		for (int j = 1; j <= n; j++)
+		{
+			if ((abs(ans[i][j] - ans[i + 1][j]) != 1) and
+			        (abs(ans[i][j] - ans[i - 1][j]) != 1) and
+			        (abs(ans[i][j] - ans[i][j + 1]) != 1) and
+			        (abs(ans[i][j] - ans[i][j - 1]) != 1)
+			   )
+			{
+				continue;
+			}
+			else
+			{
+				pos = false; break;
+			}
+		}
+	}
+
+	if (!pos)
+	{
+		cout << -1 << endl;
+	}
+	else
+	{
+		for (int i = 1; i <= n; i++)
+		{
+			for (int j = 1; j <= n; j++)
+			{
+				cout << ans[i][j] << " ";
+			}
+			cout << endl;
+		}
+	}
 
 	clear();
 }
@@ -136,6 +199,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }

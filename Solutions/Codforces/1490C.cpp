@@ -92,35 +92,29 @@ int max(int a, int b) {return (a > b) ? a : b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
+const int N = 10000;
 
 void clear()
 {
 
 }
 
-void solveEditorial()
+void solve()
 {
-	string s; cin >> s;
-
-	int n = sz(s);
-	map<char, int> prevSeen;
-	int evenStrLen = 0;
-	for (int i = 0; i < n; i++)
+	int n; cin >> n;
+	for (int i = 1; i <= N; i++)
 	{
-		if (!prevSeen[s[i]])
+		int x = i;
+		int fi = x * x * x;
+		int se = n - fi;
+		int y = cbrt(se);
+		if (y * y * y == se and y >= 1)
 		{
-			prevSeen[s[i]] = 1;
-		}
-		else
-		{
-			evenStrLen += 2;
-			for (auto i : prevSeen)
-				prevSeen[i.ff] = 0;
+			yes;
+			return;
 		}
 	}
-
-	cout << n - evenStrLen << endl;
+	no;
 
 	clear();
 }
@@ -136,6 +130,6 @@ int32_t main()
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
-	while (t--) solveEditorial();
+	while (t--) solve();
 	return 0;
 }
