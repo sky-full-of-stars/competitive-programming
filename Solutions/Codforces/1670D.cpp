@@ -92,55 +92,26 @@ int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
+const int N = 1e9 + 9;
 
-void clear()
+vector<pi> v;
+void pre()
 {
-
-}
-bool isGood(vi &v)
-{
-	int n = sz(v);
-	if (n < 3)
-		return true;
-	if (n > 4)
-		return false;
-	for (int i = 0; i < n; i++)
+	int lines = 0;
+	int triangles = 0;
+	while (triangles < N)
 	{
-		for (int j = i + 1; j < n; j++)
-		{
-			for (int k = j + 1; k < n; k++)
-			{
-				if (v[i] <= v[j] and v[j] <= v[k])
-					return false;
-				if (v[i] >= v[j] and v[j] >= v[k])
-					return false;
-			}
-		}
+
 	}
-	return true;
+
 }
+
+
 void solve()
 {
 	int n; cin >> n;
-	vi v(n); ipArr(v, n);
-
-	int ans = 0;
-	for (int i = 0; i < n; i++)
-	{
-		vi subarr;
-		for (int j = i; j < n; j++)
-		{
-			subarr.pb(v[j]);
-			if (isGood(subarr))
-				ans++;
-			else
-				break;
-		}
-	}
-
-	cout << ans << endl;
-	clear();
+	pi p = {n, 0};
+	cout << lower_bound(all(v), n)->ss << endl;
 }
 void setUpLocal()
 {
@@ -153,6 +124,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
+	pre();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
