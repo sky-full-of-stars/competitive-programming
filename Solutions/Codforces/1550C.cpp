@@ -1,14 +1,13 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
+#pragma GCC optimize("Ofast","inline","-ffast-math")
+#pragma GCC target("avx,sse2,sse3,sse4,mmx")
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
 
 #define int long long int
-#define cont continue;
-#define br  break;
 #define ff first
 #define ss second
 #define pb push_back
@@ -53,7 +52,7 @@ void write(T&&... args) {
 #define debug(x)
 #endif
 
-//void _print(ll t) {cerr << t;}
+void _print(bool t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
@@ -89,6 +88,7 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 int min(int a, int b) {return (a < b) ? a : b;}
 int max(int a, int b) {return (a > b) ? a : b;}
+int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
@@ -101,7 +101,16 @@ void clear()
 
 void solve()
 {
-	int n, k; cin >> n >> k;
+
+
+
+
+
+
+
+
+
+
 
 	clear();
 }
@@ -116,7 +125,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }

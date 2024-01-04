@@ -118,10 +118,13 @@ void solve()
 	int n; cin >> n;
 	vector<string> v(n);
 	ipArr(v, n);
-	set<string> st;
-	set<string> endsWith;
-	for (auto s : v)
+
+	map<string, set<int>> st;
+	map<string, set<int>> endsWith;
+
+	for (int i = 0; i < n; i++)
 	{
+		string s = v[i];
 		if (sz(s) == 1)
 		{
 			yes; return;
@@ -132,23 +135,34 @@ void solve()
 		}
 		if (sz(s) == 3)
 		{
-			endsWith.insert(s.substr(1, 2));
+			if (s[0] == s[2])
+			{
+				yes; return;
+			}
+			endsWith[s.substr(1, 2)].insert(i);
 		}
-		st.insert(s);
+		st[s].insert(i);
 	}
 
-	debug(endsWith)
-	debug(st)
-	for (auto s : v)
+	// debug(endsWith)
+	// debug(st)
+
+	for (int i = 0; i < n; i++)
 	{
-		debug(s);
+		string s = v[i];
 		if (sz(s) == 2)
 		{
 			string _s = s;
 			reverse(all(_s));
-			if (present(st, _s) or present(endsWith, _s))
+			if (sz(st[_s]) >= 1)
 			{
-				cerr << "2";
+				yes; return;
+			}
+
+			set<int> indices = endsWith[_s];
+			auto it = lower_bound(all(indices), i + 1);
+			if (it != indices.end())
+			{
 				yes; return;
 			}
 		}
@@ -156,9 +170,16 @@ void solve()
 		{
 			string _s = s;
 			reverse(all(_s));
-			if (present(st, _s) or present(st, _s.substr(1, 2)))
+			if (sz(st[_s]) >= 1)
 			{
-				cerr << "3";
+				yes; return;
+			}
+
+			string need = _s.substr(1, 2);
+			set<int> indices = st[need];
+			auto it = lower_bound(all(indices), i + 1);
+			if (it != indices.end())
+			{
 				yes; return;
 			}
 		}
