@@ -92,42 +92,58 @@ int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e9 + 9;
+const int N = 1e7;
 
-vector<pi> v;
-void pre()
+void clear()
 {
-	int lines = 0;
-	int triangles = 0;
-	int l = 0, r = 0, h = 0;
-	while (triangles < N)
-	{
-		if (lines % 3 == 0)
-		{
-			l++;
-			triangles += 2 * (r + h);
-		}
-		if (lines % 3 == 1)
-		{
-			r++;
-			triangles += 2 * (l + h);
-		}
-		if (lines % 3 == 2)
-		{
-			h++;
-			triangles += 2 * (r + l);
-		}
-		lines++;
-		v.pb({triangles, lines});
-	}
+
 }
 
 void solve()
 {
 	int n; cin >> n;
-	pi p = {n, 0};
-	auto itr = *lower_bound(all(v), p);
-	cout << (itr.ss) << endl;
+	vi a(n); ipArr(a, n);
+	vi b(n); ipArr(b, n);
+
+	int i = n - 1, j = n - 1;
+	multiset<int> reserve;
+	while (true)
+	{
+		if (j > 0 and b[j] == b[j - 1])
+		{
+			reserve.insert(b[j]);
+			j--;
+			continue;
+		}
+		if (i >= 0 and j >= 0 and a[i] == b[j])
+		{
+			i--; j--;
+			continue;
+		}
+		else
+		{
+			if (i >= 0)
+			{
+				int need = a[i];
+				if (present(reserve, need))
+				{
+					reserve.erase(reserve.find(need));
+					i--;
+				}
+				else
+				{
+					no; return;
+				}
+			}
+		}
+		if (j < 0 and i < 0)
+		{
+			break;
+		}
+	}
+	yes; return;
+
+	clear();
 }
 void setUpLocal()
 {
@@ -140,7 +156,6 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	pre();
 	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;

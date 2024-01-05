@@ -92,42 +92,111 @@ int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e9 + 9;
+const int N = 1e7;
 
-vector<pi> v;
-void pre()
+void clear()
 {
-	int lines = 0;
-	int triangles = 0;
-	int l = 0, r = 0, h = 0;
-	while (triangles < N)
-	{
-		if (lines % 3 == 0)
-		{
-			l++;
-			triangles += 2 * (r + h);
-		}
-		if (lines % 3 == 1)
-		{
-			r++;
-			triangles += 2 * (l + h);
-		}
-		if (lines % 3 == 2)
-		{
-			h++;
-			triangles += 2 * (r + l);
-		}
-		lines++;
-		v.pb({triangles, lines});
-	}
+
 }
 
 void solve()
 {
 	int n; cin >> n;
-	pi p = {n, 0};
-	auto itr = *lower_bound(all(v), p);
-	cout << (itr.ss) << endl;
+	vi v(n); ipArr(v, n);
+	sortv(v);
+
+	if (n == 1)
+	{
+		cout << -1 << endl;
+		return;
+	}
+	if (n == 2)
+	{
+		int d;
+		d = v[1] - v[0];
+		set<int> ans;
+		ans.insert(v[1] + d);
+		ans.insert(v[0] - d);
+		if (!(d & 1))
+		{
+			ans.insert(v[0] + d / 2);
+		}
+		cout << sz(ans) << endl;
+		for (int i : ans)
+		{
+			cout << i << " ";
+		}
+		return;
+	}
+
+	int d = v[1] - v[0];
+	bool perfectSeq = true;
+	for (int i = 1; i < n; i++)
+	{
+		if (v[i] - v[i - 1] == d)
+		{
+			continue;
+		}
+		else
+		{
+			perfectSeq = false;
+		}
+	}
+	if (perfectSeq)
+	{
+		set<int> ans;
+		ans.insert(v[n - 1] + d);
+		ans.insert(v[0] - d);
+		cout << sz(ans) << endl;
+		for (int i : ans)
+		{
+			cout << i << " ";
+		}
+		return;
+	}
+	else
+	{
+
+		int mnd = INF;
+		for (int i = 1; i < n; i++)
+		{
+			mnd = min(mnd, v[i] - v[i - 1]);
+		}
+		set<int> ans;
+		for (int i = 1; i < n; i++)
+		{
+			if (v[i] - v[i - 1] == mnd)
+			{
+				continue;
+			}
+			else
+			{
+				ans.insert(v[i - 1] + mnd);
+				v[i - 1] = v[i - 1] + mnd;
+				if (v[i] - v[i - 1] != mnd)
+				{
+					cout << 0 << endl;
+					return;
+				}
+			}
+		}
+		if (sz(ans) == 1)
+		{
+			cout << 1 << endl;
+			for (int i : ans)
+			{
+				cout << i << " ";
+			}
+			return;
+		}
+		else
+		{
+			cout << 0 << endl;
+			return;
+		}
+	}
+
+	clear();
 }
 void setUpLocal()
 {
@@ -140,8 +209,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	pre();
-	int t = 1; cin >> t;
+	int t = 1; //cin>>t;
 	while (t--) solve();
 	return 0;
 }
