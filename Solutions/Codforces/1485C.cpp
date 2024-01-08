@@ -92,132 +92,78 @@ int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e5 + 7;
-vi gp[N];
+const int N = 1e7;
 
 /*
-	src code ref: https://codeforces.com/contest/427/submission/23033640
+let,
+    ceil(a/b) = q;
+    a%b = r;
+so,
+    a = q*b + r;
 
-	video's to understand:
-	1) https://www.youtube.com/watch?v=o6N9qwizaTI
-	2) https://www.youtube.com/watch?v=lrCVqsH3lVk
-	3) https://youtu.be/qrAub5z8FeA?si=xfSkwYL8_5WXOyUo (to understand intution & lo array)
-*/
-struct Tarjan
+given
+    q = r,
+so,
+    a = b*r + r;  <--- #1
+    b = (a-r)/r
+for every r there is a possible pair of a and b.
+lets find range of b which is possible for each r.
+
+bmax is when a is max:
+    bmax = (x - r)/r = high
+
+For bmin:
+    r = {0,1,2...b-1}
+    r <= b-1
+    r+1<=b
+    b >= r+1      <--- #2
+    bmin is (r+1) = lo
+
+so, for each r:
+    cnt(b) = high - lo +1;
+
+what's range of r?
+lets express r in terms of b or a
+we have a = b*r + r (from #1)
+we have b >= r+1    (from #2)
+so      a >= r+1(r) + r
+        a >= r^2
+        sqrt(a) >= r
+        r <= sqrt(a)
+
+        a <= 1e9
+so      r <= 32,000
+
+also, r= 0 means, a/b= 0 means a= 0, not possible. so r>0;
+
+so,
+for(r : [1, 32000])
 {
-	vector<int> inTime, lo;
-	vector<vector<int>> sccs;
-	vector<bool> onStack;
-	stack<int> curDfsEleStk;
-	vector<int>* adj;
-	int time;
-
-	void dfs(int u)
-	{
-		inTime[u] = time;
-		lo[u] = time;
-		time++;
-
-		curDfsEleStk.push(u);
-		onStack[u] = true;
-
-		for (int v : gp[u])
-		{
-			if (inTime[v] == -1)
-			{
-				dfs(v);
-				lo[u] = min(lo[u], lo[v]);
-			}
-			else // v is already visited
-			{
-				if (onStack[v]) //and v is also visited in current traversal
-				{
-					lo[u] = min(lo[u], inTime[v]);
-				}
-			}
-		}
-
-		if (inTime[u] == lo[u])
-		{
-			vector<int> curSccNodes;
-			while (true)
-			{
-				int cur = curDfsEleStk.top();
-				curDfsEleStk.pop();
-				onStack[cur] = false;
-				curSccNodes.pb(cur);
-				if (cur == u) break;
-			}
-			sccs.pb(curSccNodes);
-		}
-	}
-
-	vector<vi> computeSCC(int n, vector<int>* iadj)
-	{
-		inTime = vector<int>(n + 1, -1);
-		lo = vector<int>(n + 1, -1);
-		onStack = vector<bool>(n + 1, -1);
-		curDfsEleStk = stack<int>();
-		sccs.clear();
-		adj = iadj;
-		time = 0;
-
-		for (int i = 1; i <= n; i++)
-		{
-			if (inTime[i] == -1) //not visited yet
-			{
-				dfs(i);
-			}
-		}
-		return sccs;
-	}
-};
-
-
-void getAns(vector<vi> &sccs, int &minCost, int &ways, vi &cost)
-{
-	for (auto scc : sccs)
-	{
-		int mn = INF;
-		int freq = 0;
-		for (auto node : scc)
-		{
-			if (cost[node] < mn)
-			{
-				mn = cost[node];
-				freq = 1;
-			}
-			else if (cost[node] == mn)
-			{
-				freq++;
-			}
-		}
-		minCost += mn;
-		ways = (ways * freq) % MOD;
-	}
+	ans += [cnt(b) = high - lo +1;]
 }
+*/
+
+//https://www.youtube.com/watch?v=3eoQ8Z839ok
 void solve()
 {
-	int n; cin >> n;
-	vi cost(n + 1);
-	for (int i = 1; i <= n; i++) cin >> cost[i];
+	int x, y;
+	cin >> x >> y;
 
-	int m; cin >> m;
-	for (int i = 0; i < m; i++)
+	int ans = 0;
+	for (int rem = 1; rem < 32000; rem++)
 	{
-		int u, v; cin >> u >> v;
-		gp[u].pb(v);
+		int maxB = (x - rem) / rem;
+		maxB = min(maxB, y);
+
+		int minB = (rem + 1);
+		int cntB = maxB - minB + 1;
+		cntB = max(cntB, 0);
+
+		ans += cntB;
 	}
-
-	Tarjan trajan;
-	vector<vi> sccs = trajan.computeSCC(n, gp);
-	debug(sccs);
-
-	int minCost = 0;
-	int ways = 1ll;
-	getAns(sccs, minCost, ways, cost);
-	cout << minCost << " " << ways << endl;
+	cout << ans << endl;
 }
+
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -225,11 +171,12 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
+
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
