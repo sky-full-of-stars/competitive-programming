@@ -6,8 +6,6 @@
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
-
-#define int long long int
 #define ff first
 #define ss second
 #define pb push_back
@@ -92,54 +90,74 @@ int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
-const int N = 1e7;
-int n;
-vi v;
 void clear()
 {
 
 }
 
-//https://www.youtube.com/watch?v=Suh3bWBq6iI
 void solve()
 {
-	cin >> n;
-	v.resize(n);
-	ipArr(v, n);
-
+	int n, k; cin >> n >> k;
+	vi v(n); ipArr(v, n);
+	map<int, int> needs;
+	for (int i : v)
+	{
+		int addNeed = k - (i % k);
+		debug(addNeed)
+		if (addNeed == k)
+		{
+			continue;
+		}
+		needs[addNeed]++;
+	}
+	debug(needs)
+	int x = 0;
 	int ans = 0;
 
-	for (int i = 1; i <= n; i++)
+	int todo = sz(needs);
+	while ( true)
 	{
-		if (n % i == 0) // size of each block will be 'i'
+		bool done = false;
+		for (int i = 0; i < k; i++)
 		{
-			int g = 0;
-
-			// (0 1 2..i) (i+1, i+2 ... i+i) ....(x,y,...x+i)....(....n)
-			//  l          r                      r      ...
-			//    l              r                  r    ...
-			//  ie, l is the first element, r is all subsequent elements
-			for (int l = 0; l < i; l++)
+			debug(needs)
+			debug(ans)
+			debug(x)
+			if (todo == 0)
 			{
-				int gcdOfLthNumbers = 0;
-				for (int r = l; r < n; r += i)
-				{
-					gcdOfLthNumbers = gcd(gcdOfLthNumbers, abs(v[r] - v[l]));
-				}
-				g = gcd(g, gcdOfLthNumbers);
+				done = true;
+				break;
 			}
-
-			if (g != 1)
+			if (needs[i] > 0)
 			{
 				ans++;
+				x++;
+
+				needs[i]--;
+				if (needs[i] == 0)
+				{
+					todo--;
+				}
 			}
+			else
+			{
+				ans++; x++;
+			}
+			if (x == k)
+			{
+				x = 0;
+			}
+
+		}
+		if (done)
+		{
+			break;
 		}
 	}
-
 	cout << ans << endl;
+
 	clear();
 }
-
 void setUpLocal()
 {
 #ifndef ONLINE_JUDGE
@@ -147,7 +165,6 @@ void setUpLocal()
 	freopen("/Users/asuryana/Documents/CP/output.txt", "w", stdout);
 #endif
 }
-
 int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
