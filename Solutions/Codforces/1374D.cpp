@@ -6,6 +6,7 @@
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
+#define int long long int
 #define ff first
 #define ss second
 #define pb push_back
@@ -99,59 +100,27 @@ void solve()
 {
 	int n, k; cin >> n >> k;
 	vi v(n); ipArr(v, n);
+
 	map<int, int> needs;
+	int mxCyclesNeeded = 0;
 	for (int i : v)
 	{
-		int addNeed = k - (i % k);
-		debug(addNeed)
-		if (addNeed == k)
+		if (i % k == 0)
 		{
 			continue;
 		}
+
+		int addNeed = k - (i % k);
 		needs[addNeed]++;
+		mxCyclesNeeded = max(mxCyclesNeeded, needs[addNeed]);
 	}
-	debug(needs)
-	int x = 0;
+
 	int ans = 0;
-
-	int todo = sz(needs);
-	while ( true)
+	for (auto [key, val] : needs)
 	{
-		bool done = false;
-		for (int i = 0; i < k; i++)
+		if (val == mxCyclesNeeded)
 		{
-			debug(needs)
-			debug(ans)
-			debug(x)
-			if (todo == 0)
-			{
-				done = true;
-				break;
-			}
-			if (needs[i] > 0)
-			{
-				ans++;
-				x++;
-
-				needs[i]--;
-				if (needs[i] == 0)
-				{
-					todo--;
-				}
-			}
-			else
-			{
-				ans++; x++;
-			}
-			if (x == k)
-			{
-				x = 0;
-			}
-
-		}
-		if (done)
-		{
-			break;
+			ans = k * (mxCyclesNeeded - 1) + key + 1;
 		}
 	}
 	cout << ans << endl;
