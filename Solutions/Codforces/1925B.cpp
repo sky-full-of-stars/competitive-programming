@@ -104,17 +104,22 @@ void solve()
 	int x, n; cin >> x >> n;
 
 	int ans = 1;
-	int mx = ceil(x / (1.0 * n));
-	for (int i = mx; i >= 2; i--)
+	for (int i = 1; i * i <= x; i++)
 	{
 		if (x % i == 0)
 		{
 			int div1 = i;
-
-			if (x / div1 >= n)
+			int rep1 = x / i;
+			if (rep1 >= n)
 			{
-				ans = div1;
-				break;
+				ans = max(ans, div1);
+			}
+
+			int div2 = x / i;
+			int rep2 = i;
+			if (rep2 >= n)
+			{
+				ans = max(ans, div2);
 			}
 		}
 	}
