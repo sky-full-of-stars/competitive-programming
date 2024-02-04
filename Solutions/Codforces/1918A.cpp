@@ -101,43 +101,10 @@ void clear()
 
 void solve()
 {
-	int n, k, l;
-	cin >> n >> k >> l;
-	string s; cin >> s;
+	int n, m;
+	cin >> n >> m;
 
-	set<char> st;
-	string ans = "";
-	for (int i = 0; i < l; i++)
-	{
-		st.insert(s[i]);
-		if (sz(st) == k)
-		{
-			ans.pb(s[i]);
-			st.clear();
-		}
-	}
-
-	if (sz(ans) >= n)
-	{
-		yes;
-	}
-	else
-	{
-		no;
-		int cnt = 0;
-		for (char ch = 'a'; cnt < k; cnt++, ch++)
-		{
-			if (!present(st, ch))
-			{
-				while (sz(ans) < n)
-				{
-					ans.pb(ch);
-				}
-				cout << ans << endl;
-				return;
-			}
-		}
-	}
+	cout << n * (m / 2) << endl;
 
 	clear();
 }
