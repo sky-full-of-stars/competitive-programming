@@ -1,14 +1,13 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
+#pragma GCC optimize("Ofast","inline","-ffast-math")
+#pragma GCC target("avx,sse2,sse3,sse4,mmx")
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
 
 #define int long long int
-#define cont continue;
-#define br  break;
 #define ff first
 #define ss second
 #define pb push_back
@@ -53,7 +52,7 @@ void write(T&&... args) {
 #define debug(x)
 #endif
 
-//void _print(ll t) {cerr << t;}
+void _print(bool t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
@@ -89,72 +88,138 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 int min(int a, int b) {return (a < b) ? a : b;}
 int max(int a, int b) {return (a > b) ? a : b;}
+int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
 	int n; cin >> n;
+	vi v(n); ipArr(v, n);
 
-	set<int> maxValtoDelete;
-	for (int i = 1; i <= n; i++)
+	vi leftNearestDiff(n);
+	leftNearestDiff[0] = -1;
+
+	set<int> seen;
+	seen.insert(v[0]);
+
+	stack<pi> s;
+	s.push({v[0], 0});
+
+	for (int i = 1; i < n; i++)
 	{
-		for (int j = 1; j <= n; j++)
+		int cur = v[i];
+		if (!present(seen, cur))
 		{
-			maxValtoDelete.insert(i * j);
-		}
-	}
-
-	int ans = 0;
-	for (auto curMx : maxValtoDelete)
-	{
-		set<int> availableIndices;
-		for (int i = 1; i <= n; i++)
-		{
-			availableIndices.insert(i);
-		}
-		// 1 2 3 4 5
-		// y y n y y
-		// search 3
-		// do lb of 4 and then --it
-
-		bool possible = true;
-		int sum = 0ll;
-		int mxVal = 0ll;
-		for (int val = n; val >= 1; val--)
-		{
-			int suitableIdx = (curMx / val); // 19/3 -> idx: 6
-			auto i = availableIndices.lower_bound(suitableIdx + 1);
-
-			if (i == availableIndices.begin())
-			{
-				possible = false; break;
-			}
-			else
-			{
-				i--;
-				suitableIdx = *i;
-				availableIndices.erase(suitableIdx);
-
-				sum += (val * suitableIdx);
-				mxVal = max(mxVal, val * suitableIdx);
-			}
-		}
-
-		if (!possible)
-		{
-			continue;
+			leftNearestDiff[i] = i - 1;
+			seen.insert(cur);
+			s.push({v[i], i});
 		}
 		else
 		{
-			ans = max(ans, sum - mxVal);
+			bool found = false;
+			while (!s.empty())
+			{
+				pi p = s.top();
+				int ele = p.ff;
+				int idx = p.ss;
+				if (ele == cur)
+				{
+					s.pop(); continue;
+				}
+				else
+				{
+					found = true;
+					leftNearestDiff[i] = idx;
+					s.push({cur, i});
+					break;
+				}
+			}
+			if (!found)
+			{
+				leftNearestDiff[i] = -1;
+				s.push({cur, i});
+			}
 		}
 	}
 
-	cout << ans << endl;
+	vi rightNearestDiff(n);
+	rightNearestDiff[n - 1] = INF;
+
+	seen.clear();
+	seen.insert(v[n - 1]);
+
+	stack<pi> rs;
+	rs.push({v[n - 1], n - 1});
+
+	for (int i = n - 2; i >= 0; i--)
+	{
+		int cur = v[i];
+		if (!present(seen, cur))
+		{
+			rightNearestDiff[i] = i + 1;
+			seen.insert(cur);
+			rs.push({v[i], i});
+		}
+		else
+		{
+			bool found = false;
+			while (!rs.empty())
+			{
+				pi p = rs.top();
+				int ele = p.ff;
+				int idx = p.ss;
+				if (ele == cur)
+				{
+					rs.pop(); continue;
+				}
+				else
+				{
+					found = true;
+					rightNearestDiff[i] = idx;
+					rs.push({cur, i});
+					break;
+				}
+			}
+			if (!found)
+			{
+				rightNearestDiff[i] = INF;
+				rs.push({cur, i});
+			}
+		}
+	}
+
+	debug(leftNearestDiff)
+	debug(rightNearestDiff)
+	int q; cin >> q;
+	while (q--)
+	{
+		int l, r; cin >> l >> r;
+		l--; r--;
+
+		if (rightNearestDiff[l] <= r)
+		{
+			cout << l + 1 << " " << rightNearestDiff[l] + 1 << endl;
+		}
+		else if (leftNearestDiff[r] >= l)
+		{
+			cout << r + 1 << " " << leftNearestDiff[r] + 1 << endl;
+		}
+		else
+		{
+			cout << "-1 -1" << endl;
+		}
+	}
+	cout << endl;
+
+	clear();
 }
 void setUpLocal()
 {

@@ -1,14 +1,13 @@
 #include "bits/stdc++.h"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
+#pragma GCC optimize("Ofast","inline","-ffast-math")
+#pragma GCC target("avx,sse2,sse3,sse4,mmx")
 using namespace std;
 
 //---------------------------------------------------------------------------------------------------------//
 
 #define int long long int
-#define cont continue;
-#define br  break;
 #define ff first
 #define ss second
 #define pb push_back
@@ -53,7 +52,7 @@ void write(T&&... args) {
 #define debug(x)
 #endif
 
-//void _print(ll t) {cerr << t;}
+void _print(bool t) {cerr << t;}
 void _print(int t) {cerr << t;}
 void _print(string t) {cerr << t;}
 void _print(char t) {cerr << t;}
@@ -89,72 +88,60 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 int gcd(int a, int b) {return b ? gcd (b, a % b) : a;}
 int min(int a, int b) {return (a < b) ? a : b;}
 int max(int a, int b) {return (a > b) ? a : b;}
+int ceil(int a, int b) {return (a + b - 1) / b;}
 //---------------------------------------------------------------------------------------------------------//
 
 
 const int N = 1e7;
 
+void clear()
+{
+
+}
 
 void solve()
 {
-	int n; cin >> n;
+	int n, m; cin >> n >> m;
+	int k; cin >> k;
 
-	set<int> maxValtoDelete;
-	for (int i = 1; i <= n; i++)
+	vi a(n); ipArr(a, n); sortv(a);
+	vi b(m); ipArr(b, m); sortv(b);
+
+	int c1 = k / 2;
+	int c2 = k / 2;
+
+	map<int, bool> chosen;
+	int both = 0;
+	for (int i = 1; i <= k; i++)
 	{
-		for (int j = 1; j <= n; j++)
+		if (binary_search(all(a), i) and binary_search(all(b), i))
 		{
-			maxValtoDelete.insert(i * j);
-		}
-	}
-
-	int ans = 0;
-	for (auto curMx : maxValtoDelete)
-	{
-		set<int> availableIndices;
-		for (int i = 1; i <= n; i++)
-		{
-			availableIndices.insert(i);
-		}
-		// 1 2 3 4 5
-		// y y n y y
-		// search 3
-		// do lb of 4 and then --it
-
-		bool possible = true;
-		int sum = 0ll;
-		int mxVal = 0ll;
-		for (int val = n; val >= 1; val--)
-		{
-			int suitableIdx = (curMx / val); // 19/3 -> idx: 6
-			auto i = availableIndices.lower_bound(suitableIdx + 1);
-
-			if (i == availableIndices.begin())
-			{
-				possible = false; break;
-			}
-			else
-			{
-				i--;
-				suitableIdx = *i;
-				availableIndices.erase(suitableIdx);
-
-				sum += (val * suitableIdx);
-				mxVal = max(mxVal, val * suitableIdx);
-			}
-		}
-
-		if (!possible)
-		{
+			both++;
 			continue;
 		}
-		else
+		else if (binary_search(all(a), i))
 		{
-			ans = max(ans, sum - mxVal);
+			c1--;
+			chosen[i] = true;
+		}
+		else if (binary_search(all(b), i))
+		{
+			c2--;
+			chosen[i] = true;
 		}
 	}
 
-	cout << ans << endl;
+	int rem = c1 + c2;
+	if (rem == both and c1 >= 0 and c2 >= 0)
+	{
+		yes;
+	}
+	else
+	{
+		no;
+	}
+
+	clear();
 }
 void setUpLocal()
 {
