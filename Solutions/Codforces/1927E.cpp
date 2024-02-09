@@ -125,7 +125,6 @@ void solve()
 				{
 					debug(j)
 					debug(i)
-					cerr << endl;
 					mat[i][j] = init++;
 				}
 				else
@@ -137,7 +136,6 @@ void solve()
 			{
 				debug(j)
 				debug(i)
-				cerr << endl;
 				mat[i][j] = init++;
 			}
 		}
@@ -152,7 +150,6 @@ void solve()
 				{
 					debug(j)
 					debug(i)
-					cerr << endl;
 					mat[i][j] = init++;
 				}
 				else
@@ -164,7 +161,6 @@ void solve()
 			{
 				debug(j)
 				debug(i)
-				cerr << endl;
 				mat[i][j] = init++;
 			}
 		}
