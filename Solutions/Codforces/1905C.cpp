@@ -102,40 +102,56 @@ void clear()
 void solve()
 {
 	int n; cin >> n;
-	vi a(n); ipArr(a, n);
+	string s; cin >> s;
 
-	set<int> s;
-	for (int i : a)
+
+	vector<char> lex;
+	vector<int> pos;
+	lex.pb(s[n - 1]);
+	pos.pb(n - 1);
+	char last = s[n - 1];
+	int ans = 0;
+	for (int i = n - 2; i >= 0; i--)
 	{
-		s.insert(i);
-	}
-
-	a.clear();
-	for (int i : s)
-	{
-		a.pb(i);
-	}
-	//debug(a);
-
-
-	int ans = 1;
-	int del = n - 1;
-	for (int i = 0; i < sz(a); i++)
-	{
-		int cur = a[i];
-		int need = cur + del;
-
-		auto j = lower_bound(all(a), need);
-		if (j == a.end() or (*j) != need)
+		if (s[i] >= last)
 		{
-			j--;
+			lex.pb(s[i]);
+			pos.pb(i);
+			last = s[i];
 		}
-
-		int r = j - a.begin();
-		ans = max(ans, r - i + 1);
+	}
+	char mx = lex[sz(lex) - 1];
+	for (char c : lex)
+	{
+		ans += (c != mx);
 	}
 
-	cout << ans << endl;
+
+	reverse(all(lex));
+	int i = 0;
+	for (auto idx : pos)
+	{
+		s[idx] = lex[i++];
+	}
+	vector<char> v(n);
+	for (int i = 0; i < n; i++)
+	{
+		v[i] = s[i];
+	}
+
+
+
+	if (is_sorted(all(v)))
+	{
+		cout << ans << endl;
+	}
+	else
+	{
+		cout << -1 << endl;
+	}
+
+
+
 
 	clear();
 }

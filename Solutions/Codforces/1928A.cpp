@@ -99,18 +99,51 @@ void clear()
 
 }
 
+bool pos(int a, int b, int x, int y)
+{
+	if (a > b) swap(a, b);
+	if (x > y) swap(x, y);
+
+	if (a != x or b != y)
+	{
+		return true;
+	}
+	return false;
+}
+
 void solve()
 {
+	int a, b;
+	cin >> a >> b;
 
+	if (!(b & 1))
+	{
+		int na, nb;
+		na = b / 2;
+		nb = 2 * a;
 
+		if (pos(a, b, na, nb))
+		{
+			yes;
+			return;
+		}
+	}
 
+	if (!(a & 1))
+	{
+		int na, nb;
+		na = a / 2;
+		nb = 2 * b;
 
+		if (pos(a, b, na, nb))
+		{
+			yes;
+			return;
+		}
+	}
 
-
-
-
-
-
+	no;
+	return;
 
 	clear();
 }
@@ -125,7 +158,7 @@ int32_t main()
 {
 	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
-	int t = 1; //cin>>t;
+	int t = 1; cin >> t;
 	while (t--) solve();
 	return 0;
 }
