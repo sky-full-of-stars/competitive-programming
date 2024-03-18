@@ -102,26 +102,37 @@ void clear()
 void solve()
 {
 	int n; cin >> n;
-	vi v(n); ipArr(v, n);
+	vi v(n); ipArr(v, n); sortv(v);
 	mi cnt;
 	for (auto i : v)
 		cnt[i]++;
 
-	int mx = *max_element(all(v));
-	for (int i = 0; i < mx + 5; i++)
+	vi kspossible;
+	for (auto [key, val] : cnt)
 	{
-		if (cnt[i] == 0)
+		if (val == 1)
 		{
-			cout << i << endl;
-			return;
+			kspossible.pb(key);
 		}
-		if (cnt[i] <= i)
+	}
+	sortv(kspossible); //no need
+	int possibleMex = (sz(kspossible) >= 2) ? kspossible[1] : INF;
+
+	int actualMex = 0;
+	while (true)
+	{
+		if (cnt[actualMex])
 		{
-			cout << i << endl;
-			return;
+			actualMex++;
+		}
+		else
+		{
+			break;
 		}
 	}
 
+
+	cout << min(possibleMex, actualMex) << endl;
 	clear();
 }
 void setUpLocal()

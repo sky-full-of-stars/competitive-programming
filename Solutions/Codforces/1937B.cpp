@@ -103,105 +103,25 @@ void solve()
 {
 	int n; cin >> n;
 
-	string f, s; cin >> f >> s;
+	string s1, s2; cin >> s1 >> s2;
 
-	int notok = -1;
-	for (int i = n - 1; i >= 1; i--)
+	int idx = 0;
+	bool downMoved = false;
+
+	string path = "";
+
+	for (int i = 0; i < n; i++)
 	{
-		if (f[i] == '0' and s[i - 1] == '1')
+		if (downMoved)
 		{
-			notok = i;
-			break;
-		}
-	}
-
-	/*
-	vector<char> res;
-	int ans = 1;
-	bool down = false;
-	res.pb(f[0]);
-	for (int i = 1; i < n; i++)
-	{
-		if (down)
-		{
-			res.pb(s[i - 1]);
-			continue;
-		}
-		if (s[i - 1] < f[i])
-		{
-			down = true;
-			res.pb(s[i - 1]);
-		}
-		else if (s[i - 1] == f[i])
-		{
-			if (i >= notok)
-			{
-				ans++;
-			}
-			res.pb(f[i]);
-		}
-		else if (s[i - 1] > f[i])
-		{
-			res.pb(f[i]);
-		}
-	}
-	res.pb(s[n - 1]);
-	for (char i : res)
-		cout << i;
-	cout << endl << ans << endl;
-	*/
-
-
-
-	vector<char> res;
-	res.pb(f[0]);
-	bool down = false;
-	int downAt = 0;
-	for (int i = 1; i < n; i++)
-	{
-		if (down)
-		{
-			res.pb(s[i - 1]);
-			continue;
-		}
-		if (s[i - 1] < f[i])
-		{
-			downAt = i;
-			res.pb(s[i - 1]);
-			down = true;
+			path += s2[idx];
+			idx++;
 		}
 		else
 		{
-			res.pb(f[i]);
+			path += s1[idx];
 		}
 	}
-	res.pb(s[n - 1]);
-
-	for (auto i : res)
-		cout << i;
-
-	int ans = 1;
-	int firstMv = 0;
-	for (int i = 1; i < n; i++)
-	{
-		if (s[i - 1] < f[i])
-		{
-			break;
-		}
-		if (f[i] == s[i - 1] and ((i >= notok) or (notok > downAt)))
-		{
-			if (!firstMv) firstMv = i;
-			ans++;
-		}
-	}
-	cout << endl;
-	// debug(notok)
-	// debug(firstMv)
-	// debug(ans)
-	// debug(down)
-	// debug(downAt)
-	cout << ((down && firstMv > downAt) ? 1 : ans) << endl;
-
 
 
 
