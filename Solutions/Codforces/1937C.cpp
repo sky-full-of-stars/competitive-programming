@@ -103,63 +103,61 @@ void solve()
 {
 	int n; cin >> n;
 
-	string s1, s2; cin >> s1 >> s2;
-
-	int idx = 0;
-	bool downMoved = false;
-
-	string path = "";
-	for (;;)
-	{
-		if (downMoved)
-		{
-			if (idx == n)
-			{
-				break;
-			}
-			path += s2[idx];
-			idx++;
-		}
-		else
-		{
-			path += s1[idx];
-
-			if (idx == n - 1)
-			{
-				path += s2[idx];
-				break;
-			}
-
-			if (s1[idx + 1] <= s2[idx])
-			{
-				idx++;
-			}
-			else if (s1[idx + 1] > s2[idx])
-			{
-				downMoved = true;
-			}
-		}
-	}
-
-
-	int ways = 1;
+	int mxEleIdx = 0;
 	for (int i = 1; i < n; i++)
 	{
-		if (s2[i - 1] < s1[i])
+		cout << "? " << i << " " << i << " " << mxEleIdx << " " << mxEleIdx << endl;
+		fflush(stdout);
+		char c; cin >> c;
+		if (c == '>')
 		{
-			break;
-		}
-
-		if (s1[i] == s2[i - 1])
-		{
-			ways++;
-		}
-		else if (s1[i] == '0' and s2[i - 1] == '1')
-		{
-			ways = 1;
+			mxEleIdx = i;
 		}
 	}
-	cout << path << endl << ways << endl;
+
+
+	int mxXorIdx = 0;
+	vi allV;
+	for (int i = 0; i < n; i++)
+	{
+		cout << "? " << mxEleIdx << " " << i << " " << mxEleIdx << " " << mxXorIdx << endl;
+		fflush(stdout);
+		char c; cin >> c;
+		if (c == '>')
+		{
+			allV.clear();
+			allV.pb(i);
+			mxXorIdx = i;
+		}
+		else if (c == '=')
+		{
+			allV.pb(i);
+		}
+	}
+	if (sz(allV) == 1)
+	{
+		cout << "! " << mxEleIdx << " " << allV[0] << endl;
+		fflush(stdout);
+		return;
+	}
+
+
+	int mnEleIdx = allV[0];
+	for (int i = 1; i < sz(allV); i++)
+	{
+		cout << "? " << allV[i] << " " << allV[i] << " " << mnEleIdx << " " << mnEleIdx << endl;
+		fflush(stdout);
+
+		char c; cin >> c;
+		if (c == '<')
+		{
+			mnEleIdx = allV[i];
+		}
+	}
+	cout << "! " << mxEleIdx << " " << mnEleIdx << endl;
+	fflush(stdout);
+
+
 	clear();
 }
 void setUpLocal()
@@ -171,7 +169,6 @@ void setUpLocal()
 }
 int32_t main()
 {
-	cin.tie(nullptr)->sync_with_stdio(false);
 	setUpLocal();
 	int t = 1; cin >> t;
 	while (t--) solve();
