@@ -104,27 +104,22 @@ void solve()
 	int k, x, a;
 	cin >> k >> x >> a;
 
-	if (a - x <= 0)
+
+	int lossSoFar = 0;
+	for (int i = 0; i <= x; i++) // x+1 games
 	{
-		no; return;
+		int minBet = (lossSoFar / (k - 1)) + 1;
+		debug(minBet)
+		lossSoFar += minBet;
+
+		if (lossSoFar > a)
+		{
+			no; return;
+		}
 	}
+	yes; return;
 
-	if (a - (x - 1) + (k - 1) > a)
-	{
-		yes;
-	}
-	else
-	{
-		no;
-	}
-
-
-
-
-
-
-
-
+	\
 	clear();
 }
 void setUpLocal()
