@@ -101,24 +101,53 @@ void clear()
 
 void solve()
 {
-	int k, x, a;
-	cin >> k >> x >> a;
+	int a, b; cin >> a >> b;
+	set<int> ks;
 
-
-	int lossSoFar = 0;
-	for (int i = 0; i <= x; i++) // x+1 games
+	int pos1 = a - b;
+	for (int d = 1; d * d <= pos1; d++)
 	{
-		int minBet = (lossSoFar / (k - 1)) + 1;
-		debug(minBet)
-		lossSoFar += minBet;
+		int d2 = pos1 / d;
 
-		if (lossSoFar > a)
+		if (pos1 % d == 0)
 		{
-			no; return;
+			int k = (d + 2) / 2;
+			if (d % 2 == 0 and k >= b)
+			{
+				ks.insert(k);
+			}
+
+			k = (d2 + 2) / 2;
+			if (d2 != d and d2 % 2 == 0 and k >= b)
+			{
+				ks.insert(k);
+			}
 		}
 	}
-	yes; return;
 
+	int pos2 = a + b - 2;
+	for (int d = 1; d * d <= pos2; d++)
+	{
+		int d2 = pos2 / d;
+
+		if (pos2 % d == 0)
+		{
+			int k = (d + 2) / 2;
+			if (d % 2 == 0 and ((d + 2) / 2) > b)
+			{
+				ks.insert(k);
+			}
+
+			k = (d2 + 2) / 2;
+			if (d2 != d and d2 % 2 == 0 and ((d2 + 2) / 2) > b)
+			{
+				ks.insert(k);
+			}
+		}
+	}
+
+	cout << sz(ks) << endl;
+	cerr << endl;
 
 	clear();
 }

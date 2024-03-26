@@ -101,23 +101,42 @@ void clear()
 
 void solve()
 {
-	int k, x, a;
-	cin >> k >> x >> a;
+	int a, b, c, d;
+	cin >> a >> b >> c >> d;
 
+	int mna = pow(10, a - 1);
+	int mxa = pow(10, a) - 1;
 
-	int lossSoFar = 0;
-	for (int i = 0; i <= x; i++) // x+1 games
+	int mnb = pow(10, b - 1);
+	int mxb = pow(10, b) - 1;
+
+	int mnc = pow(10, c - 1);
+	int mxc = pow(10, c) - 1;
+
+	int need = d;
+	for (int cura = mna; cura <= mxa; cura++)
 	{
-		int minBet = (lossSoFar / (k - 1)) + 1;
-		debug(minBet)
-		lossSoFar += minBet;
+		int l = max(mnc - cura, mnb);
+		int r = min(mxc - cura, mxb);
 
-		if (lossSoFar > a)
+		if (l > r)
 		{
-			no; return;
+			continue;
+		}
+
+		int possible = r - l + 1;
+		if (need - possible > 0)
+		{
+			need -= possible;
+		}
+		else
+		{
+			int curb = l + need - 1;
+			cout << cura << " " << " + " << curb << " " << " = " << (cura + curb) << endl;
+			return;
 		}
 	}
-	yes; return;
+	cout << -1 << endl;
 
 
 	clear();
