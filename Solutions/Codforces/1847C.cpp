@@ -101,18 +101,6 @@ void clear()
 
 void solve()
 {
-	int n; cin >> n;
-	vi v(n); ipArr(v, n);
-
-	vi v1(n);
-	v1 = v;
-	for (int i = 1; i < n; i++)
-	{
-		v1[i] = v1[i - 1] | v1[i];
-	}
-	opArr(v1, n);
-	return;
-
 	vi sufXors(n);
 	si xors;
 	xors.insert(0);
