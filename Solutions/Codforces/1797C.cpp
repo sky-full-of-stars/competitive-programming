@@ -127,6 +127,9 @@ void solve()
 		cout.flush();
 		return;
 	}
+
+
+
 	if (n - s1 == r and s2 != s1)
 	{
 		cout << "! " << r << " " << 1 + s2 << endl;
