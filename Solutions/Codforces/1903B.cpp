@@ -99,39 +99,48 @@ void clear()
 
 }
 
-
 void solve()
 {
 	int n; cin >> n;
+	int m[n][n];
 
-	//n = a*1 + b*3 + c*6 + d*10 + e*15;
-	// a->[0,2] b->[0,1] c->[0,4] d->[0,2]
-	int ans = INF;
-	for (int a = 0; a <= 2; a++)
+	for (int i = 0; i < n; i++)
 	{
-		for (int b = 0; b <= 1; b++)
+		for (int j = 0; j < n; j++)
 		{
-			for (int c = 0; c <= 4; c++)
+			cin >> m[i][j];
+		}
+	}
+
+	vi ans(n, 0);
+
+	for (int i = 0; i < n; i++)
+	{
+		ans[i] = (1 << 30) - 1;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (i == j)
+				continue;
+			int cur = m[i][j]; //1011
+			ans[i] &= cur; //unset 2nd bit
+			ans[j] &= cur;
+		}
+	}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = i + 1; j < n; j++)
+		{
+			if ((ans[i] | ans[j]) != m[i][j])
 			{
-				for (int d = 0; d <= 2; d++)
-				{
-					int cur = a * 1 + b * 3 + c * 6 + d * 10;
-					if (cur > n)
-					{
-						continue;
-					}
-					int rem = n - cur;
-					if (rem % 15 == 0)
-					{
-						int e = rem / 15;
-						ans = min(ans, a + b + c + d + e);
-					}
-				}
+				no; return;
 			}
 		}
 	}
-	cout << ans << endl;
-
+	yes;
+	opArr(ans, sz(ans));
 
 	clear();
 }

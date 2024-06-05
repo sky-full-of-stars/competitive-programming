@@ -99,38 +99,28 @@ void clear()
 
 }
 
-
 void solve()
 {
-	int n; cin >> n;
+	int n, k; cin >> n >> k;
+	vi v(n); ipArr(v, n);
 
-	//n = a*1 + b*3 + c*6 + d*10 + e*15;
-	// a->[0,2] b->[0,1] c->[0,4] d->[0,2]
-	int ans = INF;
-	for (int a = 0; a <= 2; a++)
+	if (k == 1)
 	{
-		for (int b = 0; b <= 1; b++)
+		vi _v = v;
+		sortv(_v);
+		if (v == _v)
 		{
-			for (int c = 0; c <= 4; c++)
-			{
-				for (int d = 0; d <= 2; d++)
-				{
-					int cur = a * 1 + b * 3 + c * 6 + d * 10;
-					if (cur > n)
-					{
-						continue;
-					}
-					int rem = n - cur;
-					if (rem % 15 == 0)
-					{
-						int e = rem / 15;
-						ans = min(ans, a + b + c + d + e);
-					}
-				}
-			}
+			yes;
+		}
+		else
+		{
+			no;
 		}
 	}
-	cout << ans << endl;
+	else
+	{
+		yes; // swap and sort
+	}
 
 
 	clear();
