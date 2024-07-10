@@ -110,12 +110,6 @@ void solve()
 
 	cout << endl;
 
-
-
-
-
-
-
 	clear();
 }
 void setUpLocal()
